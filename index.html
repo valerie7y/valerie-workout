@@ -35,6 +35,9 @@ h2{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
 .stack>*+*{margin-top:12px}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--card2);font-size:13px;color:var(--muted);font-weight:600}
 .pill.acc{background:rgba(255,122,89,.15);color:var(--acc2)}
+.vbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0 2px}.vbar .yt{padding:6px 2px;margin-left:auto}
+.pill.fav{background:rgba(245,181,68,.16);color:var(--warn)}
+button.pill.alt{min-height:36px;background:var(--card2);color:var(--acc2);border:1px solid rgba(255,122,89,.35)}
 .pill.ok{background:rgba(61,214,181,.14);color:var(--ok)}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:58px;border-radius:18px;font-weight:700;font-size:18px;padding:0 20px;width:100%}
 .btn.pri{background:linear-gradient(135deg,var(--acc),#F05A8C);color:#fff;box-shadow:0 8px 24px rgba(255,100,100,.25)}
@@ -125,6 +128,35 @@ function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
 .done-emoji{font-size:72px;margin:30px 0 6px}
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
 .stat b{display:block;font-size:26px}
+
+:root{--mBase:#2A3040;--mOff:#323A4D;--mPri:#FF7A59;--mSec:rgba(255,159,122,.45)}
+.mbox{display:flex;gap:12px;align-items:center;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px}
+svg.body{width:160px;height:158px;flex:none}svg.body .blab{font-size:10px;fill:var(--dim);text-anchor:middle;font-weight:600}
+.mtxt{font-size:15px;font-weight:650;line-height:1.35}.mtxt .muted{font-weight:500;font-size:13px}
+svg.mthumb{width:70px;height:70px;flex:none;display:block}
+.mthumbbtn{background:var(--card2);border-radius:12px;padding:3px 4px;flex:none}
+.item .mm{color:var(--acc2);font-weight:600}
+.swap span{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-top:-6px}
+.prefs{display:flex;gap:8px;margin-top:12px}.prefs button{flex:1;height:44px;border-radius:14px;background:var(--card2);font-weight:650;font-size:14px;color:var(--muted)}
+.prefs button.on{background:rgba(61,214,181,.16);color:var(--ok);outline:2px solid rgba(61,214,181,.45)}.prefs button.on.no{background:rgba(240,90,90,.16);color:#FF8A8A;outline-color:rgba(240,90,90,.5)}
+.rounds{padding:10px 12px}
+.rhead,.rrow{display:grid;grid-template-columns:44px 1fr 1fr 58px;gap:8px;align-items:center}
+.rhead{font-size:12px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;padding:0 0 6px}.rhead span{text-align:center}
+.rrow{padding:6px 0;border-top:1px solid var(--line)}.rrow .rn{font-weight:750;font-size:18px;text-align:center;color:var(--muted)}
+.ri{width:100%;height:50px;border-radius:14px;background:var(--card2);border:1px solid transparent;color:var(--text);font:inherit;font-size:22px;font-weight:750;text-align:center;outline:none;padding:0}
+.ri:focus{border-color:rgba(255,122,89,.6)}.ri.none{display:grid;place-items:center;color:var(--dim);font-size:18px}.ri.bandb{font-size:15px;color:var(--acc2)}
+.chk{height:50px;border-radius:14px;background:var(--card2);font-size:24px;font-weight:800;color:var(--dim);border:2px solid rgba(255,255,255,.12)}
+.chk.on{background:var(--ok);color:#06231c;border-color:var(--ok)}
+.rrow.done .ri{background:rgba(61,214,181,.08);color:var(--ok)}
+.rate{display:flex;gap:6px;align-items:center;padding:0 0 8px 52px}.rate button{flex:1;height:36px;border-radius:12px;background:var(--card2);font-size:13px;font-weight:700;color:var(--muted)}
+.rate button.on.Easy{background:rgba(61,214,181,.2);color:var(--ok)}.rate button.on.Medium{background:rgba(245,181,68,.2);color:var(--warn)}.rate button.on.Hard{background:rgba(240,90,90,.2);color:#FF8A8A}
+.rate.big{padding:0;flex-wrap:wrap;justify-content:center}.rate.big span{width:100%;margin-bottom:6px}.rate.big button{height:48px;font-size:16px}
+.ctrls3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:10px}
+#rest .ring{width:200px!important;height:200px!important}#rest .ringtxt .big{font-size:56px!important}
+.altitem{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;background:var(--card);border:1px solid var(--line);width:100%;text-align:left}
+.altitem .n{font-weight:650;font-size:16px}.altitem .m{font-size:13px;color:var(--muted);margin-top:3px}
+#toast{position:fixed;left:50%;bottom:calc(var(--safeB) + 110px);transform:translate(-50%,20px);background:#2B3242;color:var(--text);padding:12px 18px;border-radius:14px;font-weight:600;font-size:15px;opacity:0;transition:.25s;z-index:40;pointer-events:none;max-width:90%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -132,9 +164,9 @@ function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
 <div id="app"></div>
 <div id="rest"></div>
 <div id="sheet" onclick="if(event.target===this)closeSheet()"><div class="pane" id="sheetPane"></div></div>
-<script>
-/* ===== Exercise library. Every video ID was checked with YouTube oEmbed (HTTP 200, title matches). =====
-   g = group (slot type), f = family (for variety inside one workout), w = lb|band|none, r = reps, t = seconds (timed), s = each side, b = balance (always supported) */
+<script>/* ===== Exercise library. Every video ID was checked with YouTube oEmbed (HTTP 200, title matches). =====
+   g = group (slot type), f = family (for variety inside one workout), w = lb|band|none, r = reps, t = seconds (timed), s = each side, b = balance (always supported)
+   st/en = clip start/end (sec), my = video is one of Valerie's favorites, alt = second video [id,start,end,label], fav = favorite style (picked a bit more often) */
 const EX={
 // ---------- UPPER PUSH (chest) ----------
 db_bench:{g:"push",f:"press",n:"Dumbbell Bench Press",v:"VmB1G1K7v94",c:"Lie on the bench, feet flat. Press up. Lower slowly to chest level.",e:"Dumbbells · Bench",w:"lb"},
@@ -143,51 +175,53 @@ db_floor:{g:"push",f:"press",n:"Dumbbell Floor Press",v:"uUGDRwge4F8",c:"Lie on 
 close_grip_press:{g:"push",f:"press",n:"Close-Grip Dumbbell Press",v:"eebXpmPGy2Y",c:"Lie on the bench. Dumbbells touch, palms face in. Press up, elbows close.",e:"Dumbbells · Bench",w:"lb"},
 alt_db_bench:{g:"push",f:"press",n:"Alternating Dumbbell Press",v:"7CHPqVxJOUE",c:"Lie on the bench, both arms up. Lower one arm and press. Then the other.",e:"Dumbbells · Bench",w:"lb",s:1},
 single_db_bench:{g:"push",f:"press",n:"One-Arm Dumbbell Press",v:"6tbjm5FjhB0",c:"Lie on the bench with one dumbbell. Keep your body still. Press up and down.",e:"Dumbbell · Bench",w:"lb",s:1},
-kb_floor_press:{g:"push",f:"press",n:"Kettlebell Floor Press",v:"i_URJN83nys",c:"Lie on the mat, knees bent. Press the kettlebell up with one arm.",e:"Kettlebell · Mat",w:"lb",s:1},
+kb_floor_press:{g:"push",f:"press",n:"Kettlebell Floor Press",v:"i_URJN83nys",c:"Lie on the mat, knees bent. Press the kettlebell up with one arm.",e:"Kettlebell · Mat",w:"lb",s:1,fav:1},
 hex_press:{g:"push",f:"press",n:"Hex Press",v:"MjOeSCRwAQY",c:"Lie on the bench. Push the dumbbells together the whole time. Press up.",e:"Dumbbells · Bench",w:"lb"},
 squeeze_press:{g:"push",f:"press",n:"Squeeze Press",v:"Aq_wwRslKas",c:"Lie on the bench. Squeeze dumbbells together over your chest. Press up slowly.",e:"Dumbbells · Bench",w:"lb"},
-band_chest_press:{g:"push",f:"press",n:"Band Chest Press",v:"Rn-hf5iauTc",c:"Band behind your back. Push hands forward. Slowly come back.",e:"Long band",w:"band",r:"12-15"},
+band_chest_press:{g:"push",f:"press",n:"Band Chest Press",v:"Rn-hf5iauTc",c:"Band behind your back. Push hands forward. Slowly come back.",e:"Long band",w:"band",r:"12-15",fav:1},
 db_fly:{g:"push",f:"fly",n:"Dumbbell Chest Fly",v:"eozdVDA78K0",c:"Lie on the bench. Soft elbows. Open arms wide, then hug back up.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
-incline_fly:{g:"push",f:"fly",n:"Incline Dumbbell Fly",v:"idAvu2HvqSQ",c:"Bench a little up. Soft elbows. Open arms wide, then hug back up.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
-band_chest_fly:{g:"push",f:"fly",n:"Band Chest Fly",v:"yVcEkvgymt8",c:"Band anchored behind you. Arms open wide. Hug the band to the front.",e:"Long band",w:"band",r:"12-15"},
+incline_fly:{g:"push",f:"fly",n:"Incline Dumbbell Fly",v:"U6brZJ0NCIo",c:"Bench a little up. Soft elbows. Open arms wide, then hug back up.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
+band_chest_fly:{g:"push",f:"fly",n:"Band Chest Fly",v:"yVcEkvgymt8",c:"Band anchored behind you. Arms open wide. Hug the band to the front.",e:"Long band",w:"band",r:"12-15",fav:1},
 svend:{g:"push",f:"fly",n:"Svend Press (medicine ball)",v:"cIoUZOnypS8",c:"Squeeze a medicine ball between your palms at chest. Push out straight, pull back.",e:"Medicine ball",w:"none",r:"12-15"},
 incline_pushup:{g:"push",f:"pushup",n:"Incline Push-Up (on bench)",v:"yAbg3_pJKvw",c:"Hands on the bench, toes on the floor. Body straight. Lower chest to bench, push back.",e:"Bench",w:"none"},
 wall_pushup:{g:"push",f:"pushup",n:"Wall Push-Up",v:"5NPvv40gd3Q",c:"Hands on the wall. Body straight. Bend elbows, then push back.",e:"Wall",w:"none",r:"12-15"},
 // ---------- SHOULDERS ----------
 seated_press:{g:"sh",f:"press",n:"Seated Shoulder Press",v:"poD_-zaG9hk",c:"Sit tall, back on the bench. Press up. Lower to ear level.",e:"Dumbbells · Bench",w:"lb"},
 arnold:{g:"sh",f:"press",n:"Seated Arnold Press",v:"mXRhpXwW-gs",c:"Start with palms facing you. Turn palms out as you press up.",e:"Dumbbells · Bench",w:"lb"},
-kb_press:{g:"sh",f:"press",n:"Kettlebell Overhead Press",v:"X-uFqWtjpGI",c:"Stand tall, soft knees. Squeeze your belly. Press one arm up. Lower slowly.",e:"Kettlebell",w:"lb",s:1},
+kb_press:{g:"sh",f:"press",n:"Kettlebell Overhead Press",v:"X-uFqWtjpGI",c:"Stand tall, soft knees. Squeeze your belly. Press one arm up. Lower slowly.",e:"Kettlebell",w:"lb",s:1,fav:1},
 alt_db_press:{g:"sh",f:"press",n:"Alternating Shoulder Press",v:"6DV2exMHMqc",c:"Sit or stand tall. Press one arm up, then the other.",e:"Dumbbells",w:"lb",s:1},
-band_oh_press:{g:"sh",f:"press",n:"Band Overhead Press",v:"Zli1UXH9ZeE",c:"Stand on the band. Hands at shoulders. Press up, lower slowly.",e:"Long band",w:"band",r:"12-15"},
-bottoms_up:{g:"sh",f:"press",n:"Bottoms-Up Kettlebell Press",v:"J5LEpIZSDS0",c:"Hold the kettlebell upside down. Squeeze hard. Press up slowly. Go light.",e:"Kettlebell",w:"lb",s:1,r:"8-10"},
+band_oh_press:{g:"sh",f:"press",n:"Band Overhead Press",v:"Zli1UXH9ZeE",c:"Stand on the band. Hands at shoulders. Press up, lower slowly.",e:"Long band",w:"band",r:"12-15",fav:1},
+bottoms_up:{g:"sh",f:"press",n:"Bottoms-Up Kettlebell Press",v:"J5LEpIZSDS0",c:"Hold the kettlebell upside down. Squeeze hard. Press up slowly. Go light.",e:"Kettlebell",w:"lb",s:1,r:"8-10",fav:1},
 lat_raise:{g:"sh",f:"raise",n:"Lateral Raise",v:"XPPfnSEATJA",c:"Arms out to the sides, up to shoulder height. Lower slowly. No swinging.",e:"Dumbbells",w:"lb",r:"10-12"},
 seated_lat_raise:{g:"sh",f:"raise",n:"Seated Lateral Raise",v:"g_7iXXBrCkY",c:"Sit tall on the bench. Raise arms to the sides, to shoulder height.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
 lean_lat_raise:{g:"sh",f:"raise",n:"Leaning Lateral Raise",v:"qWif_7SOYpQ",c:"Hold a door frame. Lean away a little. Raise the dumbbell to the side.",e:"Dumbbell · Door frame",w:"lb",r:"10-12",s:1},
 front_raise:{g:"sh",f:"raise",n:"Front Raise",v:"-t7fuZ0KhDA",c:"Lift arms in front to shoulder height. Lower slowly.",e:"Dumbbells",w:"lb",r:"10-12"},
-band_lat_raise:{g:"sh",f:"raise",n:"Band Lateral Raise",v:"yfNg5sFndbw",c:"Stand on the band. Raise arms to the sides. Lower slowly.",e:"Long band",w:"band",r:"12-15"},
+band_lat_raise:{g:"sh",f:"raise",n:"Band Lateral Raise",v:"yfNg5sFndbw",c:"Stand on the band. Raise arms to the sides. Lower slowly.",e:"Long band",w:"band",r:"12-15",fav:1},
 y_raise:{g:"sh",f:"raise",n:"Incline Y Raise",v:"U7Pdw5wFGh0",c:"Lie face down on an incline bench. Raise light dumbbells in a Y shape.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
 six_way:{g:"sh",f:"raise",n:"6-Way Shoulder Raise",v:"QQNE3qIURxg",c:"Light dumbbells. Raise to the front, out wide, up high, then back down. Slow.",e:"Dumbbells",w:"lb",r:"8-10"},
 upright_row:{g:"sh",f:"raise",n:"Upright Row",v:"Ub6QruNKfbY",c:"Pull dumbbells up to chest height. Elbows lead. Not higher than shoulders.",e:"Dumbbells",w:"lb",r:"10-12"},
-halo:{g:"sh",f:"mob",n:"Kettlebell Halo",v:"Zy6bgAxPeks",c:"Hold the kettlebell upside down. Circle it slowly around your head. Change direction.",e:"Kettlebell",w:"lb",r:"8-10",s:1},
+halo:{g:"sh",f:"mob",n:"Kettlebell Halo",v:"Zy6bgAxPeks",c:"Stand, or sit on the bench. Hold the kettlebell upside down. Circle it slowly around your head. Change direction.",e:"Kettlebell",w:"lb",r:"8-10",s:1,fav:1},
 cuban:{g:"sh",f:"mob",n:"Cuban Press",v:"oQJoK0a3h44",c:"Light dumbbells. Pull up, turn arms up, then press overhead. Slow.",e:"Dumbbells",w:"lb",r:"8-10"},
-w_raise:{g:"sh",f:"mob",n:"Incline W Raise",v:"ezBH3fcvNY4",c:"Lie face down on an incline bench. Elbows bent. Lift arms into a W. Squeeze.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
-ytw:{g:"sh",f:"mob",n:"Y-T-W Raises",v:"QdGTI4Lshg4",c:"Lie face down on an incline bench. Lift arms in a Y, then T, then W. Very light.",e:"Bench",w:"none",r:"8-10"},
+w_raise:{g:"sh",f:"mob",n:"Incline W Raise",v:"ezBH3fcvNY4",c:"Lie face down on an incline bench. Elbows bent. Lift arms into a W. Squeeze.",e:"Dumbbells · Bench",w:"lb",r:"10-12",fav:1},
+ytw:{g:"sh",f:"mob",n:"Y-T-W Raises",v:"QdGTI4Lshg4",c:"Lie face down on an incline bench. Lift arms in a Y, then T, then W. Very light.",e:"Bench",w:"none",r:"8-10",fav:1},
+prone_swimmer:{g:"sh",f:"mob",n:"Prone Swimmers",v:"P_YdO_bLrwk",c:"Lie on your belly, forehead down. Lift arms a little. Move them from overhead to your hips, like swimming.",e:"Mat",w:"none",r:"8-10",fav:1},
 // ---------- UPPER PULL (back) ----------
-row:{g:"pull",f:"row",n:"One-Arm Dumbbell Row",v:"DMo3HJoawrU",c:"One hand on the bench, both feet on the floor. Pull elbow to your hip. Lower slowly.",e:"Dumbbell · Bench",w:"lb",s:1},
+row:{g:"pull",f:"row",n:"One-Arm Dumbbell Row",v:"DMo3HJoawrU",c:"One hand on the bench, both feet on the floor. Pull elbow to your hip. Lower slowly.",e:"Dumbbell · Bench",w:"lb",s:1,fav:1},
 cs_row:{g:"pull",f:"row",n:"Chest-Supported Row",v:"0-DXJiceG-0",c:"Lie on your belly on an incline bench. Pull both elbows back. Squeeze.",e:"Dumbbells · Bench",w:"lb"},
 bb_row:{g:"pull",f:"row",n:"Barbell Row",v:"bm0_q9bR_HA",c:"Soft knees. Lean forward, back flat. Pull the bar to your belly.",e:"Barbell",w:"lb"},
-band_row:{g:"pull",f:"row",n:"Band Seated Row",v:"LSkyinhmA8k",c:"Sit tall, band around your feet. Pull elbows back. Squeeze shoulder blades.",e:"Long band · Mat",w:"band",r:"12-15"},
-kb_row:{g:"pull",f:"row",n:"Kettlebell Row",v:"j2OdaGOmHlM",c:"One hand on the bench, both feet down. Pull the kettlebell to your hip.",e:"Kettlebell · Bench",w:"lb",s:1},
+band_row:{g:"pull",f:"row",n:"Band Seated Row",v:"LSkyinhmA8k",c:"Sit tall, band around your feet. Pull elbows back. Squeeze shoulder blades.",e:"Long band · Mat",w:"band",r:"12-15",fav:1},
+kb_row:{g:"pull",f:"row",n:"Kettlebell Row",v:"j2OdaGOmHlM",c:"One hand on the bench, both feet down. Pull the kettlebell to your hip.",e:"Kettlebell · Bench",w:"lb",s:1,fav:1},
 bent_db_row:{g:"pull",f:"row",n:"Two-Arm Dumbbell Row",v:"5PoEksoJNaw",c:"Soft knees, lean forward, back flat. Pull both dumbbells to your belly.",e:"Dumbbells",w:"lb"},
 seal_row:{g:"pull",f:"row",n:"Seal Row (on bench)",v:"9ffaage-LjY",c:"Lie face down on the bench. Arms hang down. Pull dumbbells up to the bench.",e:"Dumbbells · Bench",w:"lb"},
 pullover:{g:"pull",f:"vert",n:"Dumbbell Pullover",v:"FK4rHfWKEac",c:"Lie on the bench. One dumbbell over your chest. Lower behind your head, pull back up.",e:"Dumbbell · Bench",w:"lb"},
-band_pulldown:{g:"pull",f:"vert",n:"Band Lat Pulldown",v:"94A3JVWqpdg",c:"Band anchored high (door). Sit tall. Pull elbows down to your sides.",e:"Long band",w:"band",r:"10-12"},
-straight_arm:{g:"pull",f:"vert",n:"Band Straight-Arm Pulldown",v:"K4VAFznrNLk",c:"Band anchored high. Arms straight. Push the band down to your thighs.",e:"Long band",w:"band",r:"12-15"},
+band_pulldown:{g:"pull",f:"vert",n:"Band Lat Pulldown",v:"94A3JVWqpdg",c:"Band anchored high (door). Sit tall. Pull elbows down to your sides.",e:"Long band",w:"band",r:"10-12",fav:1},
+straight_arm:{g:"pull",f:"vert",n:"Band Straight-Arm Pulldown",v:"OzYLIIPrndQ",c:"Band anchored high. Arms straight. Push the band down to your thighs.",e:"Long band",w:"band",r:"12-15",fav:1},
 rev_fly:{g:"pull",f:"rear",n:"Reverse Fly",v:"3MKmYlhxgOo",c:"Lean forward, soft knees, back flat. Open arms wide like wings.",e:"Dumbbells",w:"lb",r:"10-12"},
 incline_rev_fly:{g:"pull",f:"rear",n:"Incline Reverse Fly",v:"bMD474hAjDE",c:"Lie face down on an incline bench. Open arms wide like wings. Squeeze.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
-pull_apart:{g:"pull",f:"rear",n:"Band Pull-Apart",v:"stwYTTPXubo",c:"Arms straight in front. Pull the band apart to your chest. Slowly back.",e:"Long band",w:"band",r:"12-15"},
-face_pull:{g:"pull",f:"rear",n:"Band Face Pull",v:"CSP7YpPv3ds",c:"Band anchored at face height. Pull to your face, elbows high.",e:"Long band",w:"band",r:"12-15"},
+pull_apart:{g:"pull",f:"rear",n:"Band Pull-Apart",v:"stwYTTPXubo",c:"Arms straight in front. Pull the band apart to your chest. Slowly back.",e:"Long band",w:"band",r:"12-15",fav:1},
+face_pull:{g:"pull",f:"rear",n:"Band Face Pull",v:"CSP7YpPv3ds",c:"Band anchored at face height. Pull to your face, elbows high.",e:"Long band",w:"band",r:"12-15",fav:1},
 shrug:{g:"pull",f:"shrug",n:"Dumbbell Shrug",v:"cJRVVxmytaM",c:"Stand tall. Lift shoulders to your ears. Hold 1 second. Lower slowly.",e:"Dumbbells",w:"lb",r:"10-12"},
+kb_pullover:{g:"pull",f:"vert",n:"Floor Pullover (kettlebell)",v:"ieFKuQAGYIA",c:"Lie on the mat, knees bent. Hold the bell over your chest. Lower it behind your head slowly. Pull back up.",e:"Kettlebell or dumbbell · Mat",w:"lb",fav:1},
 // ---------- ARMS: biceps ----------
 curl:{g:"bi",f:"curl",n:"Dumbbell Biceps Curl",v:"av7-8igSXTs",c:"Elbows by your sides. Curl up, lower slowly. No swinging.",e:"Dumbbells",w:"lb"},
 hammer:{g:"bi",f:"hammer",n:"Hammer Curl",v:"RIEMoYL_h1Y",c:"Palms face each other. Curl up, lower slowly.",e:"Dumbbells",w:"lb"},
@@ -195,46 +229,46 @@ bb_curl:{g:"bi",f:"curl",n:"Barbell Curl",v:"kwG2ipFRgfo",c:"Hands shoulder-widt
 concentration_curl:{g:"bi",f:"curl",n:"Concentration Curl",v:"Jvj2wV0vOYU",c:"Sit on the bench. Elbow on your inner thigh. Curl up slowly.",e:"Dumbbell · Bench",w:"lb",s:1},
 incline_curl:{g:"bi",f:"curl",n:"Incline Dumbbell Curl",v:"soxrZlIl35U",c:"Sit back on an incline bench. Arms hang. Curl up, lower slowly.",e:"Dumbbells · Bench",w:"lb"},
 zottman:{g:"bi",f:"hammer",n:"Zottman Curl",v:"ZrpRBgswtHs",c:"Curl up palms up. Turn palms down at the top. Lower slowly.",e:"Dumbbells",w:"lb"},
-band_curl:{g:"bi",f:"curl",n:"Band Biceps Curl",v:"3g-1J2KkX_8",c:"Stand on the band. Elbows by your sides. Curl up.",e:"Long band",w:"band",r:"12-15"},
+band_curl:{g:"bi",f:"curl",n:"Band Biceps Curl",v:"3g-1J2KkX_8",c:"Stand on the band. Elbows by your sides. Curl up.",e:"Long band",w:"band",r:"12-15",fav:1},
 cross_hammer:{g:"bi",f:"hammer",n:"Cross-Body Hammer Curl",v:"On2eca-C00E",c:"Curl the dumbbell across your body toward the other shoulder.",e:"Dumbbells",w:"lb",s:1},
 spider_curl:{g:"bi",f:"curl",n:"Spider Curl",v:"nvufDW-MSQk",c:"Lie chest down on an incline bench. Arms hang. Curl up and squeeze.",e:"Dumbbells · Bench",w:"lb"},
-kb_curl:{g:"bi",f:"curl",n:"Kettlebell Curl",v:"OfgQrQCLJsk",c:"Hold the kettlebell handle with both hands. Curl up slowly.",e:"Kettlebell",w:"lb"},
+kb_curl:{g:"bi",f:"curl",n:"Kettlebell Curl",v:"OfgQrQCLJsk",c:"Hold the kettlebell handle with both hands. Curl up slowly.",e:"Kettlebell",w:"lb",fav:1},
 // ---------- ARMS: triceps ----------
 oh_tri:{g:"tri",f:"oh",n:"Overhead Triceps Extension",v:"YbX7Wd8jQ-Q",c:"Sit tall. One dumbbell, both hands, over your head. Bend elbows, then press up.",e:"Dumbbell · Bench",w:"lb"},
 sa_oh_ext:{g:"tri",f:"oh",n:"One-Arm Overhead Extension",v:"jTQWYdWLvys",c:"Sit tall. One dumbbell overhead. Bend the elbow, then press up.",e:"Dumbbell",w:"lb",s:1},
-band_oh_tri:{g:"tri",f:"oh",n:"Band Overhead Triceps Extension",v:"Yi_zNoIsNcc",c:"Stand on the band. Hands behind your head. Straighten arms up.",e:"Long band",w:"band",r:"12-15"},
+band_oh_tri:{g:"tri",f:"oh",n:"Band Overhead Triceps Extension",v:"Yi_zNoIsNcc",c:"Stand on the band. Hands behind your head. Straighten arms up.",e:"Long band",w:"band",r:"12-15",fav:1},
 skull:{g:"tri",f:"lying",n:"Lying Triceps Extension",v:"ir5PsbniVSc",c:"Lie on the bench. Elbows point up. Bend only the elbows, then straighten.",e:"Dumbbells · Bench",w:"lb"},
 floor_skull:{g:"tri",f:"lying",n:"Floor Skull Crusher",v:"IQsE_Zi6dU4",c:"Lie on the mat. Elbows point up. Bend the elbows, then straighten.",e:"Dumbbells · Mat",w:"lb"},
 tate:{g:"tri",f:"lying",n:"Tate Press",v:"cZJ-4Ll3uAo",c:"Lie on the bench. Dumbbells over chest. Elbows out, lower to chest, press up.",e:"Dumbbells · Bench",w:"lb"},
-tri_kick:{g:"tri",f:"kick",n:"Triceps Kickback",v:"6SS6K3lAwZ8",c:"One hand on the bench, both feet on the floor. Push the weight back until arm is straight.",e:"Dumbbell · Bench",w:"lb",s:1},
-band_pushdown:{g:"tri",f:"kick",n:"Band Triceps Pushdown",v:"xW8L2POShSA",c:"Band anchored high. Elbows by your sides. Push down until arms are straight.",e:"Long band",w:"band",r:"12-15"},
+tri_kick:{g:"tri",f:"kick",n:"Triceps Kickback",v:"ShCYaoHmWmk",c:"Stand, soft knees. Lean forward, back flat. Elbows by your sides. Push the weights back until arms are straight.",e:"Dumbbells",w:"lb",r:"10-12"},
+band_pushdown:{g:"tri",f:"kick",n:"Band Triceps Pushdown",v:"xW8L2POShSA",c:"Band anchored high. Elbows by your sides. Push down until arms are straight.",e:"Long band",w:"band",r:"12-15",fav:1},
 // ---------- GLUTES: bridges & thrusts ----------
-band_bridge:{g:"gb",f:"bridge",n:"Banded Glute Bridge",v:"Zr2RLjIjCN0",c:"Loop band above knees. Push knees out. Lift hips, squeeze glutes 1 second.",e:"Short loop band · Mat",w:"band",r:"12-15"},
+band_bridge:{g:"gb",f:"bridge",n:"Banded Glute Bridge",v:"Zr2RLjIjCN0",c:"Loop band above knees. Push knees out. Lift hips, squeeze glutes 1 second.",e:"Short loop band · Mat",w:"band",r:"12-15",fav:1},
 db_bridge:{g:"gb",f:"bridge",n:"Dumbbell Glute Bridge",v:"cruqsnAyU6A",c:"Dumbbell on your hips. Lift hips, squeeze glutes. Lower slowly.",e:"Dumbbell · Mat",w:"lb"},
 sl_bridge:{g:"gb",f:"bridge",n:"Single-Leg Glute Bridge",v:"sVfp4LN9niA",c:"One foot down, other leg straight. Lift hips. Skip if your knee hurts.",e:"Mat",w:"none",s:1},
 bridge_march:{g:"gb",f:"bridge",n:"Bridge March",v:"rXAbcneAr3I",c:"Lift hips and keep them up. Lift one foot a little, then the other.",e:"Mat",w:"none",s:1},
 fe_bridge:{g:"gb",f:"bridge",n:"Feet-Up Glute Bridge",v:"hlth_Of9LEc",c:"Lie on the mat, feet on the bench. Lift hips. Squeeze glutes.",e:"Bench · Mat",w:"none",r:"12-15"},
-bridge_abd:{g:"gb",f:"bridge",n:"Bridge + Knee Opens",v:"w1f8BAAzBik",c:"Band above knees. Lift hips and hold. Open and close your knees.",e:"Short loop band · Mat",w:"band",r:"12-15"},
+bridge_abd:{g:"gb",f:"bridge",n:"Bridge + Knee Opens",v:"w1f8BAAzBik",c:"Band above knees. Lift hips and hold. Open and close your knees.",e:"Short loop band · Mat",w:"band",r:"12-15",fav:1},
 db_thrust:{g:"gb",f:"thrust",n:"Hip Thrust on Bench",v:"29OfN4ztW_g",c:"Upper back on the bench, dumbbell on hips. Push hips up, chin down. Squeeze.",e:"Dumbbell · Bench",w:"lb"},
 bb_thrust:{g:"gb",f:"thrust",n:"Barbell Hip Thrust",v:"Zp26q4BY5HE",c:"Upper back on the bench, bar on hips (use a pad). Lift hips, squeeze glutes.",e:"Barbell · Bench",w:"lb"},
-kb_thrust:{g:"gb",f:"thrust",n:"Kettlebell Hip Thrust",v:"J7L0749hx_w",c:"Upper back on the bench, kettlebell on hips. Push hips up. Squeeze.",e:"Kettlebell · Bench",w:"lb"},
+kb_thrust:{g:"gb",f:"thrust",n:"Kettlebell Hip Thrust",v:"J7L0749hx_w",c:"Upper back on the bench, kettlebell on hips. Push hips up. Squeeze.",e:"Kettlebell · Bench",w:"lb",fav:1},
 banded_thrust:{g:"gb",f:"thrust",n:"Banded Hip Thrust",v:"2OaqZ-QAiYw",c:"Upper back on the bench, band above knees. Push knees out, hips up.",e:"Short loop band · Bench",w:"band",r:"12-15"},
 sl_thrust:{g:"gb",f:"thrust",n:"Single-Leg Hip Thrust",v:"L4nTaesNm0E",c:"Upper back on the bench. One foot down. Lift hips. Skip if your knee hurts.",e:"Bench",w:"none",s:1},
 // ---------- GLUTES & HIPS: bands / mat ----------
-clam:{g:"gh",f:"abd",n:"Banded Clamshell",v:"m_ZPapmqeNM",c:"Lie on your side, band above knees, feet together. Open top knee. Close slowly.",e:"Short loop band · Mat",w:"band",r:"12-15",s:1},
-side_leg:{g:"gh",f:"abd",n:"Side-Lying Leg Raise",v:"jgh6sGwtTwk",c:"Lie on your side, bottom knee bent. Lift top leg straight, toes forward.",e:"Mat",w:"none",r:"12-15",s:1},
-stand_abd:{g:"gh",f:"abd",n:"Standing Band Hip Abduction",v:"CRpDEFu-a9c",c:"Hold a wall or chair. Band at ankles. Move one leg out to the side, slowly back.",e:"Short loop band · Chair",w:"band",r:"12-15",s:1},
+clam:{g:"gh",f:"abd",n:"Banded Clamshell",v:"m_ZPapmqeNM",c:"Lie on your side, band above knees, feet together. Open top knee. Close slowly.",e:"Short loop band · Mat",w:"band",r:"12-15",s:1,fav:1},
+side_leg:{g:"gh",f:"abd",n:"Side-Lying Leg Raise",v:"jgh6sGwtTwk",c:"Lie on your side, bottom knee bent. Lift top leg straight, toes forward.",e:"Mat",w:"none",r:"12-15",s:1,fav:1},
+stand_abd:{g:"gh",f:"abd",n:"Standing Band Hip Abduction",v:"CRpDEFu-a9c",c:"Hold a wall or chair. Band at ankles. Move one leg out to the side, slowly back.",e:"Short loop band · Chair",w:"band",r:"12-15",s:1,fav:1},
 seated_abd:{g:"gh",f:"abd",n:"Seated Band Hip Abduction",v:"D-OkklpFY18",c:"Sit on the bench, band above knees. Push knees out. Slowly back.",e:"Short loop band · Bench",w:"band",r:"15-20"},
 leg_circles:{g:"gh",f:"abd",n:"Side-Lying Leg Circles",v:"VgysBPnVJWg",c:"Lie on your side. Lift top leg a little. Draw small circles.",e:"Mat",w:"none",r:"10-12",s:1},
 reverse_clam:{g:"gh",f:"rot",n:"Reverse Clamshell",v:"QJQgnb-kOg4",c:"Lie on your side, knees together. Lift the top foot up. Lower slowly.",e:"Mat",w:"none",r:"12-15",s:1},
 adduction:{g:"gh",f:"rot",n:"Inner Thigh Lift (side-lying)",v:"lhwT35sshrI",c:"Lie on your side. Top foot in front. Lift the bottom leg up a little.",e:"Mat",w:"none",r:"12-15",s:1},
-stand_kick:{g:"gh",f:"ext",n:"Standing Band Kickback",v:"pdP0uJXvc44",c:"Hold a wall or chair. Band at ankles. Push one leg back, keep it straight.",e:"Short loop band · Chair",w:"band",r:"12-15",s:1},
+stand_kick:{g:"gh",f:"ext",n:"Standing Band Kickback",v:"pdP0uJXvc44",c:"Hold a wall or chair. Band at ankles. Push one leg back, keep it straight.",e:"Short loop band · Chair",w:"band",r:"12-15",s:1,fav:1},
 prone_ext:{g:"gh",f:"ext",n:"Lying Leg Lift (on belly)",v:"kxmIfSC9aUk",c:"Lie face down. Squeeze glute. Lift one straight leg a little. Hips stay down.",e:"Mat",w:"none",r:"12-15",s:1},
 prone_bent_ext:{g:"gh",f:"ext",n:"Bent-Knee Leg Lift (on belly)",v:"HR1Bm0jGhcE",c:"Lie face down. Bend one knee. Lift the knee off the floor. Squeeze glute.",e:"Mat",w:"none",r:"12-15",s:1},
 // ---------- HAMSTRINGS & HINGE ----------
 db_rdl:{g:"hinge",f:"hinge",n:"Dumbbell Romanian Deadlift",v:"hQgFixeXdZo",c:"Soft knees. Push hips back, weights slide down your legs. Back flat. Squeeze glutes to stand.",e:"Dumbbells",w:"lb"},
 bb_rdl:{g:"hinge",f:"hinge",n:"Barbell Romanian Deadlift",v:"7j-2w4-P14I",c:"Light bar. Soft knees. Push hips back, bar close to legs. Squeeze glutes to stand.",e:"Barbell",w:"lb"},
-kb_rdl:{g:"hinge",f:"hinge",n:"Kettlebell Romanian Deadlift",v:"mVSgE9S0G4w",c:"Start standing. Soft knees. Push hips back, back flat. Stand tall and squeeze.",e:"Kettlebell",w:"lb"},
+kb_rdl:{g:"hinge",f:"hinge",n:"Kettlebell Romanian Deadlift",v:"mVSgE9S0G4w",c:"Start standing. Soft knees. Push hips back, back flat. Stand tall and squeeze.",e:"Kettlebell",w:"lb",fav:1},
 staggered_rdl:{g:"hinge",f:"hinge",n:"Staggered-Stance RDL",v:"RFuCfiMfJ1w",c:"One foot a little back, on toes. Hinge forward with dumbbells. Stand up.",e:"Dumbbells",w:"lb",s:1},
 band_gm:{g:"hinge",f:"hinge",n:"Banded Good Morning",v:"fJA39ZOVaEQ",c:"Band under feet and behind neck. Soft knees. Push hips back, back flat. Stand up.",e:"Long band",w:"band",r:"12-15"},
 seated_gm:{g:"hinge",f:"hinge",n:"Seated Good Morning",v:"cJWYiUkiWrE",c:"Sit on the bench, hands on chest. Back flat. Lean forward from hips, sit up.",e:"Bench",w:"none",r:"12-15"},
@@ -244,17 +278,20 @@ ham_curl:{g:"hinge",f:"ham",n:"Lying Band Hamstring Curl",v:"LtTcXXgeRYo",c:"Lie
 stand_ham_curl:{g:"hinge",f:"ham",n:"Standing Hamstring Curl (hold chair)",v:"LaDKpYN9FDw",c:"Hold a chair. Bend one knee, heel up behind you. Lower slowly. Stop if knee hurts.",e:"Chair",w:"none",r:"12-15",s:1},
 slider_curl:{g:"hinge",f:"ham",n:"Sliding Leg Curl",v:"UaecXxAgsKA",c:"Lie on your back, heels on a towel (smooth floor). Lift hips. Slide heels in and out.",e:"Towel · Mat",w:"none",r:"8-12"},
 ham_bridge:{g:"hinge",f:"ham",n:"Hamstring Bridge (heels on bench)",v:"OERrUNa5I4s",c:"Lie on your back, heels on the bench, legs almost straight. Lift hips. Lower slowly.",e:"Bench · Mat",w:"none",r:"10-12"},
+kb_swing:{g:"hinge",f:"hinge",n:"Kettlebell Swing (light)",v:"cY38L70lxro",c:"Hinge, don't squat. Snap your hips forward. The bell floats to chest height. Feet stay down. Go light.",e:"Kettlebell",w:"lb",r:"10-15",fav:1},
+kb_deadlift:{g:"hinge",f:"hinge",n:"Kettlebell Deadlift (bell raised)",v:"hinonqqzatk",c:"Put the bell on a step or thick book, between your feet. Push hips back, soft knees, back flat. Stand tall.",e:"Kettlebell · Step",w:"lb",fav:1},
+sl_rdl:{g:"hinge",f:"hinge",n:"Single-Leg RDL (hand on wall)",v:"gIrJly_2OZg",c:"One hand on the wall. Light weight in the other hand. Lean forward, back leg goes back. Stand up slowly.",e:"Dumbbell · Wall",w:"lb",s:1,r:"8-10",fav:1},
 // ---------- CORE ----------
-dead_bug:{g:"core",f:"anti",n:"Dead Bug",v:"GbSC02oU3To",c:"Lie on back, arms up, knees up. Lower opposite arm and leg slowly. Harder: hold a medicine ball.",e:"Mat · Medicine ball",w:"none",s:1},
-pallof:{g:"core",f:"anti",n:"Band Pallof Press",v:"y1fOBVtANdM",c:"Band anchored at your side. Hold at chest, press straight out. Don't let it turn you.",e:"Long band",w:"band",r:"10-12",s:1},
-incline_plank:{g:"core",f:"anti",n:"Incline Plank (hands on bench)",v:"QuLekEa1lIs",c:"Hands on the bench, toes on the floor. Body straight. Squeeze belly and glutes.",e:"Bench",w:"none",t:30},
-forearm_plank:{g:"core",f:"anti",n:"Forearm Plank",v:"EPiXN2bkLoQ",c:"Start lying on your belly. Lift up on forearms and toes. Body straight. No knees down.",e:"Mat",w:"none",t:25},
-side_plank_incline:{g:"core",f:"anti",n:"Side Plank (forearm on bench)",v:"N_s9em1xTqU",c:"Forearm on the bench, feet on the floor, body straight. Switch at the beep.",e:"Bench",w:"none",t:40,s:1},
+dead_bug:{g:"core",f:"anti",n:"Dead Bug",v:"GbSC02oU3To",c:"Lie on back, arms up, knees up. Lower opposite arm and leg slowly. Harder: hold a medicine ball.",e:"Mat · Medicine ball",w:"none",s:1,fav:1},
+pallof:{g:"core",f:"anti",n:"Band Pallof Press",v:"y1fOBVtANdM",c:"Band anchored at your side. Hold at chest, press straight out. Don't let it turn you.",e:"Long band",w:"band",r:"10-12",s:1,fav:1},
+incline_plank:{g:"core",f:"anti",n:"Incline Plank (hands on bench)",v:"QuLekEa1lIs",c:"Hands on the bench, toes on the floor. Body straight. Squeeze belly and glutes.",e:"Bench",w:"none",t:30,fav:1},
+forearm_plank:{g:"core",f:"anti",n:"Forearm Plank",v:"EPiXN2bkLoQ",c:"Start lying on your belly. Lift up on forearms and toes. Body straight. No knees down.",e:"Mat",w:"none",t:25,fav:1},
+side_plank_incline:{g:"core",f:"anti",n:"Side Plank (forearm on bench)",v:"N_s9em1xTqU",c:"Forearm on the bench, feet on the floor, body straight. Switch at the beep.",e:"Bench",w:"none",t:40,s:1,fav:1},
 plank_taps_incline:{g:"core",f:"anti",n:"Incline Plank Shoulder Taps",v:"GzpmFU7qaFE",c:"Hands on the bench, toes on the floor. Tap one shoulder, then the other. Hips still.",e:"Bench",w:"none",r:"8-10",s:1},
-farmer:{g:"core",f:"carry",n:"Farmer Carry",v:"lLAw6fUccKA",c:"Hold heavy dumbbells or kettlebells. Stand tall. Walk slowly.",e:"Dumbbells or kettlebells",w:"lb",t:40},
-suitcase:{g:"core",f:"carry",n:"Suitcase Carry",v:"y-hn_Ha1-RE",c:"Heavy weight in one hand. Don't lean. Walk slowly. Switch hands at the beep.",e:"Kettlebell or dumbbell",w:"lb",t:40,s:1},
+farmer:{g:"core",f:"carry",n:"Farmer Carry",v:"lLAw6fUccKA",c:"Hold heavy dumbbells or kettlebells. Stand tall. Walk slowly.",e:"Dumbbells or kettlebells",w:"lb",t:40,fav:1},
+suitcase:{g:"core",f:"carry",n:"Suitcase Carry",v:"y-hn_Ha1-RE",c:"Heavy weight in one hand. Don't lean. Walk slowly. Switch hands at the beep.",e:"Kettlebell or dumbbell",w:"lb",t:40,s:1,fav:1},
 slr:{g:"core",f:"flex",n:"Straight-Leg Raise",v:"U4L_6JEv9Jg",c:"Lie on back, one knee bent. Tighten the straight leg. Lift to knee height, lower slowly.",e:"Mat",w:"none",r:"10-12",s:1},
-toe_taps:{g:"core",f:"flex",n:"Lying Toe Taps",v:"A5H4t2ZMos8",c:"Lie on back, knees up. Tap one toe to the floor, then the other. Low back down.",e:"Mat",w:"none",r:"10-12",s:1},
+toe_taps:{g:"core",f:"flex",n:"Lying Toe Taps",v:"A5H4t2ZMos8",c:"Lie on back, knees up. Tap one toe to the floor, then the other. Low back down.",e:"Mat",w:"none",r:"10-12",s:1,fav:1},
 reverse_crunch:{g:"core",f:"flex",n:"Reverse Crunch",v:"XY8KzdDcMFg",c:"Lie on back, knees up. Curl hips off the floor a little. Lower slowly.",e:"Mat",w:"none",r:"10-12"},
 crunch:{g:"core",f:"flex",n:"Crunch",v:"Xyd_fa5zoEU",c:"Lie on back, knees bent. Lift shoulders up a little. Lower slowly.",e:"Mat",w:"none",r:"12-15"},
 mb_crunch:{g:"core",f:"flex",n:"Medicine Ball Crunch",v:"1Hf_5_rmaOc",c:"Lie on back, ball on your chest. Lift shoulders up a little. Lower slowly.",e:"Medicine ball · Mat",w:"none",r:"10-12"},
@@ -262,41 +299,53 @@ bicycle:{g:"core",f:"flex",n:"Slow Bicycle",v:"9FGilxCbdz8",c:"Lie on back. Elbo
 heel_taps:{g:"core",f:"flex",n:"Heel Taps",v:"w2Um9ULrcBI",c:"Lie on back, knees bent. Lift shoulders a little. Reach side to side to your heels.",e:"Mat",w:"none",r:"10-12",s:1},
 seated_knee_tuck:{g:"core",f:"flex",n:"Seated Knee Tuck",v:"54q250IUEAc",c:"Sit on the bench edge, hold the sides. Lean back. Pull knees in, push out slowly.",e:"Bench",w:"none",r:"10-12"},
 mb_twist:{g:"core",f:"rot",n:"Medicine Ball Twist",v:"2_MsoqTpIJ8",c:"Sit, knees bent, feet down. Lean back a little. Turn the ball side to side.",e:"Medicine ball · Mat",w:"none",r:"10-12",s:1},
-woodchop:{g:"core",f:"rot",n:"Band Woodchop",v:"02q1lTCrLoc",c:"Band anchored high to one side. Pull it down across your body. Feet stay still.",e:"Long band",w:"band",r:"10-12",s:1},
+woodchop:{g:"core",f:"rot",n:"Band Woodchop",v:"02q1lTCrLoc",c:"Band anchored high to one side. Pull it down across your body. Feet stay still.",e:"Long band",w:"band",r:"10-12",s:1,fav:1},
 db_side_bend:{g:"core",f:"rot",n:"Dumbbell Side Bend",v:"dL9ZzqtQI5c",c:"Weight in one hand. Bend to the side slowly. Come back up.",e:"Dumbbell",w:"lb",r:"10-12",s:1},
+kb_around_world:{g:"core",f:"rot",n:"Kettlebell Around the World",v:"9uqGfOvtqn0",c:"Stand tall, soft knees. Pass the bell around your waist, hand to hand. Change direction halfway.",e:"Kettlebell",w:"lb",r:"6-8",s:1,fav:1},
+kb_dead_bug:{g:"core",f:"anti",n:"Kettlebell Dead Bug",v:"556ibwFFFAM",c:"Lie on your back. Hold a light bell over your chest. Knees up. Lower one leg slowly, then the other.",e:"Kettlebell · Mat",w:"lb",r:"8-10",s:1,fav:1},
+kb_overhead_march:{g:"core",f:"carry",n:"Overhead March (by a wall)",v:"edIzJHViuO0",c:"Stand next to a wall. Light bell straight up in one hand. March slowly in place. Switch at the beep.",e:"Kettlebell · Wall",w:"lb",t:40,s:1,fav:1},
+kb_rack_carry:{g:"core",f:"carry",n:"Rack Carry",v:"zKHog8SWdM4",c:"Hold the bell at your chest, elbow down. Stand tall. Walk slowly. Switch at the beep.",e:"Kettlebell",w:"lb",t:40,s:1,fav:1},
+superman:{g:"core",f:"ext",n:"Gentle Superman",v:"z6PJMT2y8GQ",c:"Lie on your belly on a soft mat. Lift arms and legs a little. Hold 2 seconds. Lower.",e:"Mat",w:"none",r:"8-10",fav:1},
 // ---------- BALANCE (always hold support) ----------
-sl_stand:{g:"bal",f:"static",n:"Single-Leg Stand (hold chair)",v:"8xRDWe3pj30",c:"Hold a chair or wall. Lift one foot a little. Stand tall. Switch at the beep.",e:"Chair or wall",w:"none",t:40,s:1,b:1},
-tandem:{g:"bal",f:"static",n:"Heel-to-Toe Stand (at wall)",v:"ra7tzlPxnsQ",c:"Stand next to a wall, hand on it. One foot right in front of the other. Switch at the beep.",e:"Wall",w:"none",t:40,s:1,b:1},
-sl_head_turn:{g:"bal",f:"static",n:"Single-Leg Stand + Head Turns",v:"UCj55s-JHXI",c:"Hold a chair. Stand on one leg. Turn your head slowly left and right. Switch at the beep.",e:"Chair",w:"none",t:40,s:1,b:1},
+sl_stand:{g:"bal",f:"static",n:"Single-Leg Stand (hold chair)",v:"E3j7nJyqLys",c:"Hold a chair or wall. Lift one foot a little. Stand tall. Switch at the beep.",e:"Chair or wall",w:"none",t:40,s:1,b:1,st:602,en:805,my:1,alt:["8xRDWe3pj30",0,0,"Short demo"],fav:1},
+tandem:{g:"bal",f:"static",n:"Heel-to-Toe Stand (at wall)",v:"E3j7nJyqLys",c:"Stand next to a wall, hand on it. One foot right in front of the other. Switch at the beep.",e:"Wall",w:"none",t:40,s:1,b:1,st:325,en:382,my:1,alt:["ra7tzlPxnsQ",0,0,"Short demo"],fav:1},
+sl_head_turn:{g:"bal",f:"static",n:"Single-Leg Stand + Head Turns",v:"UCj55s-JHXI",c:"Hold a chair. Stand on one leg. Turn your head slowly left and right. Switch at the beep.",e:"Chair",w:"none",t:40,s:1,b:1,fav:1},
 weight_shift:{g:"bal",f:"dyn",n:"Weight Shifts (hold chair)",v:"6mcW7CIvj3Q",c:"Hold a chair. Shift your weight slowly side to side, then front to back.",e:"Chair",w:"none",t:40,b:1},
-chair_march:{g:"bal",f:"dyn",n:"Slow March (hold chair)",v:"shdbEBpDUTk",c:"Hold a chair. Lift one knee a little, hold 2 seconds, lower. Switch.",e:"Chair",w:"none",t:40,b:1},
+chair_march:{g:"bal",f:"dyn",n:"Slow March (hold chair)",v:"shdbEBpDUTk",c:"Hold a chair. Lift one knee a little, hold 2 seconds, lower. Switch.",e:"Chair",w:"none",t:40,b:1,fav:1},
 clock_reach:{g:"bal",f:"dyn",n:"Clock Reach (hold chair)",v:"DTOKhh2D1eI",c:"Hold a chair, stand on one leg. Point the other foot front, side, back. Switch at the beep.",e:"Chair",w:"none",t:40,s:1,b:1},
-tandem_walk:{g:"bal",f:"dyn",n:"Heel-to-Toe Walk (at counter)",v:"z_GKdFf3qv4",c:"Hand on a counter. Walk heel to toe, slowly, like on a line.",e:"Kitchen counter",w:"none",t:40,b:1},
-side_step:{g:"bal",f:"dyn",n:"Side Steps (at counter)",v:"z5eVVwPzzmM",c:"Hands on a counter. Step to the side slowly, then come back.",e:"Kitchen counter",w:"none",t:40,b:1},
+tandem_walk:{g:"bal",f:"dyn",n:"Heel-to-Toe Walk (at counter)",v:"E3j7nJyqLys",c:"Hand on a counter. Walk heel to toe, slowly, like on a line.",e:"Kitchen counter",w:"none",t:40,b:1,st:805,en:941,my:1,alt:["wcZDEmP2Ruo",150,300,"⭐ Will Harlow"],fav:1},
+side_step:{g:"bal",f:"dyn",n:"Side Steps (at counter)",v:"xh1IIUtAiTI",c:"Hands on a counter. Step to the side slowly, then come back.",e:"Kitchen counter",w:"none",t:40,b:1},
 heel_toe_rock:{g:"bal",f:"dyn",n:"Heel-Toe Rocks (hold chair)",v:"L15PsUpVcAk",c:"Hold a chair. Rock up to your toes, then back to your heels. Slow.",e:"Chair",w:"none",t:40,b:1},
-chair_abd:{g:"bal",f:"str",n:"Standing Hip Abduction (hold chair)",v:"qBqKuEQl9sI",c:"Hold a chair, stand tall. Lift one leg out to the side. Lower slowly.",e:"Chair",w:"none",r:"10-12",s:1,b:1},
+chair_abd:{g:"bal",f:"str",n:"Standing Hip Abduction (hold chair)",v:"qBqKuEQl9sI",c:"Hold a chair, stand tall. Lift one leg out to the side. Lower slowly.",e:"Chair",w:"none",r:"10-12",s:1,b:1,fav:1},
 chair_hip_ext:{g:"bal",f:"str",n:"Standing Leg Back (hold chair)",v:"LzuvLW_gJ8w",c:"Hold a chair. Stand tall. Move one straight leg back. Don't lean forward.",e:"Chair",w:"none",r:"10-12",s:1,b:1},
-heel_raise:{g:"bal",f:"str",n:"Heel Raises (hold chair)",v:"L73id3cxjXI",c:"Hold a chair. Rise up on your toes, hold 1 second. Lower slowly.",e:"Chair",w:"none",r:"12-15",b:1},
-toe_raise:{g:"bal",f:"str",n:"Toe Raises (hold chair)",v:"jbh9Wzt2Lfk",c:"Hold a chair. Lift your toes up, heels stay down. Lower slowly.",e:"Chair",w:"none",r:"12-15",b:1},
+heel_raise:{g:"bal",f:"str",n:"Heel Raises (hold chair)",v:"E3j7nJyqLys",c:"Hold a chair. Rise up on your toes, hold 1 second. Lower slowly.",e:"Chair",w:"none",r:"12-15",b:1,st:41,en:194,my:1,alt:["L73id3cxjXI",0,0,"Short demo"],fav:1},
+toe_raise:{g:"bal",f:"str",n:"Toe Raises (hold chair)",v:"E3j7nJyqLys",c:"Hold a chair. Lift your toes up, heels stay down. Lower slowly.",e:"Chair",w:"none",r:"12-15",b:1,st:41,en:194,my:1,alt:["jbh9Wzt2Lfk",0,0,"Short demo"],fav:1},
+tandem_arms:{g:"bal",f:"static",n:"Heel-to-Toe + Arm Swings (at chair)",v:"E3j7nJyqLys",st:382,en:474,my:1,c:"Hold the chair with one hand. One foot in front of the other. Swing the free arm. Turn your head slowly. Switch at the beep.",e:"Chair",w:"none",t:40,s:1,b:1,fav:1},
+arm_leg_march:{g:"bal",f:"dyn",n:"March + Opposite Arm (hold chair)",v:"E3j7nJyqLys",st:941,en:1156,my:1,c:"Hold a chair. Lift one knee and the other arm. Hold 3 seconds. Switch sides.",e:"Chair",w:"none",t:40,b:1,fav:1},
+rock_boat:{g:"bal",f:"dyn",n:"Rock the Boat (hold chair)",v:"E3j7nJyqLys",st:1258,en:1443,my:1,alt:["PiX_hLB_r_8",0,0,"Short demo"],c:"Hold a chair, feet apart. Shift to one side, lift the other foot a little. Hold. Switch sides.",e:"Chair",w:"none",t:40,b:1,fav:1},
+sl_calf_raise:{g:"bal",f:"str",n:"Single-Leg Heel Raise (hold wall)",v:"795rPzSVOd4",alt:["riSlzQrZGpM",0,0,"⭐ Your video"],c:"Hands on the wall. Stand on one foot. Rise up on your toes, lower slowly. Switch sides.",e:"Wall",w:"none",r:"8-12",s:1,b:1,fav:1},
 // ---------- WARM-UP (z: up/low/any) ----------
-march:{g:"warm",z:"any",n:"Gentle March",v:"9wl_AiNhYP0",c:"March in place. Lift knees a little. Swing your arms."},
+march:{g:"warm",z:"any",n:"Gentle March",v:"9wl_AiNhYP0",c:"March in place. Lift knees a little. Swing your arms.",alt:["X3q5e1pV4pc",0,0,"⭐ Happy Walk"],fav:1},
 arm_circles:{g:"warm",z:"up",n:"Arm Circles",v:"UVMEnIaY8aU",c:"Small circles, then bigger. Change direction halfway."},
-shoulder_rolls:{g:"warm",z:"up",n:"Shoulder Rolls",v:"X7NtgY9kCCM",c:"Roll shoulders up, back and down. Slow."},
+shoulder_rolls:{g:"warm",z:"up",n:"Shoulder Rolls",v:"X7NtgY9kCCM",c:"Roll shoulders up, back and down. Slow.",fav:1},
 arm_swings:{g:"warm",z:"up",n:"Arm Hugs",v:"AsMMF3YWIIM",c:"Open arms wide, then hug yourself. Keep moving."},
-wall_slides:{g:"warm",z:"up",n:"Wall Slides",v:"oMSVe7PWJ3o",c:"Forearms on the wall. Slide arms up and down slowly."},
+wall_slides:{g:"warm",z:"up",n:"Wall Slides",v:"oMSVe7PWJ3o",c:"Forearms on the wall. Slide arms up and down slowly.",fav:1},
 wrist_circles:{g:"warm",z:"up",n:"Wrist Circles",v:"wRSk1_C6yOM",c:"Circle your wrists one way, then the other."},
 pass_through:{g:"warm",z:"up",n:"Band Pass-Through",v:"l5I_E0_My5s",c:"Hold a long band wide. Arms straight. Lift it over your head and back."},
 torso_twist:{g:"warm",z:"any",n:"Standing Twists",v:"h6XyzlM8m24",c:"Soft knees. Turn gently from your waist. Feet stay still."},
 side_bend:{g:"warm",z:"any",n:"Side Bend",v:"Vko-SJok-fk",c:"Reach one arm up and over. Switch at the beep.",s:1},
-cat_cow_stand:{g:"warm",z:"any",n:"Standing Cat-Cow",v:"W_QA84-KkIk",c:"Hands on thighs, soft knees. Round your back, then arch gently."},
+cat_cow_stand:{g:"warm",z:"any",n:"Standing Cat-Cow",v:"W_QA84-KkIk",c:"Hands on thighs, soft knees. Round your back, then arch gently.",fav:1},
 neck_rolls:{g:"warm",z:"any",n:"Neck Half-Circles",v:"YTT0sgNU01I",c:"Chin down. Roll your head slowly ear to ear. No full circles."},
-hip_circles:{g:"warm",z:"low",n:"Hip Circles",v:"qkrJXGVj_OQ",c:"Hands on hips. Slow circles. Change direction halfway."},
+hip_circles:{g:"warm",z:"low",n:"Hip Circles",v:"qkrJXGVj_OQ",c:"Hands on hips. Slow circles. Change direction halfway.",fav:1},
 leg_swings:{g:"warm",z:"low",n:"Leg Swings (front-back)",v:"naW8u72lOzI",c:"Hold a wall. Swing one leg gently forward and back. Switch at the beep.",s:1},
 lat_leg_swings:{g:"warm",z:"low",n:"Leg Swings (side)",v:"64FhHrDsTeg",c:"Face the wall, hold it. Swing one leg side to side. Switch at the beep.",s:1},
-gate_openers:{g:"warm",z:"low",n:"Hip Gate Openers",v:"XJem9O8OaTk",c:"Hold a wall. Lift one knee, open it out to the side, then down. Switch at the beep.",s:1},
+gate_openers:{g:"warm",z:"low",n:"Hip Gate Openers",v:"XJem9O8OaTk",c:"Hold a wall. Lift one knee, open it out to the side, then down. Switch at the beep.",s:1,fav:1},
 good_morning:{g:"warm",z:"low",n:"Hip Hinge",v:"Kdeq15AvUVU",c:"Hands on hips, soft knees. Push hips back, back flat. Stand up."},
 ankle_circles:{g:"warm",z:"low",n:"Ankle Circles",v:"mzTQGYGI0Ng",c:"Hold a chair. Lift one foot, circle the ankle. Switch at the beep.",s:1},
 bridge_basic:{g:"warm",z:"low",pos:2,n:"Slow Glute Bridge",v:"OUgsJ8-Vi0E",c:"Lie on your back, knees bent. Lift hips slowly. Lower slowly."},
+wall_angel:{g:"warm",z:"up",n:"Wall Angels",v:"1UU4VvklQ44",c:"Back on the wall. Arms like a W. Slide them up and down slowly.",fav:1},
+hip_hurdle:{g:"warm",z:"low",n:"Hip Hurdles (hold wall)",v:"9PySxVZZXmc",c:"Hold a wall. Lift one knee up and out, like over a small fence. Slow. Switch at the beep.",s:1,fav:1},
+elephant_walk:{g:"warm",z:"low",n:"Elephant Walk",v:"qqMi-hJjMBk",alt:["zebW9OCA1Vg",0,0,"⭐ Your video (3rd move)"],c:"Hands on your thighs or a chair. Bend one knee, straighten the other. Switch slowly. Small moves.",fav:1},
 // ---------- COOL-DOWN (pos: 0 stand, 1 sit, 2 lie) ----------
 doorway:{g:"cool",z:"up",pos:0,n:"Doorway Chest Stretch",v:"B9uY01NoqBg",c:"Forearms on the door frame. Lean forward a little. Feel your chest open."},
 chest_behind_back:{g:"cool",z:"up",pos:0,n:"Chest Opener",v:"crnw1IKWNZY",c:"Hands together behind your back. Lift your chest. Breathe."},
@@ -316,8 +365,11 @@ fig4:{g:"cool",z:"low",pos:2,n:"Figure-4 Glute Stretch",v:"Xb5gHdYtHnk",c:"Lie o
 knee_drops:{g:"cool",z:"low",pos:2,n:"Knee Drops",v:"l-RhNMneVcc",c:"Lie on your back, knees bent, feet wide. Let knees fall side to side slowly."},
 legs_up_wall:{g:"cool",z:"low",pos:2,n:"Legs Up the Wall",v:"do_1LisFah0",c:"Lie on your back, legs up the wall. Relax and breathe."},
 lying_twist:{g:"cool",z:"any",pos:2,n:"Lying Twist",v:"BzYBkAvdCJY",c:"Lie on your back, knees bent. Let knees fall to one side. Switch at the beep.",s:1},
-open_book:{g:"cool",z:"any",pos:2,n:"Open Book Stretch",v:"SKapoHxQxuk",c:"Lie on your side, knees bent. Open the top arm across to the other side. Switch at the beep.",s:1},
-sphinx:{g:"cool",z:"any",pos:2,n:"Sphinx Stretch",v:"KWi1YgyxDaQ",c:"Lie on your belly, forearms down. Lift your chest gently. Breathe."},
+open_book:{g:"cool",z:"any",pos:2,n:"Open Book Stretch",v:"SKapoHxQxuk",c:"Lie on your side, knees bent. Open the top arm across to the other side. Switch at the beep.",s:1,fav:1},
+chin_tuck:{g:"cool",z:"any",pos:1,n:"Chin Tucks",v:"7rnlAVhAK-8",c:"Sit tall. Pull your chin straight back, like a double chin. Hold 3 seconds. Relax.",fav:1},
+ham_floss:{g:"cool",z:"low",pos:2,n:"Lying Hamstring Floss",v:"3pTTk3GUmQE",alt:["zebW9OCA1Vg",0,0,"⭐ Your video (4th move)"],c:"Lie on your back, hold behind one thigh. Slowly straighten and bend the knee. Switch at the beep. Stop if knee hurts.",s:1,fav:1},
+sphinx:{g:"cool",z:"any",pos:2,n:"Sphinx Stretch",v:"KWi1YgyxDaQ",c:"Lie on your belly, forearms down. Lift your chest gently. Breathe.",fav:1},
+happy_walk:{g:"bonus",n:"Happy Walk · 1 mile",v:"X3q5e1pV4pc",my:1,e:"Walk at Home · about 15 min",c:"Walk in place with the video. Easy and fun. Good on rest days."},
 breathing:{g:"cool",z:"any",pos:3,n:"Deep Breathing",v:"6YB0pv3iv0g",c:"Lie on your back. Breathe in through your nose, belly up. Breathe out slowly."}
 };
 // a few strength moves double as warm-ups
@@ -342,6 +394,67 @@ const DAYS={
   {g:"core",n:3,rest:45},{g:"core",n:2,rest:30}]}
 };
 
+/* demo-only clips: [start,end] seconds, checked against storyboard frames (end 0 = to the end) */
+const CLIP={"8xRDWe3pj30":[5,40],"yfNg5sFndbw":[5,42],"cIoUZOnypS8":[5,43],"CSP7YpPv3ds":[3,45],"QQNE3qIURxg":[0,48],"yVcEkvgymt8":[4,45],"02q1lTCrLoc":[0,49],"Rn-hf5iauTc":[5,49],"y-hn_Ha1-RE":[26,50],"54q250IUEAc":[17,51],"FK4rHfWKEac":[4,46],"L4nTaesNm0E":[8,48],"oQJoK0a3h44":[7,55],"OfgQrQCLJsk":[17,49],"QJQgnb-kOg4":[4,55],"j2OdaGOmHlM":[4,58],"N_s9em1xTqU":[0,61],"5NPvv40gd3Q":[9,58],"GbSC02oU3To":[2,61],"DTOKhh2D1eI":[2,46],"nvufDW-MSQk":[5,62],"1Hf_5_rmaOc":[9,74],"cY38L70lxro":[6,75],"hQgFixeXdZo":[12,76],"29OfN4ztW_g":[10,72],"9uqGfOvtqn0":[48,77],"Zy6bgAxPeks":[8,53],"rXAbcneAr3I":[7,70],"9FGilxCbdz8":[8,82],"Xyd_fa5zoEU":[8,84],"i_URJN83nys":[6,77],"ir5PsbniVSc":[26,63],"Zp26q4BY5HE":[57,0],"QuLekEa1lIs":[14,80],"cZJ-4Ll3uAo":[14,77],"qWif_7SOYpQ":[2,38],"dL9ZzqtQI5c":[4,92],"igj6_GWSt3I":[28,76],"uUGDRwge4F8":[22,77],"Jvj2wV0vOYU":[22,76],"cJRVVxmytaM":[33,76],"av7-8igSXTs":[7,51],"ZrpRBgswtHs":[38,78],"soxrZlIl35U":[33,82],"-t7fuZ0KhDA":[13,92],"L15PsUpVcAk":[7,101],"YbX7Wd8jQ-Q":[26,92],"6DV2exMHMqc":[3,102],"ezBH3fcvNY4":[28,95],"kwG2ipFRgfo":[4,118],"jTQWYdWLvys":[42,111],"cJWYiUkiWrE":[37,70],"VmB1G1K7v94":[15,120],"hinonqqzatk":[56,112],"eozdVDA78K0":[28,122],"8iPEnn-ltC8":[22,140],"xh1IIUtAiTI":[28,92],"ShCYaoHmWmk":[5,45],"OzYLIIPrndQ":[2,42],"J7L0749hx_w":[0,9],"ZuKowDpVVXM":[0,7],"pdP0uJXvc44":[0,10],"D-OkklpFY18":[0,10],"0-DXJiceG-0":[0,10],"CRpDEFu-a9c":[0,10],"RIEMoYL_h1Y":[0,10],"EPiXN2bkLoQ":[0,9],"edIzJHViuO0":[3,0],"6tbjm5FjhB0":[0,15],"ra7tzlPxnsQ":[4,0],"bMD474hAjDE":[0,23],"9wl_AiNhYP0":[0,19],"ieFKuQAGYIA":[1,23],"kxmIfSC9aUk":[4,0],"w2Um9ULrcBI":[0,17],"7CHPqVxJOUE":[0,24],"LtTcXXgeRYo":[3,24],"P_YdO_bLrwk":[1,24],"U7Pdw5wFGh0":[1,22],"poD_-zaG9hk":[1,23],"QdGTI4Lshg4":[1,0],"qBqKuEQl9sI":[4,0],"xW8L2POShSA":[0,26],"LaDKpYN9FDw":[4,26],"lLAw6fUccKA":[7,0],"shdbEBpDUTk":[1,26],"2OaqZ-QAiYw":[0,27],"zKHog8SWdM4":[13,27],"3MKmYlhxgOo":[8,32],"UCj55s-JHXI":[0,27],"jgh6sGwtTwk":[3,34],"MjOeSCRwAQY":[13,0],"Zli1UXH9ZeE":[2,27],"3g-1J2KkX_8":[2,30],"J5LEpIZSDS0":[8,31],"lhwT35sshrI":[4,34],"m_ZPapmqeNM":[2,36],"7j-2w4-P14I":[3,34],"z6PJMT2y8GQ":[8,30],"2_MsoqTpIJ8":[10,33],"GzpmFU7qaFE":[1,0],"On2eca-C00E":[8,0],"U4L_6JEv9Jg":[4,34],"VgysBPnVJWg":[1,34],"Yi_zNoIsNcc":[2,32],"94A3JVWqpdg":[0,36],"A5H4t2ZMos8":[2,36],"795rPzSVOd4":[2,41],"riSlzQrZGpM":[22,28],"jbh9Wzt2Lfk":[11,50],"PiX_hLB_r_8":[8,56],"LzuvLW_gJ8w":[4,0],"X3q5e1pV4pc":[3,0],"AsMMF3YWIIM":[2,25],"UVMEnIaY8aU":[6,20],"X7NtgY9kCCM":[0,25],"l5I_E0_My5s":[2,0],"oMSVe7PWJ3o":[2,24],"wRSk1_C6yOM":[0,17]};
+
+/* ===== muscle map: front/back body diagram (inline SVG) ===== */
+const MNAME={chest:"Chest",shoulders:"Shoulders",biceps:"Biceps",triceps:"Triceps",forearms:"Forearms",abs:"Belly",obliques:"Sides",upperback:"Upper back",lats:"Back (lats)",traps:"Traps",lowerback:"Lower back",glutes:"Glutes",hipside:"Outer hips",adductors:"Inner thighs",quads:"Front thighs",hamstrings:"Back thighs",calves:"Calves",shins:"Shins"};
+/* [primary, secondary] by group + family; a move can override with m:[[...],[...]] */
+const MMAP={
+ "push.press":[["chest"],["triceps","shoulders"]],"push.fly":[["chest"],["shoulders"]],"push.pushup":[["chest"],["triceps","shoulders","abs"]],
+ "sh.press":[["shoulders"],["triceps","traps"]],"sh.raise":[["shoulders"],["traps"]],"sh.mob":[["shoulders","upperback"],["traps"]],
+ "pull.row":[["lats","upperback"],["biceps","shoulders"]],"pull.vert":[["lats"],["chest","triceps"]],"pull.rear":[["upperback","shoulders"],["traps"]],"pull.shrug":[["traps"],["forearms"]],
+ "bi.curl":[["biceps"],["forearms"]],"bi.hammer":[["biceps","forearms"],[]],
+ "tri.oh":[["triceps"],["shoulders"]],"tri.lying":[["triceps"],["chest"]],"tri.kick":[["triceps"],["shoulders"]],
+ "gb.bridge":[["glutes"],["hamstrings","lowerback"]],"gb.thrust":[["glutes"],["hamstrings","quads"]],
+ "gh.abd":[["hipside"],["glutes"]],"gh.rot":[["glutes","adductors"],["hipside"]],"gh.ext":[["glutes"],["hamstrings","lowerback"]],
+ "hinge.hinge":[["hamstrings","glutes"],["lowerback","forearms"]],"hinge.ham":[["hamstrings"],["glutes","calves"]],
+ "core.anti":[["abs"],["obliques","shoulders"]],"core.carry":[["obliques","forearms"],["traps","abs","shoulders"]],"core.flex":[["abs"],["obliques"]],"core.rot":[["obliques"],["abs","shoulders"]],"core.ext":[["lowerback","glutes"],["upperback"]],
+ "bal.static":[["hipside","calves"],["abs","glutes"]],"bal.dyn":[["hipside","calves"],["abs","glutes"]],"bal.str":[["hipside"],["glutes","calves"]],
+ "warm":[["shoulders","glutes"],["abs"]],"cool":[["hamstrings","chest"],["lowerback"]],"bonus":[["quads","calves","glutes"],["hamstrings"]]};
+const MOVR={heel_raise:[["calves"],["shins"]],toe_raise:[["shins"],["calves"]],sl_calf_raise:[["calves"],["hipside"]],chair_abd:[["hipside"],["glutes"]],chair_hip_ext:[["glutes"],["hamstrings","lowerback"]],
+ adduction:[["adductors"],[]],reverse_clam:[["glutes"],["hipside"]],seated_abd:[["hipside"],["glutes"]],kb_swing:[["glutes","hamstrings"],["lowerback","abs","shoulders"]],
+ sl_rdl:[["hamstrings","glutes"],["hipside","calves"]],farmer:[["forearms","traps"],["abs","obliques"]],superman:[["lowerback","glutes"],["upperback","shoulders"]],
+ prone_swimmer:[["upperback","shoulders"],["lowerback"]],slr:[["quads","abs"],[]],kb_overhead_march:[["shoulders","abs"],["obliques","hipside"]],
+ db_side_bend:[["obliques"],[]],halo:[["shoulders"],["abs","triceps"]],svend:[["chest"],["shoulders"]],cuban:[["shoulders","upperback"],[]],
+ upright_row:[["shoulders","traps"],["biceps"]],ytw:[["upperback","shoulders"],["traps"]],pullover:[["lats","chest"],["triceps"]],kb_pullover:[["lats","chest"],["triceps","abs"]]};
+function musclesOf(k){const e=EX[k];if(e.m)return e.m;if(MOVR[k])return MOVR[k];return MMAP[e.g+"."+e.f]||MMAP[e.g]||[[],[]]}
+function muscleText(k){const [p,s]=musclesOf(k);return p.map(x=>MNAME[x]).join(" · ")+(s.length?` <span class="muted">+ ${s.map(x=>MNAME[x]).join(", ")}</span>`:"")}
+/* shapes: [muscle, svg element] ; front figure centered x=50, back figure x=150 */
+const BODY_F=[
+ ["","<circle cx='50' cy='13' r='9'/>"],["","<rect x='46' y='21' width='8' height='7' rx='2'/>"],
+ ["shoulders","<ellipse cx='33' cy='36' rx='7' ry='6'/><ellipse cx='67' cy='36' rx='7' ry='6'/>"],
+ ["chest","<ellipse cx='42.5' cy='42' rx='8' ry='6.5'/><ellipse cx='57.5' cy='42' rx='8' ry='6.5'/>"],
+ ["biceps","<ellipse cx='28' cy='54' rx='4.6' ry='9'/><ellipse cx='72' cy='54' rx='4.6' ry='9'/>"],
+ ["forearms","<ellipse cx='25' cy='74' rx='4' ry='10'/><ellipse cx='75' cy='74' rx='4' ry='10'/>"],
+ ["abs","<rect x='43.5' y='50' width='13' height='27' rx='4'/>"],
+ ["obliques","<ellipse cx='38' cy='63' rx='4' ry='11'/><ellipse cx='62' cy='63' rx='4' ry='11'/>"],
+ ["hipside","<ellipse cx='35' cy='86' rx='4' ry='7'/><ellipse cx='65' cy='86' rx='4' ry='7'/>"],
+ ["","<rect x='40' y='78' width='20' height='9' rx='4'/>"],
+ ["quads","<ellipse cx='42' cy='106' rx='7' ry='17'/><ellipse cx='58' cy='106' rx='7' ry='17'/>"],
+ ["adductors","<ellipse cx='47.5' cy='100' rx='2.4' ry='10'/><ellipse cx='52.5' cy='100' rx='2.4' ry='10'/>"],
+ ["","<circle cx='42' cy='126' r='4'/><circle cx='58' cy='126' r='4'/>"],
+ ["shins","<ellipse cx='42' cy='144' rx='4.6' ry='14'/><ellipse cx='58' cy='144' rx='4.6' ry='14'/>"],
+ ["","<ellipse cx='42' cy='162' rx='5' ry='3'/><ellipse cx='58' cy='162' rx='5' ry='3'/>"]];
+const BODY_B=[
+ ["","<circle cx='150' cy='13' r='9'/>"],
+ ["traps","<path d='M137 31 Q150 18 163 31 L157 44 L143 44 Z'/>"],
+ ["shoulders","<ellipse cx='133' cy='36' rx='7' ry='6'/><ellipse cx='167' cy='36' rx='7' ry='6'/>"],
+ ["upperback","<ellipse cx='150' cy='47' rx='8' ry='7'/>"],
+ ["lats","<ellipse cx='140' cy='57' rx='6.5' ry='12'/><ellipse cx='160' cy='57' rx='6.5' ry='12'/>"],
+ ["triceps","<ellipse cx='128' cy='54' rx='4.6' ry='9'/><ellipse cx='172' cy='54' rx='4.6' ry='9'/>"],
+ ["forearms","<ellipse cx='125' cy='74' rx='4' ry='10'/><ellipse cx='175' cy='74' rx='4' ry='10'/>"],
+ ["lowerback","<rect x='144' y='62' width='12' height='16' rx='4'/>"],
+ ["hipside","<ellipse cx='135' cy='84' rx='4' ry='7'/><ellipse cx='165' cy='84' rx='4' ry='7'/>"],
+ ["glutes","<ellipse cx='143' cy='89' rx='7.5' ry='8'/><ellipse cx='157' cy='89' rx='7.5' ry='8'/>"],
+ ["hamstrings","<ellipse cx='142' cy='111' rx='7' ry='15'/><ellipse cx='158' cy='111' rx='7' ry='15'/>"],
+ ["","<circle cx='142' cy='128' r='4'/><circle cx='158' cy='128' r='4'/>"],
+ ["calves","<ellipse cx='142' cy='144' rx='5.5' ry='13'/><ellipse cx='158' cy='144' rx='5.5' ry='13'/>"],
+ ["","<ellipse cx='142' cy='162' rx='5' ry='3'/><ellipse cx='158' cy='162' rx='5' ry='3'/>"]];
+function bodySVG(k,cls){const [p,s]=musclesOf(k);const col=m=>!m?"var(--mBase)":p.includes(m)?"var(--mPri)":s.includes(m)?"var(--mSec)":"var(--mOff)";
+ const g=a=>a.map(([m,el])=>`<g fill="${col(m)}">${el}</g>`).join("");
+ return `<svg class="${cls||"body"}" viewBox="14 0 172 170" role="img" aria-label="Muscles: ${p.map(x=>MNAME[x]).join(", ")}">${g(BODY_F)}${g(BODY_B)}${cls==="mthumb"?"":`<text x="50" y="169" class="blab">Front</text><text x="150" y="169" class="blab">Back</text>`}</svg>`}
+
 const ORDER=["A","B","C","D"];
 const KNEE='<div class="knee">⚠️ <span>Stop if your knee hurts.</span></div>';
 
@@ -352,8 +465,20 @@ const fmtDate=iso=>new Date(iso).toLocaleDateString("en-US",{weekday:"short",mon
 const daysAgo=iso=>{const a=new Date(iso);a.setHours(0,0,0,0);const b=new Date();b.setHours(0,0,0,0);return Math.round((b-a)/864e5)};
 const mmss=s=>{s=Math.max(0,Math.ceil(s));return s>=60?Math.floor(s/60)+":"+String(s%60).padStart(2,"0"):String(s)};
 const thumb=id=>`https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
-const watch=id=>`https://www.youtube.com/watch?v=${id}`;
-const embed=id=>`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1`;
+const watch=(id,st)=>`https://www.youtube.com/watch?v=${id}${st?"&t="+st+"s":""}`;
+const embed=(id,st,en)=>`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&modestbranding=1${st?"&start="+st:""}${en?"&end="+en:""}`;
+/* videos: [id,start,end,label,isFavorite] — main video first, then a second one if there is one */
+/* demo-only trim: a move's own start/end wins, else the checked clip table (CLIP) */
+const clip=(id,st,en)=>(st||en)?[st||0,en||0]:((typeof CLIP!=="undefined"&&CLIP[id])||[0,0]);
+function vids(k){const e=EX[k],a=[[e.v,...clip(e.v,e.st,e.en),e.my?"⭐ Your video":"Demo",!!e.my]];if(e.alt)a.push([e.alt[0],...clip(e.alt[0],e.alt[1],e.alt[2]),e.alt[3],e.alt[3].includes("⭐")]);return a}
+/* favorite-style moves get a bit more weight (2×); every move stays in the pool */
+const FAVW=2;
+/* her own choices: More (2×), Less (0.4×), Never (never picked) */
+function prefOf(k){return (LS.get("pref",{}))[k]||""}
+function setPref(k,v){const p=LS.get("pref",{});if(p[k]===v)delete p[k];else p[k]=v;LS.set("pref",p)}
+const wOf=k=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(p==="more"?2:p==="less"?0.4:1)};
+function wpick(a){let t=a.reduce((s,k)=>s+wOf(k),0),r=Math.random()*t;for(const k of a){r-=wOf(k);if(r<=0)return k}return a[a.length-1]}
+function wshuffle(a){return a.map(k=>[k,Math.pow(Math.random(),1/wOf(k))]).sort((x,y)=>y[1]-x[1]).map(x=>x[0])}
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function presc(k,n){const e=EX[k];if(e.t){return `${n} × ${e.s?Math.round(e.t/2)+" s each side":e.t+" s"}`}return `${n} × ${e.r||"8-12"}${e.s?" each side":""}`}
@@ -364,13 +489,14 @@ function repRange(k){return (EX[k].r||"8-12").split("-").map(Number)}
    - it avoids anything done in the last 2 sessions of the same day, and in the last 2 workouts of any day
    - it avoids two moves of the same family (e.g. two flys) in one workout
    - it keeps the main part near 20 minutes */
-function pool(slot){return Object.keys(EX).filter(k=>EX[k].g===slot.g&&(!slot.f||slot.f.includes(EX[k].f)))}
+function pool(slot){const a=Object.keys(EX).filter(k=>EX[k].g===slot.g&&(!slot.f||slot.f.includes(EX[k].f)));const ok=a.filter(k=>prefOf(k)!=="never");return ok.length?ok:a}
 function recentSet(day){const s=new Set();const r=LS.get("recent",{});(r[day]||[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));LS.get("recentAll",[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));return s}
 function choose(cands,used,fams,avoid){
  const tiers=[k=>!used.has(k)&&!avoid.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)&&!avoid.has(k),k=>!used.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)];
- for(const t of tiers){const c=cands.filter(t);if(c.length)return rnd(c)}return rnd(cands)}
+ for(const t of tiers){const c=cands.filter(t);if(c.length)return wpick(c)}return wpick(cands)}
 function setSecs(k){const e=EX[k];if(e.t)return e.t;const [lo,hi]=repRange(k);return ((lo+hi)/2)*3*(e.s?2:1)+5}
-function mainSecs(day,b){return DAYS[day].slots.reduce((a,sl,j)=>a+sl.n*(setSecs(b[j])+sl.rest),0)}
+function restLen(){return LS.get("restLen",60)}
+function mainSecs(day,b,r){return DAYS[day].slots.reduce((a,sl,j)=>a+sl.n*(setSecs(b[j])+(r||sl.rest)),0)}
 function genBlocks(day,extraAvoid){
  const avoid=recentSet(day);(extraAvoid||[]).forEach(k=>avoid.add(k));
  let best=null,bestD=1e9;
@@ -380,11 +506,11 @@ function genBlocks(day,extraAvoid){
   const m=mainSecs(day,b)/60,d=m<17?17-m:m>21?m-21:0;
   if(d<bestD){best=b;bestD=d}if(d===0)break}
  return best}
-function stretchPool(g,z){return Object.keys(EX).filter(k=>EX[k].g===g&&(EX[k].z===z||EX[k].z==="any")).concat(g==="warm"?WARM_EXTRA[z]:[])}
+function stretchPool(g,z){return Object.keys(EX).filter(k=>EX[k].g===g&&(EX[k].z===z||EX[k].z==="any")).concat(g==="warm"?WARM_EXTRA[z]:[]).filter(k=>prefOf(k)!=="never")}
 function genStretches(g,z,avoid){
  const first=g==="warm"?"march":null,last=g==="cool"?"breathing":null;
  let p=stretchPool(g,z).filter(k=>k!==first&&k!==last);
- let fresh=shuffle(p.filter(k=>!avoid.has(k))),old=shuffle(p.filter(k=>avoid.has(k)));
+ let fresh=wshuffle(p.filter(k=>!avoid.has(k))),old=wshuffle(p.filter(k=>avoid.has(k)));
  let pick=fresh.concat(old).slice(0,6);
  pick.sort((a,b)=>(EX[a].pos||0)-(EX[b].pos||0));
  if(first)pick.unshift(first);if(last)pick.push(last);
@@ -399,7 +525,14 @@ function refreshPlan(day){const old=getPlan(day);const keep=old.b.concat(old.w.m
 function swapSlot(day,j){const p=getPlan(day),sl=DAYS[day].slots[j];const used=new Set(p.b),fams=new Set(p.b.filter((_,i)=>i!==j).map(k=>EX[k].g+EX[k].f));
  const c=pool(sl).filter(k=>k!==p.b[j]);p.b[j]=choose(c,used,fams,recentSet(day));savePlan(day,p)}
 function pick(day,j){return getPlan(day).b[j]}
-function estMin(day){const p=getPlan(day);const st=a=>a.reduce((s,x)=>s+x[1]+3,0);return Math.round((st(p.w)+st(p.c)+mainSecs(day,p.b))/60)}
+/* Replace: 3-5 moves for the same muscles, best match first */
+function altsFor(day,j){const p=getPlan(day),cur=p.b[j],sl=DAYS[day].slots[j],used=new Set(p.b),cm=musclesOf(cur)[0];
+ const score=k=>(EX[k].f===EX[cur].f?3:0)+musclesOf(k)[0].filter(m=>cm.includes(m)).length*2+(EX[k].fav?.6:0)+(prefOf(k)==="more"?1.5:prefOf(k)==="less"?-1.5:0)+Math.random()*1.2;
+ let c=pool(sl).filter(k=>!used.has(k));
+ if(c.length<3)c=c.concat(Object.keys(EX).filter(k=>EX[k].g===sl.g&&!used.has(k)&&!c.includes(k)&&prefOf(k)!=="never"));
+ return c.map(k=>[k,score(k)]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0])}
+function replaceSlot(day,j,k){const p=getPlan(day);p.b[j]=k;savePlan(day,p)}
+function estMin(day){const p=getPlan(day);const st=a=>a.reduce((s,x)=>s+x[1]+3,0);return Math.round((st(p.w)+st(p.c)+mainSecs(day,p.b,restLen()))/60)}
 function isNew(k){return !LS.get("hist",{})[k]&&!(LS.get("everDone",[])).includes(k)}
 
 /* ===== sound, vibration, wake lock ===== */
@@ -437,16 +570,19 @@ function home(){
  const done=LS.get("done",{}),wc=Math.min(4,weekCount()),nu=nextUp(),saved=LS.get("run",null);
  const hr=new Date().getHours(),greet=hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
  let h=`<div class="wrap"><div class="hello"><div class="muted small" style="font-weight:600;letter-spacing:.04em;text-transform:uppercase">${new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div><h1>Hi Valerie 👋</h1><div class="muted" style="font-size:17px">${greet}! Ready to move?</div></div>
- <div class="card week"><div class="sp"><div style="font-weight:700;font-size:17px">This week: ${wc} of 4</div><div class="muted small" style="margin-top:4px">30 min each · new moves every time</div></div><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<wc?"on":""}"></i>`).join("")}</div></div>`;
+ <div class="card week"><div class="sp"><div style="font-weight:700;font-size:17px">This week: ${wc} of 4</div><div class="muted small" style="margin-top:4px">about 35 min · new moves every time</div></div><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<wc?"on":""}"></i>`).join("")}</div></div>`;
  if(saved&&Date.now()-saved.ts<6*3600e3){h+=`<div style="margin-top:12px"><button class="btn sec" onclick="resume()">▶ Continue Day ${saved.day}</button></div>`}
  h+=`<div class="sec-t">Pick your workout</div><div class="stack">`;
  for(const d of ORDER){const D=DAYS[d],ld=done[d];
   h+=`<button class="day" onclick="overview('${d}')"><div class="badge" style="background:${D.col}">${d}</div><div class="sp"><div class="t">${D.t}</div><div class="s">${D.s}</div><div class="l ${ld?"done":""}">${ld?"✓ Last: "+fmtDate(ld)+(daysAgo(ld)===0?" (today)":daysAgo(ld)===1?" (yesterday)":" ("+daysAgo(ld)+" days ago)"):"Not done yet"}</div></div>${d===nu?'<span class="pill acc next">Next up</span>':""}<span class="chev">›</span></button>`}
- h+=`</div><div class="sec-t">Tips</div><div class="card">${KNEE}
+ h+=`</div><div class="sec-t">Bonus</div><button class="day" onclick="preview('happy_walk')"><div class="badge" style="background:var(--acc)">🚶‍♀️</div><div class="sp"><div class="t">Happy Walk · 1 mile</div><div class="s">Walk at home, about 15 min. Good on rest days.</div><div class="l">⭐ From your favorites</div></div><span class="chev">›</span></button>`;
+ h+=`<div class="sec-t">Tips</div><div class="card">${KNEE}
  <div class="tip" style="margin-top:8px">🍳 <span><b>Eat protein with each meal.</b> It helps keep your muscle.</span></div>
  <div class="tip">💪 <span><b>Go a little heavier</b> when 12 reps feels easy.</span></div>
+ <div class="tip">✅ <span>Tap ✓ after each round, then tell the app <b>Easy, Medium or Hard</b>.</span></div>
  <div class="tip">🪑 <span>Balance moves: <b>always hold a chair or wall.</b></span></div>
  <div class="tip">✨ <span>Every workout has <b>new moves</b>. Same plan, fresh mix.</span></div></div>
+ ${(()=>{const p=LS.get("pref",{}),n=Object.keys(p).filter(k=>p[k]==="never").length;return n?`<div style="margin-top:12px"><button class="toggle" onclick="hiddenSheet()"><span>🚫 Hidden moves (${n})</span><span class="chev">›</span></button></div>`:""})()}
  <div style="margin-top:12px"><button class="toggle" onclick="LS.set('sound',!LS.get('sound',true));home()"><span>🔔 Sound</span><span class="sw ${LS.get("sound",true)?"on":""}"></span></button></div>
  <p class="muted small center" style="margin-top:22px">Your data stays on this phone.</p></div>`;
  $("#app").innerHTML=h;window.scrollTo(0,0);
@@ -462,21 +598,28 @@ function overview(day){
  <div style="margin-top:12px">${KNEE}</div>
  <div class="sec-t">Warm-up · 5 min</div><div class="chips">${p.w.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>`;
  let last="";
- D.slots.forEach((sl,j)=>{const k=p.b[j],e=EX[k],sec=sl.g==="bal"?"Balance · hold support":"Workout · about 20 min";
+ D.slots.forEach((sl,j)=>{const k=p.b[j],e=EX[k],sec=sl.g==="bal"?"Balance · hold support":"Workout";
   if(sec!==last)h+=`${last?"</div>":""}<div class="sec-t">${sec}</div><div class="stack">`;last=sec;
   const w=wt[k];
-  h+=`<div class="item"><button class="thumb" style="background-image:url(${thumb(e.v)})" onclick="preview('${k}')" aria-label="Watch"></button><button class="sp" style="text-align:left" onclick="preview('${k}')"><div class="n">${e.n}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m">${presc(k,sl.n)}${w&&e.w==="lb"?" · "+w+" lb":""} · ${GROUP_NAME[e.g]}</div></button><button class="swap" onclick="swapSlot('${day}',${j});overview('${day}')" aria-label="Swap">⇄</button></div>`});
+  const pf=prefOf(k);
+  h+=`<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${e.n}${e.fav?" <span title='favorite style'>⭐</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m">${presc(k,sl.n)}${w&&e.w==="lb"?" · "+w+" lb":""}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`});
  h+=`</div><div class="sec-t">Cool-down · 5 min</div><div class="chips">${p.c.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>
- <p class="muted small" style="margin-top:18px">Tap a move to see the video. Don't like one? Tap ⇄.</p></div>
+ <p class="muted small" style="margin-top:18px">Tap a move to see the video. Don't like one? Tap ⇄ to replace it.</p></div>
  <div class="bottom"><div class="in"><button class="btn pri" onclick="start('${day}')">▶ Start workout</button></div></div>`;
  $("#app").innerHTML=h;
 }
-function preview(k){const e=EX[k];
- $("#sheetPane").innerHTML=`<div class="grab"></div><div class="video"><iframe src="${embed(e.v)}" title="${e.n}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
- <a class="yt" href="${watch(e.v)}" target="_blank" rel="noopener">▶ Watch on YouTube ↗</a>
- <div class="exname">${e.n}</div><div class="muted">${e.e||""}</div><p class="cue">${e.c}</p><div style="margin-top:14px">${KNEE}</div>
+function preview(k,day,j){const e=EX[k];const ctx=day?`ov:${day}:${j}`:"pv";
+ $("#sheetPane").innerHTML=`<div class="grab"></div><div class="video" id="pvid"></div><div class="vbar" id="pbar2"></div>
+ <div class="exname">${e.n}</div><div class="muted">${e.e||""}</div>${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${e.c}</p>${e.g!=="bonus"?prefBar(k,ctx):""}${day?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
  <div style="margin-top:14px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;
- $("#sheet").classList.add("on")}
+ PV={k,i:0};drawVid("pvid","pbar2",k,0);$("#sheet").classList.add("on")}
+let PV=null;
+/* draw video i of exercise k into box, with a small bar: favorite tag, switch button, YouTube link */
+function drawVid(box,bar,k,i){const L=vids(k),[id,st,en,lab,mine]=L[i]||L[0],v=$("#"+box);if(!v)return;
+ v.dataset.id=id+"_"+st;v.style.backgroundImage=`url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
+ v.innerHTML=`<iframe src="${embed(id,st,en)}" title="${EX[k].n}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+ const o=L.length>1?L[1-i]:null;
+ $("#"+bar).innerHTML=`${mine?'<span class="pill fav">⭐ From your favorites</span>':""}${o?`<button class="pill alt" onclick="${box==="pvid"?"PV.i=1-PV.i;drawVid('pvid','pbar2',PV.k,PV.i)":"S.vi=1-(S.vi||0);drawVid('vid','vbar',curKey(),S.vi)"}">${o[4]?o[3]:"▶ "+(o[3]||"Other video")}</button>`:""}<a class="yt" href="${watch(id,st)}" target="_blank" rel="noopener">YouTube ↗</a>`}
 function closeSheet(){$("#sheet").classList.remove("on");$("#sheetPane").innerHTML=""}
 
 /* ===== RUN ===== */
@@ -484,24 +627,23 @@ function buildSteps(day){const p=getPlan(day);return [
  ...p.w.map(([k,sec])=>({t:"s",k,sec,ph:"Warm-up"})),
  ...DAYS[day].slots.map((b,j)=>({t:"e",j,ph:"Workout"})),
  ...p.c.map(([k,sec])=>({t:"s",k,sec,ph:"Cool-down"}))]}
-function start(day){unlock();S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0};save();keepAwake();shell();show()}
+function start(day){unlock();S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0,exs:{}};save();keepAwake();shell();show()}
 function resume(){const r=LS.get("run",null);if(!r)return home();unlock();S=r;S.auto=false;S._pos=null;keepAwake();shell();show()}
 function save(){if(S){S.ts=Date.now();LS.set("run",S)}}
 function quit(){if(confirm("Stop this workout?")){LS.set("run",null);home()}}
-function units(st){return st.t==="s"?1:DAYS[S.day].slots[st.j].n}
-function progress(){let tot=0,done=0;S.steps.forEach((st,i)=>{const u=units(st);tot+=u;if(i<S.i)done+=u;else if(i===S.i&&st.t==="e")done+=S.set});return done/tot}
+function units(st,i){return st.t==="s"?1:(S.exs&&S.exs[i]?S.exs[i].rows.length:DAYS[S.day].slots[st.j].n)}
+function progress(){let tot=0,done=0;S.steps.forEach((st,i)=>{const u=units(st,i);tot+=u;if(i<S.i)done+=u;else if(i===S.i&&st.t==="e"&&S.exs&&S.exs[i])done+=S.exs[i].rows.filter(r=>r.done).length});return done/tot}
 function shell(){
  $("#app").innerHTML=`<div class="wrap" style="padding-bottom:calc(var(--safeB) + 120px)"><div class="top"><button class="icon-btn" onclick="quit()" aria-label="Close">✕</button><div class="prog"><i id="pbar"></i></div><span class="muted small" id="pnum" style="min-width:36px;text-align:right"></span></div>
- <div class="phase" id="phase"></div><div style="height:10px"></div><div class="video" id="vid"></div><a class="yt" id="ytl" target="_blank" rel="noopener">▶ Watch on YouTube ↗</a><div id="body"></div></div><div class="bottom" id="dock"><div class="in" id="dockin"></div></div>`}
-function setVideo(id,name){const v=$("#vid");if(v.dataset.id===id)return;v.dataset.id=id;v.style.backgroundImage=`url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
- v.innerHTML=`<iframe src="${embed(id)}" title="${name}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;$("#ytl").href=watch(id)}
+ <div class="phase" id="phase"></div><div style="height:10px"></div><div class="video" id="vid"></div><div class="vbar" id="vbar"></div><div id="body"></div></div><div class="bottom" id="dock"><div class="in" id="dockin"></div></div>`}
+function setVideo(k){const v=$("#vid");if(v.dataset.k===k)return;v.dataset.k=k;S.vi=0;drawVid("vid","vbar",k,0)}
 function phaseInfo(){const st=S.steps[S.i];const same=S.steps.filter(x=>x.ph===st.ph);return `${st.ph} · ${same.indexOf(st)+1} of ${same.length}`}
 function curKey(){const st=S.steps[S.i];return st.t==="s"?st.k:pick(S.day,st.j)}
 function show(){
  if(S.i>=S.steps.length)return finish();
  const st=S.steps[S.i];const pos=S.i+"."+S.set;if(S._pos!==pos){S._pos=pos;window.scrollTo(0,0)}
  const p=progress();$("#pbar").style.width=(p*100).toFixed(1)+"%";$("#pnum").textContent=Math.round(p*100)+"%";
- $("#phase").textContent=phaseInfo();const k=curKey();setVideo(EX[k].v,EX[k].n);
+ $("#phase").textContent=phaseInfo();const k=curKey();setVideo(k);
  if(st.t==="s")showStretch(st);else if(EX[k].t)showTimedEx(st,k);else showRepEx(st,k);
  save();
 }
@@ -531,72 +673,156 @@ function prevStep(){stopTimer();if(S.i>0){S.i--;S.set=0;S.reps=[]}show()}
 function nextStep(){stopTimer();S.i++;S.set=0;S.reps=[];const n=S.steps[S.i];if(!n||n.t!=="s")S.auto=false;show()}
 function skipPhase(){stopTimer();const ph=S.steps[S.i].ph;while(S.i<S.steps.length&&S.steps[S.i].ph===ph)S.i++;S.set=0;S.auto=false;show()}
 
-/* rep-based exercise */
-function lastLog(k){return LS.get("hist",{})[k]}
-function weightBox(k,e){const wt=LS.get("wt",{})[k];return `<div><div class="lbl">Weight${e.s||/Dumbbells|kettlebells/i.test(e.e)?" (each hand)":""}</div><div class="stepper"><button onclick="bumpW('${k}',-1)">−</button><div class="val"><input id="wt" inputmode="decimal" placeholder="0" value="${wt??""}" onchange="setW('${k}',this.value)"><div class="u">lb</div></div><button onclick="bumpW('${k}',1)">+</button></div></div>`}
-function showRepEx(st,k){const e=EX[k],b=DAYS[S.day].slots[st.j],[lo,hi]=repRange(k),last=lastLog(k);
- const band=LS.get("band",{})[k]||"Medium";
- if(S.reps.length!==S.set)S.reps=S.reps.slice(0,S.set);
- const def=(last&&last.reps&&last.reps[S.set])||Math.round((lo+hi)/2);
- const ready=last&&last.reps&&last.reps.length>=b.n&&last.reps.every(r=>r>=hi);
- let h=`<div class="row" style="align-items:flex-start"><div class="exname sp">${e.n}</div><button class="swap" style="margin-top:6px" onclick="swapRun()" aria-label="Swap">⇄</button></div>
- <div class="chips"><span class="pill acc">${presc(k,b.n)}</span><span class="pill">${e.e}</span>${isNew(k)?'<span class="pill ok">✨ New</span>':""}</div><p class="cue">${e.c}</p>`;
- if(last)h+=`<div class="last" style="margin-top:12px">Last time (${fmtDate(last.d)}): ${last.w?last.w+" lb · ":last.band?last.band+" band · ":""}${last.reps.join(", ")} reps</div>`;
- if(ready)h+=`<div class="heavy" style="margin-top:10px">💪 ${hi} reps felt easy last time. ${e.w==="lb"?"Try a little heavier today!":e.w==="band"?"Try a stronger band today!":"Try slower reps today!"}</div>`;
- h+=`<div class="card stack" style="margin-top:14px">`;
- if(e.w==="lb")h+=weightBox(k,e);
- if(e.w==="band")h+=`<div><div class="lbl">Band</div><div class="seg">${["Light","Medium","Heavy"].map(x=>`<button class="${x===band?"on":""}" onclick="setBand('${k}','${x}')">${x}</button>`).join("")}</div></div>`;
- h+=`<div><div class="lbl">Sets</div><div class="sets">${Array.from({length:b.n},(_,i)=>`<i class="${i<S.set?"done":i===S.set?"cur":""}">${i<S.set?"✓ "+(S.reps[i]??""):"Set "+(i+1)}</i>`).join("")}</div></div>
- <div><div class="lbl">Reps done${e.s?" (each side)":""}</div><div class="stepper"><button onclick="bumpR(-1)">−</button><div class="val"><input id="reps" inputmode="numeric" value="${def}"><div class="u">goal ${lo}-${hi}</div></div><button onclick="bumpR(1)">+</button></div></div></div>
- <div class="row" style="margin-top:4px"><button class="btn ghost" onclick="prevStep()">‹ Back</button><button class="btn ghost" onclick="nextStep()">Skip ›</button></div>
- <div class="tip" style="justify-content:center">💪 <span>Go a little heavier when ${hi} reps feels easy.</span></div>
- <div style="margin-top:6px">${KNEE}</div>`;
- $("#body").innerHTML=h;dock(`<button class="btn ok" onclick="doneSet()">✓ Done set ${S.set+1} of ${b.n}</button>`);
-}
-function bumpW(k,d){const i=$("#wt");let v=parseFloat(i.value)||0;v=Math.max(0,v+d*(v>=20?2.5:1));v=Math.round(v*2)/2;i.value=v;setW(k,v)}
 function setW(k,v){const w=LS.get("wt",{});w[k]=(v===""||v==null)?null:parseFloat(v);LS.set("wt",w)}
-function setBand(k,x){const b=LS.get("band",{});b[k]=x;LS.set("band",b);document.querySelectorAll(".seg button").forEach(el=>el.classList.toggle("on",el.textContent===x))}
-function bumpR(d){const i=$("#reps");i.value=Math.max(0,(parseInt(i.value)||0)+d)}
-function swapRun(){const st=S.steps[S.i];swapSlot(S.day,st.j);S.set=0;S.reps=[];stopTimer();S._pos=null;show()}
-function recordSet(k,rep){const st=S.steps[S.i],b=DAYS[S.day].slots[st.j],e=EX[k];S.reps[S.set]=rep;S.set++;S.sets++;
- if(S.set>=b.n){const h=LS.get("hist",{});h[k]={d:new Date().toISOString(),reps:S.reps.slice(),w:e.w==="lb"?LS.get("wt",{})[k]:null,band:e.w==="band"?(LS.get("band",{})[k]||"Medium"):null};LS.set("hist",h);
+function setBand(k,x){const b=LS.get("band",{});b[k]=x;LS.set("band",b)}
+/* ===== progression: ratings + reps decide next time's target (saved in localStorage "prog") ===== */
+const BANDS=["Light","Medium","Heavy"];
+const wStep=w=>w<20?2.5:5;
+const RATES=["Easy","Medium","Hard"];
+function lastLog(k){return LS.get("hist",{})[k]}
+function nextTarget(k,rows){const e=EX[k],[lo,hi]=repRange(k),d=rows.filter(r=>r.done);if(!d.length)return null;
+ const rates=d.map(r=>r.rate||"Medium"),hard=rates.includes("Hard"),easy=rates.filter(x=>x==="Easy").length>=Math.ceil(d.length/2);
+ const L=d[d.length-1],lw=(L.w===""||L.w==null)?null:+L.w,lb=L.band||"Medium";
+ if(e.t){const sec=Math.max(...d.map(r=>+r.sec||e.t));
+  if(hard)return {sec:Math.max(15,sec-5),w:lw,why:"down"};
+  if(easy){if(e.w==="lb"&&lw&&sec>=e.t+10)return {sec:e.t,w:lw+wStep(lw),why:"up"};return {sec:Math.min(e.t+20,sec+5),w:lw,why:"up"}}
+  return {sec,w:lw,why:"same"}}
+ const reps=d.map(r=>+r.r||0),minR=Math.min(...reps),allTop=reps.every(r=>r>=hi);
+ if(hard&&minR<lo){if(e.w==="lb"&&lw)return {w:Math.max(0,lw-wStep(lw)),reps:lo+1,why:"down"};
+  if(e.w==="band"){const i=BANDS.indexOf(lb);return {band:BANDS[Math.max(0,i-1)],reps:lo+1,why:"down"}}return {reps:lo,why:"down"}}
+ if(hard)return {w:lw,band:lb,reps:Math.max(lo,Math.min(hi,minR)),why:"same"};
+ if(easy&&allTop){if(e.w==="lb"&&lw)return {w:lw+wStep(lw),reps:lo,why:"up"};
+  if(e.w==="band"){const i=BANDS.indexOf(lb);if(i<2)return {band:BANDS[i+1],reps:lo,why:"up"};return {band:lb,reps:hi,why:"slow"}}
+  return {w:lw,reps:hi,why:"slow"}}
+ return {w:lw,band:lb,reps:Math.min(hi,minR+(easy?2:1)),why:"more"}}
+function advice(k){const e=EX[k],[lo,hi]=repRange(k),L=lastLog(k);
+ const rs=L?(L.rounds||(L.reps||[]).map(r=>({r,w:L.w,band:L.band,done:true}))):[];
+ let P=(LS.get("prog",{}))[k];if(!P&&rs.length)P=nextTarget(k,rs.map(r=>({...r,done:true})));
+ const t={w:P&&P.w!=null?P.w:(LS.get("wt",{})[k]??""),band:(P&&P.band)||LS.get("band",{})[k]||"Medium",reps:(P&&P.reps)||Math.round((lo+hi)/2),sec:(P&&P.sec)||e.t,why:(P&&P.why)||""};
+ if(!L)return {...t,text:`<b>First time.</b> ${e.w==="lb"?`Pick a weight you can lift ${hi} times with good form.`:e.w==="band"?"Start with a Medium band.":e.t?"Go easy. Hold support if needed.":"Slow and steady."}`};
+ const f=rs[0]||{},load=e.w==="lb"&&f.w?f.w+" lb × ":e.w==="band"?(f.band||"Medium")+" band × ":"";
+ const did=e.t?rs.map(r=>(r.sec||e.t)+" s").join(", "):rs.map(r=>r.r).join(", ")+" reps";
+ const cnt={};rs.forEach(r=>r.rate&&(cnt[r.rate]=(cnt[r.rate]||0)+1));const feel=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+ const load2=e.w==="lb"&&t.w!==""&&t.w!=null?t.w+" lb":e.w==="band"?t.band+" band":"";
+ const goal=e.t?t.sec+" s":t.reps+" reps";
+ const today={up:e.t?`a little longer: <b>${goal}</b>${load2&&t.w!==f.w?" with "+load2:""}.`:e.w==="lb"?`a little heavier: <b>${load2} × ${goal}</b>.`:e.w==="band"?`a stronger band: <b>${load2} × ${goal}</b>.`:`<b>${goal}</b>.`,
+  down:`a little easier: <b>${load2?load2+" × ":""}${goal}</b>.`,same:`same again: <b>${load2?load2+" × ":""}${goal}</b>.`,
+  more:`same ${e.w==="lb"?"weight":e.w==="band"?"band":"move"}, try <b>${load2?load2+" × ":""}${goal}</b>.`,
+  slow:`same, but <b>slower</b> (3 s down). ${goal}.`}[t.why]||`<b>${load2?load2+" × ":""}${goal}</b>.`;
+ return {...t,text:`Last time (${fmtDate(L.d)}): ${load}${did}${feel?" · felt "+feel:""}.<br><b>So today:</b> ${today}`}}
+/* save this exercise as it goes (survives an interruption) */
+function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);const h=LS.get("hist",{});
+ if(d.length){const old=h[k]&&h[k].sid===S.t0?null:h[k];
+  if(old&&!X.prev)X.prev=old;
+  h[k]={sid:S.t0,d:new Date().toISOString(),rounds:d.map(r=>({r:+r.r||0,w:r.w===""?null:r.w,band:r.band,sec:+r.sec||null,rate:r.rate||""})),reps:d.map(r=>e.t?(+r.sec||e.t):(+r.r||0)),w:e.w==="lb"?d[0].w:null,band:e.w==="band"?d[0].band:null};
+  const P=LS.get("prog",{});P[k]=nextTarget(k,X.rows);LS.set("prog",P);
   const ev=LS.get("everDone",[]);if(!ev.includes(k)){ev.push(k);LS.set("everDone",ev)}}
- save();
- const fin=S.set>=b.n;const nk=fin?nextLabel():`Set ${S.set+1} of ${b.n} · ${e.n}`;
- rest(b.rest,nk,()=>{if(fin){S.i++;S.set=0;S.reps=[];const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()});
-}
-function doneSet(){unlock();const k=curKey();const rep=parseInt($("#reps").value)||0;if($("#wt"))setW(k,$("#wt").value);recordSet(k,rep)}
+ else if(h[k]&&h[k].sid===S.t0){if(X.prev)h[k]=X.prev;else delete h[k]}
+ LS.set("hist",h);
+ const last=d[d.length-1]||X.rows[0];if(e.w==="lb"&&last.w!==""&&last.w!=null)setW(k,last.w);if(e.w==="band")setBand(k,last.band)}
+
+/* ===== exercise state: rows of rounds × reps × weight ===== */
+function initEx(){const st=S.steps[S.i],k=curKey();S.exs=S.exs||{};let X=S.exs[S.i];
+ if(X&&X.k===k)return X;
+ const n=DAYS[S.day].slots[st.j].n,a=advice(k);
+ X=S.exs[S.i]={k,adv:a.text,rows:Array.from({length:n},()=>({r:a.reps,w:a.w,band:a.band,sec:a.sec,done:false,rate:""}))};save();return X}
+function curEx(){return S&&S.exs&&S.exs[S.i]}
+function prefBar(k,ctx){const p=prefOf(k);return `<div class="prefs" data-k="${k}"><button class="${p==="more"?"on":""}" onclick="prefClick('${k}','more','${ctx}')">👍 More</button><button class="${p==="less"?"on":""}" onclick="prefClick('${k}','less','${ctx}')">👎 Less</button><button class="${p==="never"?"on no":""}" onclick="prefClick('${k}','never','${ctx}')">🚫 Never</button></div>`}
+function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
+ document.querySelectorAll(`.prefs[data-k="${k}"]`).forEach(el=>el.outerHTML=prefBar(k,ctx));
+ if(now==="never"){toast("Hidden. It won't come back.");const m=ctx.match(/^ov:(\w):(\d+)$/);
+  if(ctx==="run"&&S&&S.steps[S.i].t==="e")openReplace(S.day,S.steps[S.i].j,1);else if(m)openReplace(m[1],+m[2],0)}
+ else toast(now==="more"?"You'll see it more often.":now==="less"?"You'll see it less often.":"Back to normal.")}
+function toast(t){let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800)}
+function exTop(k,n){const e=EX[k];return `<div class="row" style="align-items:flex-start"><div class="exname sp">${e.n}</div><button class="swap" style="margin-top:6px" onclick="openReplace(S.day,S.steps[S.i].j,1)" aria-label="Replace">⇄<span>Replace</span></button></div>
+ <div class="chips"><span class="pill acc">${presc(k,n)}</span><span class="pill">${e.e}</span>${isNew(k)?'<span class="pill ok">✨ New</span>':""}</div>
+ <div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>
+ <p class="cue">${e.c}</p>${e.b?'<div class="heavy" style="margin-top:10px;background:rgba(139,124,246,.14);color:#B3A8FF">🪑 Keep one hand on support. Safety first.</div>':""}`}
+function rowsHTML(k,X){const e=EX[k];
+ const wl=e.w==="lb"?"lb":e.w==="band"?"Band":"";
+ let h=`<div class="rhead"><span>Round</span><span>${e.t?"Seconds":"Reps"+(e.s?" / side":"")}</span><span>${wl}</span><span>Done</span></div>`;
+ X.rows.forEach((r,i)=>{h+=`<div class="rrow ${r.done?"done":""}"><span class="rn">${i+1}</span>
+  <input class="ri" inputmode="numeric" aria-label="${e.t?"Seconds":"Reps"} round ${i+1}" value="${e.t?r.sec:r.r}" onchange="setRow(${i},'${e.t?"sec":"r"}',this.value)">
+  ${e.w==="lb"?`<input class="ri" inputmode="decimal" aria-label="Pounds round ${i+1}" placeholder="lb" value="${r.w??""}" onchange="setRow(${i},'w',this.value)">`:e.w==="band"?`<button class="ri bandb" onclick="cycleBand(${i})">${r.band}</button>`:`<span class="ri none">—</span>`}
+  <button class="chk ${r.done?"on":""}" onclick="toggleRow(${i})" aria-label="Round ${i+1} done">✓</button></div>
+  ${r.done?`<div class="rate" data-i="${i}"><span class="muted small">Felt:</span>${RATES.map(x=>`<button class="${r.rate===x?"on "+x:""}" onclick="rateRow(${i},'${x}')">${x}</button>`).join("")}</div>`:""}`});
+ return h}
+function guideHTML(X){return `<div class="last" style="margin-top:12px">${X.adv}</div>`}
+function drawRows(){const X=curEx();const el=$("#rows");if(X&&el)el.innerHTML=rowsHTML(X.k,X);drawDock()}
+function drawDock(){const X=curEx();if(!X)return;const e=EX[X.k],idx=X.rows.findIndex(r=>!r.done);
+ if(idx<0)dock(`<button class="btn pri" onclick="nextStep()">Next ›</button>`);
+ else if(e.t)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn pri" id="pp" onclick="ppTimed()">${T&&!T.rest?(T.paused?"▶ Resume":"Pause"):"▶ Start round "+(idx+1)}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip">›</button></div>`);
+ else dock(`<button class="btn ok" onclick="checkNext()">✓ Round ${idx+1} of ${X.rows.length} done</button>`)}
+function setRow(i,f,v){const X=curEx();if(!X)return;const val=v===""?"":Math.max(0,parseFloat(v)||0);X.rows[i][f]=val;
+ if(f==="w"||f==="sec"){for(let j=i+1;j<X.rows.length;j++)if(!X.rows[j].done)X.rows[j][f]=val;if(f==="w")setW(X.k,val)}
+ if(X.rows[i].done)logEx(X);save();drawRows()}
+function cycleBand(i){const X=curEx();const r=X.rows[i];r.band=BANDS[(BANDS.indexOf(r.band)+1)%3];for(let j=i+1;j<X.rows.length;j++)if(!X.rows[j].done)X.rows[j].band=r.band;setBand(X.k,r.band);if(r.done)logEx(X);save();drawRows()}
+function addRound(d){const X=curEx();if(d>0){const l=X.rows[X.rows.length-1];X.rows.push({...l,done:false,rate:""})}else{if(X.rows.length>1&&!X.rows[X.rows.length-1].done)X.rows.pop()}save();drawRows()}
+function rateRow(i,x){const X=curEx();X.rows[i].rate=X.rows[i].rate===x?"":x;logEx(X);save();drawRows();
+ document.querySelectorAll("#rest .rate button").forEach(b=>b.className=X.rows[i].rate===b.textContent?"on "+b.textContent:"")}
+function checkNext(){const X=curEx();const i=X.rows.findIndex(r=>!r.done);if(i>=0)toggleRow(i)}
+function toggleRow(i){unlock();const X=curEx();const r=X.rows[i];
+ document.querySelectorAll("#rows input").forEach(el=>el.blur());
+ r.done=!r.done;S.sets+=r.done?1:-1;if(!r.done)r.rate="";logEx(X);save();drawRows();
+ if(r.done){buzz(40);stopTimer();const all=X.rows.every(x=>x.done),nx=X.rows.findIndex(x=>!x.done);
+  rest(all?nextLabel():`Round ${nx+1} of ${X.rows.length} · ${EX[X.k].n}`,i,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()})}}
+
+/* rep-based exercise */
+function showRepEx(st,k){const X=initEx(),[lo,hi]=repRange(k);
+ $("#body").innerHTML=`${exTop(k,X.rows.length)}${guideHTML(X)}
+ <div class="card rounds" id="rows" style="margin-top:12px"></div>
+ <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="addRound(-1)">− Round</button><button class="btn ghost" onclick="addRound(1)">+ Round</button></div>
+ <div class="tip" style="justify-content:center">💪 <span>Go a little heavier when ${hi} reps feels easy.</span></div>
+ ${prefBar(k,"run")}
+ <div class="row" style="margin-top:4px"><button class="btn ghost" onclick="prevStep()">‹ Back</button><button class="btn ghost" onclick="nextStep()">Skip ›</button></div>
+ <div style="margin-top:6px">${KNEE}</div>`;drawRows()}
 
 /* timed exercise (planks, carries, balance holds) */
-function showTimedEx(st,k){const e=EX[k],b=DAYS[S.day].slots[st.j];
- $("#body").innerHTML=`<div class="row" style="align-items:flex-start"><div class="exname sp">${e.n}</div><button class="swap" style="margin-top:6px" onclick="swapRun()" aria-label="Swap">⇄</button></div>
- <div class="chips"><span class="pill acc">${presc(k,b.n)}</span><span class="pill">${e.e}</span>${isNew(k)?'<span class="pill ok">✨ New</span>':""}</div><p class="cue">${e.c}</p>
- ${e.b?'<div class="heavy" style="margin-top:12px;background:rgba(139,124,246,.14);color:#B3A8FF">🪑 Keep one hand on support. Safety first.</div>':""}
- ${e.w==="lb"?`<div class="card" style="margin-top:12px">${weightBox(k,e)}</div>`:""}
- <div class="sets" style="margin-top:14px">${Array.from({length:b.n},(_,i)=>`<i class="${i<S.set?"done":i===S.set?"cur":""}">${i<S.set?"✓":"Set "+(i+1)}</i>`).join("")}</div>
- <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${e.t}</div><div class="sm" id="rs">Tap Start</div></div></div></div>
- <div style="margin-top:12px">${KNEE}</div>`;
- dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn pri" id="pp" onclick="ppTimed()">▶ Start set ${S.set+1}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip">›</button></div>`);
-}
-function ppTimed(){unlock();const k=curKey(),e=EX[k];
- if(T){if(T.paused){resumeTimer();$("#pp").textContent="Pause"}else{pauseTimer();$("#pp").textContent="▶ Resume"}return}
- if($("#wt"))setW(k,$("#wt").value);
- $("#pp").textContent="Pause";let switched=false;const rb=$(".ringbox");rb&&rb.scrollIntoView({block:"center",behavior:"smooth"});
- runTimer(3,{tick:r=>{$("#rt").textContent=mmss(r);$("#rs").textContent="Get ready";setRing("rg",r/3)},done:()=>{beepTick();
-  runTimer(e.t,{ticks:true,tick:(r,tot)=>{if(!$("#rt"))return;$("#rt").textContent=mmss(r);setRing("rg",r/tot);if(e.s&&!switched&&r<=tot/2){switched=true;beepSwitch()}
-   $("#rs").textContent=e.s?(r>tot/2?"Side 1":"Switch side → 2"):"Hold · breathe"},done:()=>{beepEnd();recordSet(k,e.t)}})}})}
+function showTimedEx(st,k){const X=initEx(),e=EX[k];
+ $("#body").innerHTML=`${exTop(k,X.rows.length)}${guideHTML(X)}
+ <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${(X.rows.find(r=>!r.done)||X.rows[0]).sec}</div><div class="sm" id="rs">Tap Start</div></div></div></div>
+ <div class="card rounds" id="rows"></div>
+ <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="addRound(-1)">− Round</button><button class="btn ghost" onclick="addRound(1)">+ Round</button></div>
+ ${prefBar(k,"run")}
+ <div style="margin-top:6px">${KNEE}</div>`;drawRows()}
+function ppTimed(){unlock();const X=curEx(),k=X.k,e=EX[k],i=X.rows.findIndex(r=>!r.done);if(i<0)return;
+ if(T&&!T.rest){if(T.paused){resumeTimer();$("#pp").textContent="Pause"}else{pauseTimer();$("#pp").textContent="▶ Resume"}return}
+ const sec=+X.rows[i].sec||e.t;$("#pp").textContent="Pause";let switched=false;const rb=$(".ringbox");rb&&rb.scrollIntoView({block:"center",behavior:"smooth"});
+ runTimer(3,{tick:r=>{$("#rt")&&($("#rt").textContent=mmss(r));$("#rs")&&($("#rs").textContent="Get ready");setRing("rg",r/3)},done:()=>{beepTick();
+  runTimer(sec,{ticks:true,tick:(r,tot)=>{if(!$("#rt"))return;$("#rt").textContent=mmss(r);setRing("rg",r/tot);if(e.s&&!switched&&r<=tot/2){switched=true;beepSwitch()}
+   $("#rs").textContent=e.s?(r>tot/2?"Side 1":"Switch side → 2"):"Hold · breathe"},done:()=>{beepEnd();X.rows[i].sec=sec;toggleRow(i)}})}})}
 
-/* rest overlay */
-function rest(sec,nextTxt,after){
- const el=$("#rest");el.innerHTML=`<div class="in"><div class="phase">Rest</div><div class="ringbox" style="margin:14px 0">${ringSVG("rr",115)}<div class="ringtxt"><div><div class="big" id="rrt">${mmss(sec)}</div><div class="sm">seconds</div></div></div></div>
- <div class="ctrls"><button class="btn sec" onclick="addTime(15)">+15 s</button><button class="btn pri" onclick="endRest()">Skip ›</button></div>
+/* ===== rest timer: her length (default 60 s), −10/+10, pause, skip, beeps ===== */
+function rest(nextTxt,ri,after){const sec=restLen(),X=curEx(),r=X&&ri!=null?X.rows[ri]:null;
+ const el=$("#rest");el.innerHTML=`<div class="in"><div class="phase">Rest</div><div class="ringbox" style="margin:10px 0">${ringSVG("rr",105)}<div class="ringtxt"><div><div class="big" id="rrt">${mmss(sec)}</div><div class="sm" id="rrs">seconds</div></div></div></div>
+ <div class="ctrls3"><button class="btn sec" onclick="restAdj(-10)">−10</button><button class="btn sec" id="rpp" onclick="restPP()">Pause</button><button class="btn sec" onclick="restAdj(10)">+10</button></div>
+ <div class="muted small" style="margin-top:8px">Your rest: <b id="rlen">${sec}</b> s</div>
+ ${r?`<div class="rate big" style="margin-top:14px"><span class="muted">Round ${ri+1} felt:</span>${RATES.map(x=>`<button class="${r.rate===x?"on "+x:""}" onclick="rateRow(${ri},'${x}')">${x}</button>`).join("")}</div>`:""}
  <div class="nextup"><div class="lbl" style="margin:0 0 4px">Next</div><div style="font-weight:700;font-size:17px">${nextTxt}</div></div>
- <p class="muted small" style="margin-top:16px">💧 Sip water. Breathe slowly.</p></div>`;
+ <button class="btn pri" style="margin-top:14px" onclick="endRest()">Skip rest ›</button>
+ <p class="muted small" style="margin-top:12px">💧 Sip water. Breathe slowly.</p></div>`;
  el.classList.add("on");el._after=after;
- runTimer(sec,{ticks:true,tick:(r,tot)=>{const t=$("#rrt");if(t)t.textContent=mmss(r);setRing("rr",r/tot)},done:()=>{beepEnd();endRest()}});
+ runTimer(sec,{rest:true,ticks:true,tick:(r,tot)=>{const t=$("#rrt");if(t)t.textContent=mmss(r);setRing("rr",Math.max(0,r/tot))},done:()=>{beepEnd();endRest()}});
 }
+function restAdj(d){if(!T||!T.rest)return;const rem=T.paused?T.rem/1000:(T.end-Date.now())/1000;
+ LS.set("restLen",Math.min(180,Math.max(10,restLen()+d)));const l=$("#rlen");if(l)l.textContent=restLen();
+ if(rem+d<=0.5){endRest();return}addTime(d)}
+function restPP(){if(!T||!T.rest)return;if(T.paused){resumeTimer();$("#rpp").textContent="Pause";$("#rrs").textContent="seconds"}else{pauseTimer();$("#rpp").textContent="▶ Resume";$("#rrs").textContent="paused"}}
 function endRest(){stopTimer();hideRest();const a=$("#rest")._after;$("#rest")._after=null;a&&a()}
 function hideRest(){$("#rest").classList.remove("on")}
+
+/* ===== Replace sheet: 3-5 moves for the same muscles ===== */
+function openReplace(day,j,inRun){const cur=pick(day,j),list=altsFor(day,j);
+ $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">Replace this move</div>
+ <div class="muted" style="margin-top:4px">${EX[cur].n} · works ${musclesOf(cur)[0].map(m=>MNAME[m]).join(", ")}</div>
+ <div class="stack" style="margin-top:14px">${list.map(k=>`<button class="altitem" onclick="pickAlt('${day}',${j},'${k}',${inRun?1:0})">${bodySVG(k,"mthumb")}<div class="sp"><div class="n">${EX[k].n}${EX[k].fav?" ⭐":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px">NEW</span>':""}</div><div class="m">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")} · ${EX[k].e||""}</div></div><span class="chev">›</span></button>`).join("")}</div>
+ <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="openReplace('${day}',${j},${inRun?1:0})">↻ Show others</button><button class="btn sec" onclick="closeSheet()">Keep it</button></div>`;
+ $("#sheet").classList.add("on")}
+function pickAlt(day,j,k,inRun){replaceSlot(day,j,k);closeSheet();toast("Replaced with "+EX[k].n);
+ if(inRun&&S){stopTimer();if(S.exs)delete S.exs[S.i];S._pos=null;$("#vid").dataset.k="";show()}else overview(day)}
+function hiddenSheet(){const p=LS.get("pref",{}),ks=Object.keys(p).filter(k=>p[k]==="never"&&EX[k]);
+ $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">Hidden moves</div><div class="stack" style="margin-top:12px">${ks.length?ks.map(k=>`<div class="altitem">${bodySVG(k,"mthumb")}<div class="sp"><div class="n">${EX[k].n}</div></div><button class="pill acc" style="min-height:40px" onclick="setPref('${k}','never');hiddenSheet()">Bring back</button></div>`).join(""):'<p class="muted">None.</p>'}</div>
+ <div style="margin-top:14px"><button class="btn sec" onclick="closeSheet();home()">Close</button></div>`;$("#sheet").classList.add("on")}
 
 /* finish: save history so next time the app picks different moves */
 function finish(){stopTimer();const day=S.day,mins=Math.max(1,Math.round((Date.now()-S.t0)/60000)),sets=S.sets;
@@ -613,6 +839,4 @@ function finish(){stopTimer();const day=S.day,mins=Math.max(1,Math.round((Date.n
  <div style="margin-top:18px"><button class="btn pri" onclick="home()">Back home</button></div></div>`;S=null}
 
 home();
-</script>
-</body>
-</html>
+</script></body></html>
