@@ -273,6 +273,8 @@ button.nextup{display:block;width:100%}
 .linkb{display:block;margin:8px auto 0;padding:8px 10px;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .hin{margin-top:10px;font-size:13px;font-weight:650;color:#FF8FA8}
 .steps{padding-left:22px;margin:10px 0;line-height:1.5;font-size:15px;color:#CDD3DE}.steps li{margin-bottom:9px}.steps b{color:var(--text)}
+.exhead .swap{margin-top:2px}
+.excue{margin:4px 0 0;font-size:16px}
 </style>
 </head>
 <body>
@@ -917,7 +919,7 @@ function units(st,i){return st.t==="s"?1:(S.exs&&S.exs[i]?S.exs[i].rows.length:r
 function progress(){let tot=0,done=0;S.steps.forEach((st,i)=>{const u=units(st,i);tot+=u;if(i<S.i)done+=u;else if(i===S.i&&st.t==="e"&&S.exs&&S.exs[i])done+=S.exs[i].rows.filter(r=>r.done).length});return done/tot}
 function shell(){
  $("#app").innerHTML=`<div class="wrap" style="padding-bottom:calc(var(--safeB) + 120px)"><div class="top runtop"><button class="exitb" onclick="exitSheet()" aria-label="Exit workout">✕ <span>Exit</span></button><div class="prog"><i id="pbar"></i></div><span class="tnum" id="pnum"></span></div>
- <div class="phase" id="phase"></div><div style="height:10px"></div><div class="video" id="vid"></div><div class="vbar" id="vbar"></div><div id="body"></div></div><div class="bottom" id="dock"><div class="in" id="dockin"></div></div>`}
+ <div class="phase" id="phase"></div><div id="exh"></div><div style="height:10px"></div><div class="video" id="vid"></div><div class="vbar" id="vbar"></div><div id="body"></div></div><div class="bottom" id="dock"><div class="in" id="dockin"></div></div>`}
 function setVideo(k){const v=$("#vid");if(v.dataset.k===k)return;v.dataset.k=k;S.vi=0;drawVid("vid","vbar",k,0)}
 function phaseInfo(){const st=S.steps[S.i];const same=S.steps.filter(x=>x.ph===st.ph);return `${st.ph} · ${same.indexOf(st)+1} of ${same.length}`}
 function curKey(){const st=S.steps[S.i];return st.t==="s"?st.k:pick(S.day,st.j)}
@@ -936,7 +938,7 @@ function nextLabel(){const n=S.steps[S.i+1];if(!n)return "Finish 🎉";const k=n
 function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
 
 /* stretch: timed, auto-advance */
-function showStretch(st){const e=EX[st.k];
+function showStretch(st){const e=EX[st.k];$("#exh").innerHTML="";
  $("#body").innerHTML=`<div class="exname">${e.n}</div><div class="chips"><span class="pill">${st.sec} s${e.s?" · both sides":""}</span></div><p class="cue">${e.c}</p>
  <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${st.sec}</div><div class="sm" id="rs">${S.auto?"Get ready":"Tap Start"}</div></div></div></div>
  <p class="muted small center" style="margin:6px 0 0">Next: ${nextLabel()}</p>
@@ -1028,7 +1030,7 @@ function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);const h=LS.get(
 function initEx(){const st=S.steps[S.i],k=curKey();S.exs=S.exs||{};let X=S.exs[S.i];
  if(X&&X.k===k)return X;
  const n=roundsFor(k,DAYS[S.day].slots[st.j]),a=advice(k);
- X=S.exs[S.i]={k,adv:a.text,rows:Array.from({length:n},()=>({r:a.reps,w:a.w,band:a.band,sec:a.sec,done:false,rate:""}))};save();return X}
+ X=S.exs[S.i]={k,adv:a.text,nw:isNew(k),rows:Array.from({length:n},()=>({r:a.reps,w:a.w,band:a.band,sec:a.sec,done:false,rate:""}))};save();return X}
 function curEx(){return S&&S.exs&&S.exs[S.i]}
 function prefBar(k,ctx){const p=prefOf(k);return `<div class="prefs" data-k="${k}"><button class="${p==="more"?"on":""}" onclick="prefClick('${k}','more','${ctx}')">👍 ${ctx==="rest"?"More of this":"More"}</button><button class="${p==="less"?"on":""}" onclick="prefClick('${k}','less','${ctx}')">👎 Less</button><button class="${p==="never"?"on no":""}" onclick="prefClick('${k}','never','${ctx}')">🚫 Never</button></div>`}
 function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
@@ -1037,10 +1039,11 @@ function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
   if(ctx==="run"&&S&&S.steps[S.i].t==="e")openReplace(S.day,S.steps[S.i].j,1);else if(m)openReplace(m[1],+m[2],0)}
  else toast(now==="more"?"You'll see it more often.":now==="less"?"You'll see it less often.":"Back to normal.")}
 function toast(t){let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800)}
-function exTop(k,n){const e=EX[k];
- return `<div class="exhead"><div class="exname sp">${exName(k)}</div><button class="infob" onclick="infoSheet()" aria-label="More about this move">⋯</button></div>
- <div class="exmeta"><span class="pill acc">${presc(k,n)}</span>${isNew(k)?'<span class="mi ok">✨ New</span>':""}${e.cm?'<span class="mi">💪 Coddell</span>':""}${kneelOn(k)?'<span class="mi">🧎 Kneeling</span>':""}${e.b?'<span class="mi bal">🪑 Hold support</span>':""}</div>
- ${kneelOn(k)?'<div class="kneel-note" style="margin-top:8px;padding:8px 12px">⚠️ Knee pads on. Stop if your knee hurts.</div>':""}`}
+function exTop(k,n){const e=EX[k],eq=kneelOn(k)?e.kn.e:e.e;
+ return `<div class="exhead"><div class="exname sp">${exName(k)}</div><button class="swap" onclick="openReplace(S.day,S.steps[S.i].j,1)" aria-label="Replace">⇄<span>Replace</span></button><button class="infob" onclick="infoSheet()" aria-label="More about this move">⋯</button></div>
+ <div class="exmeta"><span class="pill acc">${presc(k,n)}</span>${eq?`<span class="pill">${eq}</span>`:""}${((curEx()&&curEx().k===k)?curEx().nw:isNew(k))?'<span class="pill ok">✨ New</span>':""}${e.cm?'<span class="mi">💪 Coddell</span>':""}${kneelOn(k)?'<span class="mi">🧎 Kneeling</span>':""}${e.b?'<span class="mi bal">🪑 Hold support</span>':""}</div>`}
+/* below the video: the short how-to, plainly visible (+ knee note when kneeling) */
+function exCueHTML(k){return `<p class="cue excue">${exCue(k)}</p>${kneelOn(k)?'<div class="kneel-note" style="margin-top:8px;padding:8px 12px">⚠️ Knee pads on. Stop if your knee hurts.</div>':""}`}
 /* Info sheet: the secondary things (how-to, last time + today, More/Less/Never, Replace, kneeling, ± round) */
 function infoSheet(){if(!S)return;const st=S.steps[S.i];if(st.t!=="e")return;const k=curKey(),e=EX[k],X=curEx();
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>
@@ -1088,13 +1091,13 @@ function toggleRow(i){unlock();const X=curEx();const r=X.rows[i];
   rest(all?nextLabel():`Round ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()})}}
 
 /* rep-based exercise */
-function showRepEx(st,k){const X=initEx();
- $("#body").innerHTML=`${exTop(k,X.rows.length)}
+function showRepEx(st,k){const X=initEx();$("#exh").innerHTML=exTop(k,X.rows.length);
+ $("#body").innerHTML=`${exCueHTML(k)}
  <div class="card rounds" id="rows" style="margin-top:12px"></div>`;drawRows()}
 
 /* timed exercise (planks, carries, balance holds) */
-function showTimedEx(st,k){const X=initEx();
- $("#body").innerHTML=`${exTop(k,X.rows.length)}
+function showTimedEx(st,k){const X=initEx();$("#exh").innerHTML=exTop(k,X.rows.length);
+ $("#body").innerHTML=`${exCueHTML(k)}
  <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${(X.rows.find(r=>!r.done)||X.rows[0]).sec}</div><div class="sm" id="rs">Tap Start</div></div></div></div>
  <div class="card rounds" id="rows"></div>`;drawRows()}
 function ppTimed(){unlock();const X=curEx(),k=X.k,e=EX[k],i=X.rows.findIndex(r=>!r.done);if(i<0)return;if(T&&T.rest)cancelRest();
