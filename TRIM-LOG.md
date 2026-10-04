@@ -202,3 +202,19 @@ Progress: 41 trimmed in this pass, 38 checked and fine from 0:00 in this pass, 1
 | U7Pdw5wFGh0 | 0:01 | 0:22 | storyboard frames (earlier pass): black start + end logo cut — re-checked against the transcript/chapters in this pass: OK | y_raise · Dumbbell Y Raise on Incline Bench (STRONG ATHLETE, 29 s) |
 | QdGTI4Lshg4 | 0:01 | end | storyboard frames (earlier pass): black start cut — re-checked against the transcript/chapters in this pass: OK | ytw · Prone Y T W (The Active Life, 31 s) |
 | ZrpRBgswtHs | 0:38 | 1:18 | storyboard frames (earlier pass): ads/talk intro + outro cut — re-checked against the transcript/chapters in this pass: OK | zottman · How To: Zottman Curl (ScottHermanFitness, 103 s) |
+
+## 2026-10-04: Coddell Mutate kettlebell core moves
+
+His own videos are Facebook reels (no YouTube channel was found), and Facebook is never embedded, so each move uses a checked, embeddable YouTube demo of the version she does: seated or standing by default, plus a tall-kneeling demo for the optional kneeling version. All IDs passed YouTube oEmbed (HTTP 200) and report playable_in_embed = true. Trims were set from storyboard frames, YouTube's 25/50/75% still frames, and auto-captions where the video has them. Halo (Zy6bgAxPeks 0:16-0:37) and Around the World (9uqGfOvtqn0 0:48-1:17) keep their earlier checked trims and were re-checked against storyboard frames in this pass. The kneeling Side-to-Side Pullover has no checked YouTube demo, so it shows a link to his Facebook reel instead of a video.
+
+| Video ID | Start | End | Method / source | Used by · YouTube title |
+|---|---|---|---|---|
+| 2ghsZegLZRE | 0:03 | 0:42 | transcript+storyboard: "seated chop" set-up 0:00-0:03 cut; seated high-to-low chop 0:03-0:42 ("repeat on the other side" 0:41), end cut | kb_sword_chop (seated, main) · Seated Woodchop (Shannon Thigpen Wellness, 46 s) |
+| 4dU7fj-n6w4 | 0:00 | 0:22 | storyboard+hq frames (no captions): seated two-hand low-to-high chop from 0:00; blurry outro after 0:22 cut | kb_digger (seated, main) · Seated Dumbbell Low to High Woodchop (TWD Fitness - Transform with Dawn Fitness, 26 s) |
+| DPXlencbmiQ | 0:00 | 0:09 | storyboard+hq frames (no captions): standing kettlebell side twist 0:00-0:09; "Thanks for watching" card after 0:09 cut | kb_underhand_twist (standing, main) · How to Do the Standing Kettlebell Side Twist | Core Strength & Waist Trimmer (New Shape Nutrition - online diet and workout plan, 14 s) |
+| he-mx5--fyI | 0:34 | 0:48 | transcript+storyboard: halos 0:00-0:33 skipped; "another option is kettlebell rainbows" 0:34, rainbow arcs to 0:48, end cut | kb_rainbow (standing, main) · Kettlebell Halo & Rainbow (Nikki R. Veit, 51 s) |
+| SaRM7zZJqWg | 0:01 | 0:13 | storyboard+hq frames (no captions): tall-kneel halo 0:01-0:13; black first second and logo card after 0:13 cut | halo (kneeling option) · Tall Kneel KB Halo (Champion Physical Therapy and Performance, 20 s) |
+| WuWONYCbxEM | 0:00 | 0:22 | storyboard+hq frames (no captions): tall-kneel around the world on a pad 0:00-0:22; black end cut | kb_around_world (kneeling option) · Tall Kneel Kettlebell Around the World (CafePhysio, 23 s) |
+| BslVJKQXlcQ | 0:00 | 0:14 | storyboard+hq frames (no captions): tall-kneeling chop and lift 0:00-0:14; logo screen after 0:14 cut | kb_sword_chop (kneeling option) · Tall Kneeling Kettlebell Chop and Lift (Functional Bodybuilding, 19 s) |
+| mQvotoz6kqA | 0:00 | 0:08 | storyboard+hq frames (music only): tall-kneeling low-to-high chop 0:00-0:08; transition and FBB logo after 0:08 cut | kb_digger (kneeling option) · Tall Kneeling KB Low to High Chop (Functional Bodybuilding, 15 s) |
+| SpEq-y7wyNc | 0:00 | 0:15 | transcript+storyboard: kneeling twist ("knees about shoulder width apart... twisting") 0:00-0:15; gets up at 0:16, cut | kb_underhand_twist (kneeling option) · Kettlebell Kneeling Twist Side to Side (Recreate Fitness, 21 s) |

@@ -37,6 +37,16 @@ h2{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
 .pill.acc{background:rgba(255,122,89,.15);color:var(--acc2)}
 .vbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0 2px}.vbar .yt{padding:6px 2px;margin-left:auto}
 .pill.fav{background:rgba(245,181,68,.16);color:var(--warn)}
+.pill.cm{background:rgba(61,214,181,.14);color:var(--ok)}
+.cmn{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.4}
+.kneel{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;padding:12px 14px;min-height:48px;border-radius:14px;background:var(--card2);color:var(--txt,#fff);font-size:15px;font-weight:600;text-align:left}
+.kneel .sw{margin-left:auto;width:44px;height:26px;border-radius:13px;background:rgba(255,255,255,.18);position:relative;flex:none}
+.kneel .sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.kneel.on .sw{background:var(--ok)}
+.kneel.on .sw:after{left:21px}
+.novid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;gap:8px;font-size:15px;color:var(--muted);background:var(--card2)}
+.novid a{color:var(--acc2);font-weight:700}
+.kneel-note{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(245,181,68,.14);color:var(--warn);font-size:14px;line-height:1.4}
 button.pill.alt{min-height:36px;background:var(--card2);color:var(--acc2);border:1px solid rgba(255,122,89,.35)}
 .pill.ok{background:rgba(61,214,181,.14);color:var(--ok)}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:58px;border-radius:18px;font-weight:700;font-size:18px;padding:0 20px;width:100%}
@@ -166,7 +176,8 @@ svg.mthumb{width:70px;height:70px;flex:none;display:block}
 <div id="sheet" onclick="if(event.target===this)closeSheet()"><div class="pane" id="sheetPane"></div></div>
 <script>/* ===== Exercise library. Every video ID was checked with YouTube oEmbed (HTTP 200, title matches). =====
    g = group (slot type), f = family (for variety inside one workout), w = lb|band|none, r = reps, t = seconds (timed), s = each side, b = balance (always supported)
-   st/en = clip start/end (sec), my = video is one of Valerie's favorites, alt = second video [id,start,end,label], fav = favorite style (picked a bit more often) */
+   st/en = clip start/end (sec), my = video is one of Valerie's favorites, alt = second video [id,start,end,label], fav = favorite style (picked a bit more often)
+   cm = from Coddell Mutate (picked more in core slots with cm weight), cmn = his version vs. the knee-safe one, kb = kettlebell (weights go up by bell size), sw = starting weight in lb, xg = extra slot groups */
 const EX={
 // ---------- UPPER PUSH (chest) ----------
 db_bench:{g:"push",f:"press",n:"Dumbbell Bench Press",v:"VmB1G1K7v94",c:"Lie on the bench, feet flat. Press up. Lower slowly to chest level.",e:"Dumbbells · Bench",w:"lb"},
@@ -200,7 +211,7 @@ band_lat_raise:{g:"sh",f:"raise",n:"Band Lateral Raise",v:"yfNg5sFndbw",c:"Stand
 y_raise:{g:"sh",f:"raise",n:"Incline Y Raise",v:"U7Pdw5wFGh0",c:"Lie face down on an incline bench. Raise light dumbbells in a Y shape.",e:"Dumbbells · Bench",w:"lb",r:"10-12"},
 six_way:{g:"sh",f:"raise",n:"6-Way Shoulder Raise",v:"QQNE3qIURxg",c:"Light dumbbells. Raise to the front, out wide, up high, then back down. Slow.",e:"Dumbbells",w:"lb",r:"8-10"},
 upright_row:{g:"sh",f:"raise",n:"Upright Row",v:"Ub6QruNKfbY",c:"Pull dumbbells up to chest height. Elbows lead. Not higher than shoulders.",e:"Dumbbells",w:"lb",r:"10-12"},
-halo:{g:"sh",f:"mob",n:"Kettlebell Halo",v:"Zy6bgAxPeks",c:"Stand, or sit on the bench. Hold the kettlebell upside down. Circle it slowly around your head. Change direction.",e:"Kettlebell",w:"lb",r:"8-10",s:1,fav:1},
+halo:{g:"sh",f:"mob",xg:["core"],n:"Kettlebell Halo",v:"Zy6bgAxPeks",c:"Stand tall, feet hip-width, soft knees, or sit on the bench. Hold the kettlebell upside down by the horns. Belly tight, ribs down. Circle it slowly around your head. Change direction.",e:"Kettlebell",w:"lb",r:"8-10",s:1,fav:1,cm:1,kb:1,sw:18,cmn:"He does halos kneeling. You stand (soft knees) or sit on the bench.",kn:{n:"Kettlebell Halo (kneeling)",v:"SaRM7zZJqWg",e:"Kettlebell · Mat · Knee pads",c:"Kneel tall on a padded mat, knees hip-width, hips over knees. Squeeze glutes and belly. Hold the bell upside down by the horns. Circle it slowly around your head. Change direction."}},
 cuban:{g:"sh",f:"mob",n:"Cuban Press",v:"oQJoK0a3h44",c:"Light dumbbells. Pull up, turn arms up, then press overhead. Slow.",e:"Dumbbells",w:"lb",r:"8-10"},
 w_raise:{g:"sh",f:"mob",n:"Incline W Raise",v:"ezBH3fcvNY4",c:"Lie face down on an incline bench. Elbows bent. Lift arms into a W. Squeeze.",e:"Dumbbells · Bench",w:"lb",r:"10-12",fav:1},
 ytw:{g:"sh",f:"mob",n:"Y-T-W Raises",v:"QdGTI4Lshg4",c:"Lie face down on an incline bench. Lift arms in a Y, then T, then W. Very light.",e:"Bench",w:"none",r:"8-10",fav:1},
@@ -301,7 +312,12 @@ seated_knee_tuck:{g:"core",f:"flex",n:"Seated Knee Tuck",v:"54q250IUEAc",c:"Sit 
 mb_twist:{g:"core",f:"rot",n:"Medicine Ball Twist",v:"2_MsoqTpIJ8",c:"Sit, knees bent, feet down. Lean back a little. Turn the ball side to side.",e:"Medicine ball · Mat",w:"none",r:"10-12",s:1},
 woodchop:{g:"core",f:"rot",n:"Band Woodchop",v:"02q1lTCrLoc",c:"Band anchored high to one side. Pull it down across your body. Feet stay still.",e:"Long band",w:"band",r:"10-12",s:1,fav:1},
 db_side_bend:{g:"core",f:"rot",n:"Dumbbell Side Bend",v:"dL9ZzqtQI5c",c:"Weight in one hand. Bend to the side slowly. Come back up.",e:"Dumbbell",w:"lb",r:"10-12",s:1},
-kb_around_world:{g:"core",f:"rot",n:"Kettlebell Around the World",v:"9uqGfOvtqn0",c:"Stand tall, soft knees. Pass the bell around your waist, hand to hand. Change direction halfway.",e:"Kettlebell",w:"lb",r:"6-8",s:1,fav:1},
+kb_around_world:{g:"core",f:"rot",n:"Kettlebell Around the World",v:"9uqGfOvtqn0",c:"Stand tall, feet hip-width, soft knees. Belly tight. Pass the bell around your waist, hand to hand. Hips stay still. Change direction halfway.",e:"Kettlebell",w:"lb",r:"8-10",s:1,fav:1,cm:1,kb:1,sw:18,cmn:"He does it kneeling. You stand with soft knees.",kn:{n:"Kettlebell Around the World (kneeling)",v:"WuWONYCbxEM",e:"Kettlebell · Mat · Knee pads",fb:"https://www.facebook.com/coddellmutate/posts/your-core-isnt-just-built-for-crunches-train-it-to-resist-and-control-rotationth/3091233694588345/",c:"Kneel tall on a padded mat, hips over knees. Squeeze glutes and belly. Pass the bell around your waist, hand to hand. Hips stay still. Change direction halfway."}},
+// ---------- Coddell Mutate kettlebell core (his moves are kneeling; these are the knee-safe versions) ----------
+kb_sword_chop:{g:"core",f:"chop",n:"Sword Chop (seated)",v:"2ghsZegLZRE",c:"Sit tall on the bench edge, feet flat and wide. Hold the bell by the handle with both hands next to one ear, like a sword. Chop it down across your body to the outside of the other hip. Lift it back up slowly. Turn from your ribs. Switch sides halfway.",e:"Kettlebell · Bench",w:"lb",r:"8-12",s:1,fav:1,cm:1,kb:1,sw:18,m:[["obliques","abs"],["shoulders","lats"]],cmn:"He chops kneeling on a mat. You sit on the bench, so your knee is out of it and your legs stay still.",kn:{n:"Sword Chop (kneeling)",v:"BslVJKQXlcQ",e:"Kettlebell · Mat · Knee pads",fb:"https://www.facebook.com/coddellmutate/posts/one-kettlebell-four-movements-20-reps-zero-set-downs-this-kneeling-kettlebell-co/3073140103064371/",c:"Kneel tall on a padded mat, hips over knees. Bell by the handle next to one ear, like a sword. Chop it down across your body to the outside of the other hip. Lift back slowly. Switch sides halfway."}},
+kb_digger:{g:"core",f:"chop",n:"Digger (seated low-to-high chop)",v:"4dU7fj-n6w4",c:"Sit tall on the bench edge, feet flat and wide. Hold the bell with both hands next to the outside of one knee. Lift it up and across to above the other shoulder, like tossing a shovel of dirt. Lower slowly the same way. Switch sides halfway.",e:"Kettlebell · Bench",w:"lb",r:"8-12",s:1,fav:1,cm:1,kb:1,sw:18,m:[["obliques","shoulders"],["abs","lowerback"]],cmn:"He digs kneeling. You sit on the bench. Same low-to-high path.",kn:{n:"Digger (kneeling)",v:"mQvotoz6kqA",e:"Kettlebell · Mat · Knee pads",fb:"https://www.facebook.com/coddellmutate/posts/one-kettlebell-four-movements-20-reps-zero-set-downs-this-kneeling-kettlebell-co/3073140103064371/",c:"Kneel tall on a padded mat, hips over knees. Bell low next to one knee. Lift it up and across to above the other shoulder, like tossing a shovel of dirt. Lower slowly. Switch sides halfway."}},
+kb_underhand_twist:{g:"core",f:"rot",n:"Underhand Twist (standing)",v:"DPXlencbmiQ",c:"Stand tall, feet hip-width, soft knees. Hold the bell from underneath with both hands, arms long at chest height. Turn your ribs to one side, then the other. Hips and knees keep facing forward. Wobbly? Sit on the bench.",e:"Kettlebell",w:"lb",r:"8-12",s:1,fav:1,cm:1,kb:1,sw:18,m:[["obliques","abs"],["shoulders"]],cmn:"He twists kneeling. You stand (soft knees, hips still) or sit on the bench.",kn:{n:"Underhand Twist (kneeling)",v:"SpEq-y7wyNc",e:"Kettlebell · Mat · Knee pads",fb:"https://www.facebook.com/coddellmutate/posts/one-kettlebell-four-movements-20-reps-zero-set-downs-this-kneeling-kettlebell-co/3073140103064371/",c:"Kneel tall on a padded mat, hips over knees. Hold the bell from underneath, arms long at chest height. Turn your ribs to one side, then the other. Hips stay facing forward."}},
+kb_rainbow:{g:"core",f:"arc",n:"Side-to-Side Pullover (rainbow)",v:"he-mx5--fyI",c:"Stand next to a wall, feet hip-width, soft knees. Hold the bell by the horns over your head, elbows soft. Arc it slowly over your head from one shoulder to the other, like a rainbow. Ribs down, belly tight. Start with small arcs. Wobbly? Sit on the bench.",e:"Kettlebell · Wall",w:"lb",r:"8-12",s:1,fav:1,cm:1,kb:1,sw:18,m:[["obliques","shoulders"],["abs","lats","triceps"]],cmn:"He does side-to-side pullovers kneeling. You stand by a wall (or sit on the bench).",kn:{n:"Side-to-Side Pullover (kneeling)",v:"",e:"Kettlebell · Mat · Knee pads",fb:"https://www.facebook.com/coddellmutate/posts/one-kettlebell-four-movements-20-reps-zero-set-downs-this-kneeling-kettlebell-co/3073140103064371/",c:"Kneel tall on a padded mat, hips over knees. Bell by the horns over your head, elbows soft. Arc it slowly from one shoulder to the other. Ribs down, belly tight. Small arcs."}},
 kb_dead_bug:{g:"core",f:"anti",n:"Kettlebell Dead Bug",v:"556ibwFFFAM",c:"Lie on your back. Hold a light bell over your chest. Knees up. Lower one leg slowly, then the other.",e:"Kettlebell · Mat",w:"lb",r:"8-10",s:1,fav:1},
 kb_overhead_march:{g:"core",f:"carry",n:"Overhead March (by a wall)",v:"edIzJHViuO0",c:"Stand next to a wall. Light bell straight up in one hand. March slowly in place. Switch at the beep.",e:"Kettlebell · Wall",w:"lb",t:40,s:1,fav:1},
 kb_rack_carry:{g:"core",f:"carry",n:"Rack Carry",v:"zKHog8SWdM4",c:"Hold the bell at your chest, elbow down. Stand tall. Walk slowly. Switch at the beep.",e:"Kettlebell",w:"lb",t:40,s:1,fav:1},
@@ -380,22 +396,26 @@ const DAYS={
  A:{t:"Upper · Push",s:"Chest, shoulders, triceps",col:"var(--A)",z:"up",slots:[
   {g:"bal",n:2,rest:20},{g:"bal",n:2,rest:20},
   {g:"push",f:["press"],n:3,rest:60},{g:"push",n:3,rest:60},
-  {g:"sh",n:3,rest:45},{g:"tri",n:3,rest:45}]},
+  {g:"sh",n:3,rest:45},{g:"tri",n:3,rest:45},
+  {g:"core",n:2,rest:30,cm:4,fin:1}]},
  B:{t:"Lower · Bands & Mat",s:"Glutes, hips, hamstrings",col:"var(--B)",z:"low",slots:[
   {g:"bal",n:2,rest:20},
-  {g:"gb",n:3,rest:45},{g:"gh",n:3,rest:30},{g:"gh",n:3,rest:30},{g:"hinge",n:3,rest:45}]},
+  {g:"gb",n:3,rest:45},{g:"gh",n:3,rest:30},{g:"gh",n:3,rest:30},{g:"hinge",n:3,rest:45},
+  {g:"core",n:2,rest:30,cm:4,fin:1}]},
  C:{t:"Upper · Pull & Arms",s:"Back, shoulders, biceps",col:"var(--C)",z:"up",slots:[
   {g:"bal",n:2,rest:20},{g:"bal",n:2,rest:20},
   {g:"pull",f:["row"],n:3,rest:60},{g:"pull",f:["vert","rear","shrug"],n:3,rest:60},
-  {g:"sh",f:["raise","mob"],n:3,rest:45},{g:"bi",n:3,rest:45}]},
+  {g:"sh",f:["raise","mob"],n:3,rest:45},{g:"bi",n:3,rest:45},
+  {g:"core",n:2,rest:30,cm:4,fin:1}]},
  D:{t:"Lower + Core",s:"Glutes, hamstrings, belly",col:"var(--D)",z:"low",slots:[
   {g:"bal",n:2,rest:20},
   {g:"hinge",f:["hinge"],n:3,rest:60},{g:"gb",n:3,rest:60},
-  {g:"core",n:3,rest:45},{g:"core",n:2,rest:30}]}
+  {g:"core",n:3,rest:45,cm:3},{g:"core",n:2,rest:30,cm:3}]}
 };
+/* cm = extra weight for Coddell Mutate moves in that slot; fin = core finisher at the end of the day */
 
 /* demo-only clips: [start,end] seconds, checked against storyboard frames (end 0 = to the end) */
-const CLIP={"hlth_Of9LEc":[6,0],"8xRDWe3pj30":[5,40],"yfNg5sFndbw":[5,42],"LSkyinhmA8k":[7,0],"cIoUZOnypS8":[5,43],"CSP7YpPv3ds":[3,45],"QQNE3qIURxg":[0,48],"yVcEkvgymt8":[4,45],"02q1lTCrLoc":[0,49],"Rn-hf5iauTc":[5,49],"y-hn_Ha1-RE":[26,50],"54q250IUEAc":[17,51],"FK4rHfWKEac":[4,46],"L4nTaesNm0E":[8,48],"oQJoK0a3h44":[16,55],"OfgQrQCLJsk":[17,49],"QJQgnb-kOg4":[4,55],"j2OdaGOmHlM":[4,58],"N_s9em1xTqU":[0,44],"5NPvv40gd3Q":[9,58],"GbSC02oU3To":[2,61],"DTOKhh2D1eI":[2,46],"nvufDW-MSQk":[17,58],"1Hf_5_rmaOc":[9,74],"cY38L70lxro":[6,75],"hQgFixeXdZo":[12,76],"29OfN4ztW_g":[10,72],"9uqGfOvtqn0":[48,77],"Zy6bgAxPeks":[16,37],"rXAbcneAr3I":[7,70],"9FGilxCbdz8":[8,82],"Xyd_fa5zoEU":[8,84],"i_URJN83nys":[6,77],"ir5PsbniVSc":[26,63],"Zp26q4BY5HE":[57,0],"QuLekEa1lIs":[14,80],"cZJ-4Ll3uAo":[14,77],"qWif_7SOYpQ":[2,38],"dL9ZzqtQI5c":[4,92],"igj6_GWSt3I":[28,76],"uUGDRwge4F8":[22,77],"Jvj2wV0vOYU":[22,76],"cJRVVxmytaM":[33,76],"av7-8igSXTs":[7,51],"ZrpRBgswtHs":[38,78],"soxrZlIl35U":[33,82],"-t7fuZ0KhDA":[13,92],"L15PsUpVcAk":[30,101],"YbX7Wd8jQ-Q":[26,92],"6DV2exMHMqc":[3,102],"ezBH3fcvNY4":[28,95],"kwG2ipFRgfo":[4,118],"jTQWYdWLvys":[42,111],"cJWYiUkiWrE":[46,70],"VmB1G1K7v94":[15,120],"hinonqqzatk":[56,112],"eozdVDA78K0":[28,122],"8iPEnn-ltC8":[22,140],"xh1IIUtAiTI":[28,92],"ShCYaoHmWmk":[5,45],"OzYLIIPrndQ":[2,42],"J7L0749hx_w":[0,9],"ZuKowDpVVXM":[0,7],"pdP0uJXvc44":[0,10],"D-OkklpFY18":[0,10],"0-DXJiceG-0":[0,10],"CRpDEFu-a9c":[0,10],"RIEMoYL_h1Y":[0,10],"EPiXN2bkLoQ":[0,9],"edIzJHViuO0":[3,0],"6tbjm5FjhB0":[0,15],"ra7tzlPxnsQ":[4,0],"bMD474hAjDE":[0,23],"9wl_AiNhYP0":[0,19],"ieFKuQAGYIA":[1,23],"kxmIfSC9aUk":[4,0],"w2Um9ULrcBI":[0,17],"7CHPqVxJOUE":[0,24],"LtTcXXgeRYo":[3,24],"P_YdO_bLrwk":[1,24],"U7Pdw5wFGh0":[1,22],"poD_-zaG9hk":[1,23],"QdGTI4Lshg4":[1,0],"fJA39ZOVaEQ":[9,26],"qBqKuEQl9sI":[4,0],"xW8L2POShSA":[0,26],"LaDKpYN9FDw":[4,26],"lLAw6fUccKA":[7,0],"shdbEBpDUTk":[1,26],"2OaqZ-QAiYw":[0,27],"zKHog8SWdM4":[13,27],"3MKmYlhxgOo":[8,32],"UCj55s-JHXI":[0,27],"jgh6sGwtTwk":[3,34],"MjOeSCRwAQY":[13,0],"Zli1UXH9ZeE":[2,27],"3g-1J2KkX_8":[2,30],"J5LEpIZSDS0":[8,31],"lhwT35sshrI":[4,34],"m_ZPapmqeNM":[2,36],"7j-2w4-P14I":[3,34],"z6PJMT2y8GQ":[8,30],"2_MsoqTpIJ8":[10,33],"GzpmFU7qaFE":[1,0],"On2eca-C00E":[8,0],"U4L_6JEv9Jg":[4,34],"VgysBPnVJWg":[1,34],"Yi_zNoIsNcc":[2,32],"94A3JVWqpdg":[0,36],"A5H4t2ZMos8":[2,36],"795rPzSVOd4":[2,41],"riSlzQrZGpM":[22,28],"jbh9Wzt2Lfk":[17,50],"PiX_hLB_r_8":[8,56],"LzuvLW_gJ8w":[4,0],"X3q5e1pV4pc":[3,0],"AsMMF3YWIIM":[2,25],"UVMEnIaY8aU":[6,20],"X7NtgY9kCCM":[0,25],"l5I_E0_My5s":[2,0],"oMSVe7PWJ3o":[2,24],"wRSk1_C6yOM":[0,17],"eebXpmPGy2Y":[2,0],"stwYTTPXubo":[3,44],"YTT0sgNU01I":[11,88],"qkrJXGVj_OQ":[9,33],"naW8u72lOzI":[5,20],"HR1Bm0jGhcE":[5,0],"mzTQGYGI0Ng":[4,0],"Kdeq15AvUVU":[0,43],"OUgsJ8-Vi0E":[5,78],"1UU4VvklQ44":[2,56],"9PySxVZZXmc":[1,0],"qqMi-hJjMBk":[53,95],"B9uY01NoqBg":[2,53],"crnw1IKWNZY":[10,23],"QY4gCIYbGQk":[3,40],"_uINTR_7X-g":[5,36],"54y0JAT46vE":[12,35],"4faLXO2bLFU":[3,73],"Cus9IRgnvcY":[3,0],"f1HzSAuB-Vw":[2,22],"ykOlGxeEnr0":[13,58],"2E8WWX4cOc4":[0,21],"Il1L75v6gq0":[4,0],"Xb5gHdYtHnk":[22,46],"do_1LisFah0":[22,0],"BzYBkAvdCJY":[0,59],"KWi1YgyxDaQ":[0,25],"7rnlAVhAK-8":[4,0],"6YB0pv3iv0g":[0,23]};
+const CLIP={"hlth_Of9LEc":[6,0],"8xRDWe3pj30":[5,40],"yfNg5sFndbw":[5,42],"LSkyinhmA8k":[7,0],"cIoUZOnypS8":[5,43],"CSP7YpPv3ds":[3,45],"QQNE3qIURxg":[0,48],"yVcEkvgymt8":[4,45],"02q1lTCrLoc":[0,49],"Rn-hf5iauTc":[5,49],"y-hn_Ha1-RE":[26,50],"54q250IUEAc":[17,51],"FK4rHfWKEac":[4,46],"L4nTaesNm0E":[8,48],"oQJoK0a3h44":[16,55],"OfgQrQCLJsk":[17,49],"QJQgnb-kOg4":[4,55],"j2OdaGOmHlM":[4,58],"N_s9em1xTqU":[0,44],"5NPvv40gd3Q":[9,58],"GbSC02oU3To":[2,61],"DTOKhh2D1eI":[2,46],"nvufDW-MSQk":[17,58],"1Hf_5_rmaOc":[9,74],"cY38L70lxro":[6,75],"hQgFixeXdZo":[12,76],"29OfN4ztW_g":[10,72],"9uqGfOvtqn0":[48,77],"Zy6bgAxPeks":[16,37],"rXAbcneAr3I":[7,70],"9FGilxCbdz8":[8,82],"Xyd_fa5zoEU":[8,84],"i_URJN83nys":[6,77],"ir5PsbniVSc":[26,63],"Zp26q4BY5HE":[57,0],"QuLekEa1lIs":[14,80],"cZJ-4Ll3uAo":[14,77],"qWif_7SOYpQ":[2,38],"dL9ZzqtQI5c":[4,92],"igj6_GWSt3I":[28,76],"uUGDRwge4F8":[22,77],"Jvj2wV0vOYU":[22,76],"cJRVVxmytaM":[33,76],"av7-8igSXTs":[7,51],"ZrpRBgswtHs":[38,78],"soxrZlIl35U":[33,82],"-t7fuZ0KhDA":[13,92],"L15PsUpVcAk":[30,101],"YbX7Wd8jQ-Q":[26,92],"6DV2exMHMqc":[3,102],"ezBH3fcvNY4":[28,95],"kwG2ipFRgfo":[4,118],"jTQWYdWLvys":[42,111],"cJWYiUkiWrE":[46,70],"VmB1G1K7v94":[15,120],"hinonqqzatk":[56,112],"eozdVDA78K0":[28,122],"8iPEnn-ltC8":[22,140],"xh1IIUtAiTI":[28,92],"ShCYaoHmWmk":[5,45],"OzYLIIPrndQ":[2,42],"J7L0749hx_w":[0,9],"ZuKowDpVVXM":[0,7],"pdP0uJXvc44":[0,10],"D-OkklpFY18":[0,10],"0-DXJiceG-0":[0,10],"CRpDEFu-a9c":[0,10],"RIEMoYL_h1Y":[0,10],"EPiXN2bkLoQ":[0,9],"edIzJHViuO0":[3,0],"6tbjm5FjhB0":[0,15],"ra7tzlPxnsQ":[4,0],"bMD474hAjDE":[0,23],"9wl_AiNhYP0":[0,19],"ieFKuQAGYIA":[1,23],"kxmIfSC9aUk":[4,0],"w2Um9ULrcBI":[0,17],"7CHPqVxJOUE":[0,24],"LtTcXXgeRYo":[3,24],"P_YdO_bLrwk":[1,24],"U7Pdw5wFGh0":[1,22],"poD_-zaG9hk":[1,23],"QdGTI4Lshg4":[1,0],"fJA39ZOVaEQ":[9,26],"qBqKuEQl9sI":[4,0],"xW8L2POShSA":[0,26],"LaDKpYN9FDw":[4,26],"lLAw6fUccKA":[7,0],"shdbEBpDUTk":[1,26],"2OaqZ-QAiYw":[0,27],"zKHog8SWdM4":[13,27],"3MKmYlhxgOo":[8,32],"UCj55s-JHXI":[0,27],"jgh6sGwtTwk":[3,34],"MjOeSCRwAQY":[13,0],"Zli1UXH9ZeE":[2,27],"3g-1J2KkX_8":[2,30],"J5LEpIZSDS0":[8,31],"lhwT35sshrI":[4,34],"m_ZPapmqeNM":[2,36],"7j-2w4-P14I":[3,34],"z6PJMT2y8GQ":[8,30],"2_MsoqTpIJ8":[10,33],"GzpmFU7qaFE":[1,0],"On2eca-C00E":[8,0],"U4L_6JEv9Jg":[4,34],"VgysBPnVJWg":[1,34],"Yi_zNoIsNcc":[2,32],"94A3JVWqpdg":[0,36],"A5H4t2ZMos8":[2,36],"795rPzSVOd4":[2,41],"riSlzQrZGpM":[22,28],"jbh9Wzt2Lfk":[17,50],"PiX_hLB_r_8":[8,56],"LzuvLW_gJ8w":[4,0],"X3q5e1pV4pc":[3,0],"AsMMF3YWIIM":[2,25],"UVMEnIaY8aU":[6,20],"X7NtgY9kCCM":[0,25],"l5I_E0_My5s":[2,0],"oMSVe7PWJ3o":[2,24],"wRSk1_C6yOM":[0,17],"eebXpmPGy2Y":[2,0],"stwYTTPXubo":[3,44],"YTT0sgNU01I":[11,88],"qkrJXGVj_OQ":[9,33],"naW8u72lOzI":[5,20],"HR1Bm0jGhcE":[5,0],"mzTQGYGI0Ng":[4,0],"Kdeq15AvUVU":[0,43],"OUgsJ8-Vi0E":[5,78],"1UU4VvklQ44":[2,56],"9PySxVZZXmc":[1,0],"qqMi-hJjMBk":[53,95],"B9uY01NoqBg":[2,53],"crnw1IKWNZY":[10,23],"QY4gCIYbGQk":[3,40],"_uINTR_7X-g":[5,36],"54y0JAT46vE":[12,35],"4faLXO2bLFU":[3,73],"Cus9IRgnvcY":[3,0],"f1HzSAuB-Vw":[2,22],"ykOlGxeEnr0":[13,58],"2E8WWX4cOc4":[0,21],"Il1L75v6gq0":[4,0],"Xb5gHdYtHnk":[22,46],"do_1LisFah0":[22,0],"BzYBkAvdCJY":[0,59],"KWi1YgyxDaQ":[0,25],"7rnlAVhAK-8":[4,0],"6YB0pv3iv0g":[0,23],"2ghsZegLZRE":[3,42],"4dU7fj-n6w4":[0,22],"DPXlencbmiQ":[0,9],"he-mx5--fyI":[34,48],"SaRM7zZJqWg":[1,13],"WuWONYCbxEM":[0,22],"BslVJKQXlcQ":[0,14],"mQvotoz6kqA":[0,8],"SpEq-y7wyNc":[0,15]};
 
 /* ===== muscle map: front/back body diagram (inline SVG) ===== */
 const MNAME={chest:"Chest",shoulders:"Shoulders",biceps:"Biceps",triceps:"Triceps",forearms:"Forearms",abs:"Belly",obliques:"Sides",upperback:"Upper back",lats:"Back (lats)",traps:"Traps",lowerback:"Lower back",glutes:"Glutes",hipside:"Outer hips",adductors:"Inner thighs",quads:"Front thighs",hamstrings:"Back thighs",calves:"Calves",shins:"Shins"};
@@ -409,14 +429,14 @@ const MMAP={
  "gb.bridge":[["glutes"],["hamstrings","lowerback"]],"gb.thrust":[["glutes"],["hamstrings","quads"]],
  "gh.abd":[["hipside"],["glutes"]],"gh.rot":[["glutes","adductors"],["hipside"]],"gh.ext":[["glutes"],["hamstrings","lowerback"]],
  "hinge.hinge":[["hamstrings","glutes"],["lowerback","forearms"]],"hinge.ham":[["hamstrings"],["glutes","calves"]],
- "core.anti":[["abs"],["obliques","shoulders"]],"core.carry":[["obliques","forearms"],["traps","abs","shoulders"]],"core.flex":[["abs"],["obliques"]],"core.rot":[["obliques"],["abs","shoulders"]],"core.ext":[["lowerback","glutes"],["upperback"]],
+ "core.anti":[["abs"],["obliques","shoulders"]],"core.carry":[["obliques","forearms"],["traps","abs","shoulders"]],"core.flex":[["abs"],["obliques"]],"core.rot":[["obliques"],["abs","shoulders"]],"core.ext":[["lowerback","glutes"],["upperback"]],"core.chop":[["obliques","abs"],["shoulders"]],"core.arc":[["obliques","shoulders"],["abs"]],
  "bal.static":[["hipside","calves"],["abs","glutes"]],"bal.dyn":[["hipside","calves"],["abs","glutes"]],"bal.str":[["hipside"],["glutes","calves"]],
  "warm":[["shoulders","glutes"],["abs"]],"cool":[["hamstrings","chest"],["lowerback"]],"bonus":[["quads","calves","glutes"],["hamstrings"]]};
 const MOVR={heel_raise:[["calves"],["shins"]],toe_raise:[["shins"],["calves"]],sl_calf_raise:[["calves"],["hipside"]],chair_abd:[["hipside"],["glutes"]],chair_hip_ext:[["glutes"],["hamstrings","lowerback"]],
  adduction:[["adductors"],[]],reverse_clam:[["glutes"],["hipside"]],seated_abd:[["hipside"],["glutes"]],kb_swing:[["glutes","hamstrings"],["lowerback","abs","shoulders"]],
  sl_rdl:[["hamstrings","glutes"],["hipside","calves"]],farmer:[["forearms","traps"],["abs","obliques"]],superman:[["lowerback","glutes"],["upperback","shoulders"]],
  prone_swimmer:[["upperback","shoulders"],["lowerback"]],slr:[["quads","abs"],[]],kb_overhead_march:[["shoulders","abs"],["obliques","hipside"]],
- db_side_bend:[["obliques"],[]],halo:[["shoulders"],["abs","triceps"]],svend:[["chest"],["shoulders"]],cuban:[["shoulders","upperback"],[]],
+ db_side_bend:[["obliques"],[]],halo:[["shoulders","abs"],["obliques","triceps"]],svend:[["chest"],["shoulders"]],cuban:[["shoulders","upperback"],[]],
  upright_row:[["shoulders","traps"],["biceps"]],ytw:[["upperback","shoulders"],["traps"]],pullover:[["lats","chest"],["triceps"]],kb_pullover:[["lats","chest"],["triceps","abs"]]};
 function musclesOf(k){const e=EX[k];if(e.m)return e.m;if(MOVR[k])return MOVR[k];return MMAP[e.g+"."+e.f]||MMAP[e.g]||[[],[]]}
 function muscleText(k){const [p,s]=musclesOf(k);return p.map(x=>MNAME[x]).join(" · ")+(s.length?` <span class="muted">+ ${s.map(x=>MNAME[x]).join(", ")}</span>`:"")}
@@ -470,14 +490,31 @@ const embed=(id,st,en)=>`https://www.youtube-nocookie.com/embed/${id}?rel=0&play
 /* videos: [id,start,end,label,isFavorite] — main video first, then a second one if there is one */
 /* demo-only trim: a move's own start/end wins, else the checked clip table (CLIP) */
 const clip=(id,st,en)=>(st||en)?[st||0,en||0]:((typeof CLIP!=="undefined"&&CLIP[id])||[0,0]);
-function vids(k){const e=EX[k],a=[[e.v,...clip(e.v,e.st,e.en),e.my?"⭐ Your video":"Demo",!!e.my]];if(e.alt)a.push([e.alt[0],...clip(e.alt[0],e.alt[1],e.alt[2]),e.alt[3],e.alt[3].includes("⭐")]);return a}
+/* kneeling option (Coddell Mutate moves): default is the standing/bench version; her choice is saved per move in "kneel" */
+function kneelOn(k){return !!(EX[k]&&EX[k].kn&&(LS.get("kneel",{}))[k])}
+function exName(k){return kneelOn(k)?EX[k].kn.n:EX[k].n}
+function exCue(k){return kneelOn(k)?EX[k].kn.c:EX[k].c}
+function setKneel(k,on){const m=LS.get("kneel",{});if(on)m[k]=1;else delete m[k];LS.set("kneel",m)}
+function kneelBar(k,ctx){const e=EX[k];if(!e.kn)return "";const on=kneelOn(k);
+ return `<button class="kneel ${on?"on":""}" role="switch" aria-checked="${on}" onclick="toggleKneel('${k}','${ctx}')">🧎 Kneeling version (use knee pads)<span class="sw"></span></button>${on?`<div class="kneel-note">⚠️ Use knee pads or a folded towel. Stop if your knee hurts.${e.kn.fb?` <a href="${e.kn.fb}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Coddell's kneeling reel (Facebook) ↗</a>`:""}</div>`:""}`}
+function toggleKneel(k,ctx){setKneel(k,!kneelOn(k));toast(kneelOn(k)?"Kneeling version on for this move.":"Back to the knee-safe version.");
+ if(ctx==="run"){const v=$("#vid");if(v)v.dataset.k="";S.vi=0;show()}else{const m=ctx.match(/^ov:(\w):(\d+)$/);if(m){preview(k,m[1],+m[2]);overview(m[1])}else preview(k)}}
+function vids(k){const e=EX[k];if(kneelOn(k)){const n=e.kn;return n.v?[[n.v,...clip(n.v,n.st,n.en),"🧎 Kneeling demo",false]]:[]}const a=[[e.v,...clip(e.v,e.st,e.en),e.my?"⭐ Your video":"Demo",!!e.my]];if(e.alt)a.push([e.alt[0],...clip(e.alt[0],e.alt[1],e.alt[2]),e.alt[3],e.alt[3].includes("⭐")]);return a}
 /* favorite-style moves get a bit more weight (2×); every move stays in the pool */
 const FAVW=2;
 /* her own choices: More (2×), Less (0.4×), Never (never picked) */
 function prefOf(k){return (LS.get("pref",{}))[k]||""}
 function setPref(k,v){const p=LS.get("pref",{});if(p[k]===v)delete p[k];else p[k]=v;LS.set("pref",p)}
-const wOf=k=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(p==="more"?2:p==="less"?0.4:1)};
-function wpick(a){let t=a.reduce((s,k)=>s+wOf(k),0),r=Math.random()*t;for(const k of a){r-=wOf(k);if(r<=0)return k}return a[a.length-1]}
+/* Coddell Mutate moves (cm) get the slot's cm weight on top (core slots on Day D, core finishers on A-C) */
+const wOf=(k,sl)=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(sl&&sl.cm&&EX[k].cm?sl.cm:1)*(p==="more"?2:p==="less"?0.4:1)};
+function wpick(a,sl){let t=a.reduce((s,k)=>s+wOf(k,sl),0),r=Math.random()*t;for(const k of a){r-=wOf(k,sl);if(r<=0)return k}return a[a.length-1]}
+const CM_TAG='<span class="pill cm">💪 From Coddell Mutate</span>';
+/* kettlebells come in fixed sizes: lb values of 4, 6, 8, 10, 12, 14, 16, 18, 20, 24 kg bells */
+const KB_LB=[9,13,18,22,26,31,35,40,44,53];
+const kgOf=lb=>Math.round(lb/2.2046);
+const lbTxt=(k,w)=>w+" lb"+(EX[k]&&EX[k].kb&&KB_LB.includes(+w)?" ("+kgOf(+w)+" kg)":"");
+function wUp(k,w){if(EX[k].kb){const n=KB_LB.find(x=>x>w);return n||w+5}return w+wStep(w)}
+function wDown(k,w){if(EX[k].kb){const n=KB_LB.filter(x=>x<w).pop();return n||Math.max(0,w-4)}return Math.max(0,w-wStep(w))}
 function wshuffle(a){return a.map(k=>[k,Math.pow(Math.random(),1/wOf(k))]).sort((x,y)=>y[1]-x[1]).map(x=>x[0])}
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -489,11 +526,11 @@ function repRange(k){return (EX[k].r||"8-12").split("-").map(Number)}
    - it avoids anything done in the last 2 sessions of the same day, and in the last 2 workouts of any day
    - it avoids two moves of the same family (e.g. two flys) in one workout
    - it keeps the main part near 20 minutes */
-function pool(slot){const a=Object.keys(EX).filter(k=>EX[k].g===slot.g&&(!slot.f||slot.f.includes(EX[k].f)));const ok=a.filter(k=>prefOf(k)!=="never");return ok.length?ok:a}
+function pool(slot){const a=Object.keys(EX).filter(k=>(EX[k].g===slot.g||(EX[k].xg||[]).includes(slot.g))&&(!slot.f||slot.f.includes(EX[k].f)));const ok=a.filter(k=>prefOf(k)!=="never");return ok.length?ok:a}
 function recentSet(day){const s=new Set();const r=LS.get("recent",{});(r[day]||[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));LS.get("recentAll",[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));return s}
-function choose(cands,used,fams,avoid){
+function choose(cands,used,fams,avoid,sl){
  const tiers=[k=>!used.has(k)&&!avoid.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)&&!avoid.has(k),k=>!used.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)];
- for(const t of tiers){const c=cands.filter(t);if(c.length)return wpick(c)}return wpick(cands)}
+ for(const t of tiers){const c=cands.filter(t);if(c.length)return wpick(c,sl)}return wpick(cands,sl)}
 function setSecs(k){const e=EX[k];if(e.t)return e.t;const [lo,hi]=repRange(k);return ((lo+hi)/2)*3*(e.s?2:1)+5}
 function restLen(){return LS.get("restLen",60)}
 function mainSecs(day,b,r){return DAYS[day].slots.reduce((a,sl,j)=>a+sl.n*(setSecs(b[j])+(r||sl.rest)),0)}
@@ -502,8 +539,9 @@ function genBlocks(day,extraAvoid){
  let best=null,bestD=1e9;
  for(let tries=0;tries<80;tries++){
   const used=new Set(),fams=new Set(),b=[];
-  DAYS[day].slots.forEach(sl=>{const k=choose(pool(sl),used,fams,avoid);b.push(k);used.add(k);fams.add(EX[k].g+EX[k].f)});
-  const m=mainSecs(day,b)/60,d=m<17?17-m:m>21?m-21:0;
+  DAYS[day].slots.forEach(sl=>{const k=choose(pool(sl),used,fams,avoid,sl);b.push(k);used.add(k);fams.add(EX[k].g+EX[k].f)});
+  /* the core finisher (fin) is extra: it is left out of the ~20 min fit so its pick does not depend on length */
+  const m=DAYS[day].slots.reduce((t,sl,j)=>sl.fin?t:t+sl.n*(setSecs(b[j])+sl.rest),0)/60,d=m<17?17-m:m>21?m-21:0;
   if(d<bestD){best=b;bestD=d}if(d===0)break}
  return best}
 function stretchPool(g,z){return Object.keys(EX).filter(k=>EX[k].g===g&&(EX[k].z===z||EX[k].z==="any")).concat(g==="warm"?WARM_EXTRA[z]:[]).filter(k=>prefOf(k)!=="never")}
@@ -523,11 +561,11 @@ function getPlan(day){const P=LS.get("plans",{});if(!validPlan(day,P[day])){P[da
 function savePlan(day,p){const P=LS.get("plans",{});P[day]=p;LS.set("plans",P)}
 function refreshPlan(day){const old=getPlan(day);const keep=old.b.concat(old.w.map(x=>x[0]),old.c.map(x=>x[0]));savePlan(day,generate(day,keep.filter(k=>k!=="march"&&k!=="breathing")))}
 function swapSlot(day,j){const p=getPlan(day),sl=DAYS[day].slots[j];const used=new Set(p.b),fams=new Set(p.b.filter((_,i)=>i!==j).map(k=>EX[k].g+EX[k].f));
- const c=pool(sl).filter(k=>k!==p.b[j]);p.b[j]=choose(c,used,fams,recentSet(day));savePlan(day,p)}
+ const c=pool(sl).filter(k=>k!==p.b[j]);p.b[j]=choose(c,used,fams,recentSet(day),sl);savePlan(day,p)}
 function pick(day,j){return getPlan(day).b[j]}
 /* Replace: 3-5 moves for the same muscles, best match first */
 function altsFor(day,j){const p=getPlan(day),cur=p.b[j],sl=DAYS[day].slots[j],used=new Set(p.b),cm=musclesOf(cur)[0];
- const score=k=>(EX[k].f===EX[cur].f?3:0)+musclesOf(k)[0].filter(m=>cm.includes(m)).length*2+(EX[k].fav?.6:0)+(prefOf(k)==="more"?1.5:prefOf(k)==="less"?-1.5:0)+Math.random()*1.2;
+ const score=k=>(EX[k].f===EX[cur].f?3:0)+musclesOf(k)[0].filter(m=>cm.includes(m)).length*2+(EX[k].fav?.6:0)+(sl.cm&&EX[k].cm?1:0)+(prefOf(k)==="more"?1.5:prefOf(k)==="less"?-1.5:0)+Math.random()*1.2;
  let c=pool(sl).filter(k=>!used.has(k));
  if(c.length<3)c=c.concat(Object.keys(EX).filter(k=>EX[k].g===sl.g&&!used.has(k)&&!c.includes(k)&&prefOf(k)!=="never"));
  return c.map(k=>[k,score(k)]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0])}
@@ -598,11 +636,11 @@ function overview(day){
  <div style="margin-top:12px">${KNEE}</div>
  <div class="sec-t">Warm-up · 5 min</div><div class="chips">${p.w.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>`;
  let last="";
- D.slots.forEach((sl,j)=>{const k=p.b[j],e=EX[k],sec=sl.g==="bal"?"Balance · hold support":"Workout";
+ D.slots.forEach((sl,j)=>{const k=p.b[j],e=EX[k],sec=sl.g==="bal"?"Balance · hold support":sl.fin?"Core finisher":"Workout";
   if(sec!==last)h+=`${last?"</div>":""}<div class="sec-t">${sec}</div><div class="stack">`;last=sec;
   const w=wt[k];
   const pf=prefOf(k);
-  h+=`<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${e.n}${e.fav?" <span title='favorite style'>⭐</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m">${presc(k,sl.n)}${w&&e.w==="lb"?" · "+w+" lb":""}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`});
+  h+=`<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${exName(k)}${e.fav?" <span title='favorite style'>⭐</span>":""}${e.cm?" <span title='From Coddell Mutate'>💪</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m">${presc(k,sl.n)}${w&&e.w==="lb"?" · "+lbTxt(k,w):!w&&e.sw?" · start "+lbTxt(k,e.sw):""}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`});
  h+=`</div><div class="sec-t">Cool-down · 5 min</div><div class="chips">${p.c.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>
  <p class="muted small" style="margin-top:18px">Tap a move to see the video. Don't like one? Tap ⇄ to replace it.</p></div>
  <div class="bottom"><div class="in"><button class="btn pri" onclick="start('${day}')">▶ Start workout</button></div></div>`;
@@ -610,12 +648,14 @@ function overview(day){
 }
 function preview(k,day,j){const e=EX[k];const ctx=day?`ov:${day}:${j}`:"pv";
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="video" id="pvid"></div><div class="vbar" id="pbar2"></div>
- <div class="exname">${e.n}</div><div class="muted">${e.e||""}</div>${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${e.c}</p>${e.g!=="bonus"?prefBar(k,ctx):""}${day?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
+ <div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>${e.cm?`<div class="chips" style="margin-top:8px">${CM_TAG}</div>`:""}${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,ctx)}${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${exCue(k)}</p>${e.g!=="bonus"?prefBar(k,ctx):""}${day?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
  <div style="margin-top:14px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;
  PV={k,i:0};drawVid("pvid","pbar2",k,0);$("#sheet").classList.add("on")}
 let PV=null;
 /* draw video i of exercise k into box, with a small bar: favorite tag, switch button, YouTube link */
-function drawVid(box,bar,k,i){const L=vids(k),[id,st,en,lab,mine]=L[i]||L[0],v=$("#"+box);if(!v)return;
+function drawVid(box,bar,k,i){const L=vids(k),v=$("#"+box);if(!v)return;
+ if(!L.length){v.dataset.id="";v.style.backgroundImage="none";v.innerHTML=`<div class="novid">🧎 No checked kneeling demo on YouTube for this one.${EX[k].kn&&EX[k].kn.fb?`<br><a href="${EX[k].kn.fb}" target="_blank" rel="noopener">Watch Coddell's reel on Facebook ↗</a>`:""}</div>`;$("#"+bar).innerHTML="";return}
+ const [id,st,en,lab,mine]=L[i]||L[0];
  v.dataset.id=id+"_"+st;v.style.backgroundImage=`url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;
  v.innerHTML=`<iframe src="${embed(id,st,en)}" title="${EX[k].n}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
  const o=L.length>1?L[1-i]:null;
@@ -647,7 +687,7 @@ function show(){
  if(st.t==="s")showStretch(st);else if(EX[k].t)showTimedEx(st,k);else showRepEx(st,k);
  save();
 }
-function nextLabel(){const n=S.steps[S.i+1];if(!n)return "Finish 🎉";const k=n.t==="s"?n.k:pick(S.day,n.j);return (n.ph!==S.steps[S.i].ph?n.ph+": ":"")+EX[k].n}
+function nextLabel(){const n=S.steps[S.i+1];if(!n)return "Finish 🎉";const k=n.t==="s"?n.k:pick(S.day,n.j);return (n.ph!==S.steps[S.i].ph?n.ph+": ":"")+exName(k)}
 function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
 
 /* stretch: timed, auto-advance */
@@ -685,25 +725,25 @@ function nextTarget(k,rows){const e=EX[k],[lo,hi]=repRange(k),d=rows.filter(r=>r
  const L=d[d.length-1],lw=(L.w===""||L.w==null)?null:+L.w,lb=L.band||"Medium";
  if(e.t){const sec=Math.max(...d.map(r=>+r.sec||e.t));
   if(hard)return {sec:Math.max(15,sec-5),w:lw,why:"down"};
-  if(easy){if(e.w==="lb"&&lw&&sec>=e.t+10)return {sec:e.t,w:lw+wStep(lw),why:"up"};return {sec:Math.min(e.t+20,sec+5),w:lw,why:"up"}}
+  if(easy){if(e.w==="lb"&&lw&&sec>=e.t+10)return {sec:e.t,w:wUp(k,lw),why:"up"};return {sec:Math.min(e.t+20,sec+5),w:lw,why:"up"}}
   return {sec,w:lw,why:"same"}}
  const reps=d.map(r=>+r.r||0),minR=Math.min(...reps),allTop=reps.every(r=>r>=hi);
- if(hard&&minR<lo){if(e.w==="lb"&&lw)return {w:Math.max(0,lw-wStep(lw)),reps:lo+1,why:"down"};
+ if(hard&&minR<lo){if(e.w==="lb"&&lw)return {w:wDown(k,lw),reps:lo+1,why:"down"};
   if(e.w==="band"){const i=BANDS.indexOf(lb);return {band:BANDS[Math.max(0,i-1)],reps:lo+1,why:"down"}}return {reps:lo,why:"down"}}
  if(hard)return {w:lw,band:lb,reps:Math.max(lo,Math.min(hi,minR)),why:"same"};
- if(easy&&allTop){if(e.w==="lb"&&lw)return {w:lw+wStep(lw),reps:lo,why:"up"};
+ if(easy&&allTop){if(e.w==="lb"&&lw)return {w:wUp(k,lw),reps:lo,why:"up"};
   if(e.w==="band"){const i=BANDS.indexOf(lb);if(i<2)return {band:BANDS[i+1],reps:lo,why:"up"};return {band:lb,reps:hi,why:"slow"}}
   return {w:lw,reps:hi,why:"slow"}}
  return {w:lw,band:lb,reps:Math.min(hi,minR+(easy?2:1)),why:"more"}}
 function advice(k){const e=EX[k],[lo,hi]=repRange(k),L=lastLog(k);
  const rs=L?(L.rounds||(L.reps||[]).map(r=>({r,w:L.w,band:L.band,done:true}))):[];
  let P=(LS.get("prog",{}))[k];if(!P&&rs.length)P=nextTarget(k,rs.map(r=>({...r,done:true})));
- const t={w:P&&P.w!=null?P.w:(LS.get("wt",{})[k]??""),band:(P&&P.band)||LS.get("band",{})[k]||"Medium",reps:(P&&P.reps)||Math.round((lo+hi)/2),sec:(P&&P.sec)||e.t,why:(P&&P.why)||""};
- if(!L)return {...t,text:`<b>First time.</b> ${e.w==="lb"?`Pick a weight you can lift ${hi} times with good form.`:e.w==="band"?"Start with a Medium band.":e.t?"Go easy. Hold support if needed.":"Slow and steady."}`};
- const f=rs[0]||{},load=e.w==="lb"&&f.w?f.w+" lb × ":e.w==="band"?(f.band||"Medium")+" band × ":"";
+ const t={w:P&&P.w!=null?P.w:(LS.get("wt",{})[k]??(e.sw??"")),band:(P&&P.band)||LS.get("band",{})[k]||"Medium",reps:(P&&P.reps)||Math.round((lo+hi)/2),sec:(P&&P.sec)||e.t,why:(P&&P.why)||""};
+ if(!L)return {...t,text:`<b>First time.</b> ${e.w==="lb"&&e.sw?`Starting bell: <b>${lbTxt(k,e.sw)}</b>. Do ${lo}-${hi} slow reps${e.s?" each side":""}. If ${lo} good reps is too hard, go one bell lighter.`:e.w==="lb"?`Pick a weight you can lift ${hi} times with good form.`:e.w==="band"?"Start with a Medium band.":e.t?"Go easy. Hold support if needed.":"Slow and steady."}`};
+ const f=rs[0]||{},load=e.w==="lb"&&f.w?lbTxt(k,f.w)+" × ":e.w==="band"?(f.band||"Medium")+" band × ":"";
  const did=e.t?rs.map(r=>(r.sec||e.t)+" s").join(", "):rs.map(r=>r.r).join(", ")+" reps";
  const cnt={};rs.forEach(r=>r.rate&&(cnt[r.rate]=(cnt[r.rate]||0)+1));const feel=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
- const load2=e.w==="lb"&&t.w!==""&&t.w!=null?t.w+" lb":e.w==="band"?t.band+" band":"";
+ const load2=e.w==="lb"&&t.w!==""&&t.w!=null?lbTxt(k,t.w):e.w==="band"?t.band+" band":"";
  const goal=e.t?t.sec+" s":t.reps+" reps";
  const today={up:e.t?`a little longer: <b>${goal}</b>${load2&&t.w!==f.w?" with "+load2:""}.`:e.w==="lb"?`a little heavier: <b>${load2} × ${goal}</b>.`:e.w==="band"?`a stronger band: <b>${load2} × ${goal}</b>.`:`<b>${goal}</b>.`,
   down:`a little easier: <b>${load2?load2+" × ":""}${goal}</b>.`,same:`same again: <b>${load2?load2+" × ":""}${goal}</b>.`,
@@ -734,10 +774,10 @@ function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
   if(ctx==="run"&&S&&S.steps[S.i].t==="e")openReplace(S.day,S.steps[S.i].j,1);else if(m)openReplace(m[1],+m[2],0)}
  else toast(now==="more"?"You'll see it more often.":now==="less"?"You'll see it less often.":"Back to normal.")}
 function toast(t){let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800)}
-function exTop(k,n){const e=EX[k];return `<div class="row" style="align-items:flex-start"><div class="exname sp">${e.n}</div><button class="swap" style="margin-top:6px" onclick="openReplace(S.day,S.steps[S.i].j,1)" aria-label="Replace">⇄<span>Replace</span></button></div>
- <div class="chips"><span class="pill acc">${presc(k,n)}</span><span class="pill">${e.e}</span>${isNew(k)?'<span class="pill ok">✨ New</span>':""}</div>
+function exTop(k,n){const e=EX[k];return `<div class="row" style="align-items:flex-start"><div class="exname sp">${exName(k)}</div><button class="swap" style="margin-top:6px" onclick="openReplace(S.day,S.steps[S.i].j,1)" aria-label="Replace">⇄<span>Replace</span></button></div>
+ <div class="chips"><span class="pill acc">${presc(k,n)}</span><span class="pill">${kneelOn(k)?e.kn.e:e.e}</span>${isNew(k)?'<span class="pill ok">✨ New</span>':""}${e.cm?CM_TAG:""}</div>${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,"run")}
  <div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>
- <p class="cue">${e.c}</p>${e.b?'<div class="heavy" style="margin-top:10px;background:rgba(139,124,246,.14);color:#B3A8FF">🪑 Keep one hand on support. Safety first.</div>':""}`}
+ <p class="cue">${exCue(k)}</p>${e.b?'<div class="heavy" style="margin-top:10px;background:rgba(139,124,246,.14);color:#B3A8FF">🪑 Keep one hand on support. Safety first.</div>':""}`}
 function rowsHTML(k,X){const e=EX[k];
  const wl=e.w==="lb"?"lb":e.w==="band"?"Band":"";
  let h=`<div class="rhead"><span>Round</span><span>${e.t?"Seconds":"Reps"+(e.s?" / side":"")}</span><span>${wl}</span><span>Done</span></div>`;
@@ -815,7 +855,7 @@ function hideRest(){$("#rest").classList.remove("on")}
 function openReplace(day,j,inRun){const cur=pick(day,j),list=altsFor(day,j);
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">Replace this move</div>
  <div class="muted" style="margin-top:4px">${EX[cur].n} · works ${musclesOf(cur)[0].map(m=>MNAME[m]).join(", ")}</div>
- <div class="stack" style="margin-top:14px">${list.map(k=>`<button class="altitem" onclick="pickAlt('${day}',${j},'${k}',${inRun?1:0})">${bodySVG(k,"mthumb")}<div class="sp"><div class="n">${EX[k].n}${EX[k].fav?" ⭐":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px">NEW</span>':""}</div><div class="m">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")} · ${EX[k].e||""}</div></div><span class="chev">›</span></button>`).join("")}</div>
+ <div class="stack" style="margin-top:14px">${list.map(k=>`<button class="altitem" onclick="pickAlt('${day}',${j},'${k}',${inRun?1:0})">${bodySVG(k,"mthumb")}<div class="sp"><div class="n">${exName(k)}${EX[k].fav?" ⭐":""}${EX[k].cm?" 💪":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px">NEW</span>':""}</div><div class="m">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")} · ${EX[k].e||""}</div></div><span class="chev">›</span></button>`).join("")}</div>
  <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="openReplace('${day}',${j},${inRun?1:0})">↻ Show others</button><button class="btn sec" onclick="closeSheet()">Keep it</button></div>`;
  $("#sheet").classList.add("on")}
 function pickAlt(day,j,k,inRun){replaceSlot(day,j,k);closeSheet();toast("Replaced with "+EX[k].n);
