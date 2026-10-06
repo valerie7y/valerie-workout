@@ -310,6 +310,47 @@ button.nextup{display:block;width:100%}
 .xchoice{padding-top:4px}
 html,body{overscroll-behavior-y:none}
 .runtop~#phase,#exh,.tcbot{-webkit-user-select:none;user-select:none}
+
+/* v6.4: set screen + rest screen (reference look) */
+.prog.seg .sg{position:relative;overflow:visible;opacity:.55}.prog.seg .sg.cur{opacity:1}
+.prog.seg .sg i{border-radius:9px}
+.prog.seg .mk{position:absolute;top:-3px;width:4px;height:14px;margin-left:-2px;border-radius:3px;background:#fff;box-shadow:0 0 0 2px var(--bg)}
+.setl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rlab.set{color:#F5C542}
+.sdots{display:inline-flex;gap:6px}.sd{width:12px;height:12px;border-radius:50%;background:var(--card2);padding:0}.sd.on{background:var(--ok)}.sd.now{outline:2px solid #F5C542;outline-offset:1px}
+.tc .tchead .exname{font-size:28px;color:#fff}
+.tc .tchead .exmeta{margin-top:6px}
+.setrow{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:14px 6px 4px}
+.bigval{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:none;color:var(--text);text-align:left}
+.bigval.r{align-items:flex-end;text-align:right}
+.bigval .bv{font-size:54px;font-weight:800;letter-spacing:-.03em;line-height:1;width:2.6ch;background:var(--card2);border:0;border-radius:16px;color:#fff;padding:6px 10px;font-variant-numeric:tabular-nums;font-family:inherit}
+.bigval .bv:focus{outline:2px solid var(--acc)}
+.bigval .wv{display:flex;align-items:baseline;gap:6px}
+.bigval.r .bv{width:3.2ch;text-align:right}
+.bigval .lbu{font-size:24px;font-weight:800;color:var(--muted)}
+.bigval .u{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;padding:0 4px}
+.bigval .bvb{font-size:34px;font-weight:800;line-height:1.2;padding:6px 10px;background:var(--card2);border-radius:16px}
+.bigval.none .bvb{background:none;color:var(--dim)}
+.setsum{display:flex;gap:8px;flex-wrap:wrap;padding:12px 2px 4px}
+.ssum{flex:1;min-width:90px;background:var(--card2);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;color:var(--text);font-size:15px}
+.ssum b{font-size:20px}.ssum small{color:var(--ok);font-weight:700;font-size:12px;margin-top:2px}
+#rest .in.r2{text-align:left}
+.r2 .rtop{display:flex;align-items:center;gap:10px}
+.rdone{font-weight:750;font-size:17px;color:var(--ok);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcard{position:relative;border-radius:26px;padding:16px 16px 18px;background:linear-gradient(160deg,#1C3B6E 0%,#2A5C9E 55%,#3A7BC8 100%);box-shadow:0 10px 40px rgba(40,100,190,.25)}
+.rmid{display:flex;align-items:center;gap:8px}
+.rring{background:none;flex:1;margin:0}
+#rest .rring .ring{width:190px!important;height:190px!important}
+.rring .ring .bg{stroke:rgba(255,255,255,.18)}.rring .ring .fg{stroke:#fff}
+#rest .rring .ringtxt .big{font-size:48px!important;color:#fff}.rring .ringtxt .sm{color:rgba(255,255,255,.75)}
+.radj{display:flex;flex-direction:column;gap:12px}
+.rbtn{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-weight:800;font-size:15px}
+.rfb{margin-top:10px}.rfb .fq{color:rgba(255,255,255,.85);font-weight:650;margin-bottom:6px}
+.rfb .rate.big button{height:44px;background:rgba(255,255,255,.14);color:#fff}
+.rfb .prefs{margin-top:8px}.rfb .prefs button{height:38px;font-size:13px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+.rbig{font-size:40px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-top:8px;line-height:1}
+.rbig .relw{font-size:14px;color:rgba(255,255,255,.75)}.rbig .relw b{color:#fff}
+.r2 .nextup{margin-top:14px}
 </style>
 </head>
 <body>
@@ -1017,24 +1058,27 @@ function saveSession(R){const day=S.day,secs=Math.round((Date.now()-S.t0)/1000),
 function units(st,i){return st.t==="s"?1:(S.exs&&S.exs[i]?S.exs[i].rows.length:roundsFor(runPick(st.j),runSlot(st.j)))}
 function progress(){let tot=0,done=0;S.steps.forEach((st,i)=>{if(!live(st))return;const u=units(st,i);tot+=u;if(i<S.i)done+=u;else if(i===S.i&&st.t==="e"&&S.exs&&S.exs[i])done+=S.exs[i].rows.filter(r=>r.done).length});return tot?done/tot:0}
 /* segmented bar: one segment per section */
-function drawSeg(){const el=$("#pseg");if(!el||!S)return;const ph=[],m={};
- S.steps.forEach((st,i)=>{if(!live(st))return;if(!m[st.ph]){m[st.ph]={t:0,d:0};ph.push(st.ph)}const u=units(st,i);m[st.ph].t+=u;
+function drawSeg(){if(!S)return;const els=document.querySelectorAll(".prog.seg");if(!els.length)return;const ph=[],m={},cur=S.steps[S.i];
+ S.steps.forEach((st,i)=>{if(!live(st))return;if(!m[st.ph]){m[st.ph]={t:0,d:0,n:0,at:0};ph.push(st.ph)}const u=units(st,i);m[st.ph].t+=u;
+  if(cur&&st.ph===cur.ph){if(i<S.i)m[st.ph].at++;m[st.ph].n++}
   if(i<S.i)m[st.ph].d+=u;else if(i===S.i&&st.t==="e"&&S.exs&&S.exs[i])m[st.ph].d+=S.exs[i].rows.filter(r=>r.done).length});
- el.innerHTML=ph.map(p=>`<span class="sg${S.steps[S.i]&&S.steps[S.i].ph===p?" cur":""}" title="${p}"><i style="width:${(m[p].d/m[p].t*100).toFixed(1)}%"></i></span>`).join("")}
+ const h=ph.map(p=>{const c=cur&&cur.ph===p;return `<span class="sg${c?" cur":""}" title="${p}"><i style="width:${(m[p].d/m[p].t*100).toFixed(1)}%"></i>${c&&m[p].n>1?`<b class="mk" style="left:${((m[p].at+.5)/m[p].n*100).toFixed(1)}%"></b>`:""}</span>`}).join("");
+ els.forEach(el=>el.innerHTML=h)}
 function shell(){
  $("#app").innerHTML=`<div class="wrap" style="padding-bottom:calc(var(--safeB) + 120px)"><div class="top runtop"><button class="exitb" onclick="exitSheet()" aria-label="Exit workout">✕ <span>Exit</span></button><div class="prog seg" id="pseg"></div><span class="tnum" id="pnum"></span></div>
  <div class="phase" id="phase"></div><div id="exh"></div><div style="height:10px"></div><div class="video" id="vid"></div><div class="vbar" id="vbar"></div><div id="body"></div></div><div class="bottom" id="dock"><div class="in" id="dockin"></div></div>`}
 /* swipe on the exercise card: up = next move, down = previous. Only a clear, quick vertical swipe that starts on the
    card header / timer card (not on the video, the rounds list or the reps/weight boxes); it never scrolls or pulls the page. */
 let SW=null;
-function swZone(t){return t&&t.closest&&!t.closest("input,button.chk,#rows,.prefs,.vbar,iframe")&&t.closest("#phase,#exh,.tcbot,.excue,.xchoice")}
+function swZone(t){return t&&t.closest&&!t.closest("input,button.chk,#rows,.prefs,.vbar,iframe")&&t.closest("#phase,#exh,.tcbot,.tcnext,.xchoice")}
 document.addEventListener("touchstart",e=>{SW=null;if(!S||e.touches.length!==1||!document.querySelector(".runtop")||$("#sheet").classList.contains("on")||$("#rest").classList.contains("on"))return;
  const t=e.touches[0];if(swZone(e.target))SW={x:t.clientX,y:t.clientY,t:Date.now()}},{passive:true});
 document.addEventListener("touchmove",e=>{if(!SW)return;const t=e.touches[0],dy=t.clientY-SW.y,dx=t.clientX-SW.x;if(Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx))e.preventDefault()},{passive:false});
 document.addEventListener("touchend",e=>{if(!SW||!S)return;const t=e.changedTouches[0],dy=t.clientY-SW.y,dx=t.clientX-SW.x,dt=Date.now()-SW.t;SW=null;
  if(Math.abs(dy)<70||Math.abs(dx)>Math.abs(dy)*.5||dt>800)return;
  const a=document.activeElement;if(a&&a.tagName==="INPUT")return;
- const st=S.steps[S.i];if(dy<0){if(st&&st.x&&!S.xok)return;buzz(15);nextStep()}else{buzz(15);prevStep()}},{passive:true});
+ const st=S.steps[S.i];if(dy<0){if(st&&st.x&&!S.xok)return;buzz(15);const X=curEx();
+  if(st&&st.t==="e"&&X&&X.k===curKey()&&!EX[X.k].t&&X.rows.some(r=>!r.done))checkNext();else nextStep()}else{buzz(15);prevStep()}},{passive:true});
 function setVideo(k){const v=$("#vid");if(!v)return;if(v.dataset.k===k)return;v.dataset.k=k;S.vi=0;drawVid("vid","vbar",k,0)}
 function phaseInfo(){const st=S.steps[S.i];if(st.r)return `${st.ph} · ${st.wi} of ${st.wn}`;const same=S.steps.filter(x=>x.ph===st.ph);return `${st.ph} · ${same.indexOf(st)+1} of ${same.length}`}
 function curKey(){const st=S.steps[S.i];return st.t==="s"?st.k:runPick(st.j)}
@@ -1043,7 +1087,7 @@ function show(){
  const st=S.steps[S.i];const pos=S.i+"."+S.set;if(S._pos!==pos){S._pos=pos;window.scrollTo(0,0)}
  /* after Stretch: finish, or do the optional balance extra */
  if(st.x&&!S.xok){drawSeg();updTop();return showXChoice()}
- const app=$("#app .wrap");if(app)app.classList.toggle("tc",st.t==="s");
+ const app=$("#app .wrap");if(app)app.classList.add("tc");
  drawSeg();updTop();
  $("#phase").textContent=phaseInfo();const k=curKey();$("#vid").style.display="";setVideo(k);
  if(st.t==="s")showStretch(st);else if(EX[k].t)showTimedEx(st,k);else showRepEx(st,k);
@@ -1086,6 +1130,8 @@ function go(){const st=S.steps[S.i],e=EX[st.k];let switched=false;
 function ppStretch(){unlock();const b=$("#pp");if(b&&b.textContent.startsWith("Next")&&!T){nextStep();return}if(!T){S.auto=!isWarm(S.steps[S.i]);if(b)b.textContent="Pause";go();return}
  if(T&&T.paused){resumeTimer();$("#pp").textContent="Pause";if($("#rs"))$("#rs").textContent=isWarm(S.steps[S.i])?"Keep moving":"Relax · breathe"}else{pauseTimer();$("#pp").textContent="▶ Resume";if($("#rs"))$("#rs").textContent="Paused · tap"}}
 function prevStep(){cancelRest();stopTimer();
+ const cs=S.steps[S.i],cx=curEx();
+ if(cs&&cs.t==="e"&&cx&&cx.k===curKey()&&cx.rows.some(r=>r.done)&&cx.rows.some(r=>!r.done)){let i=-1;cx.rows.forEach((r,j)=>{if(r.done)i=j});toggleRow(i);return}
  if(S.i===0){if(runSummary().rd){exitSheet();return}const d=S.day;LS.set("run",null);S=null;try{wake&&wake.release()}catch(e){}overview(d);return}
  S.i--;S.set=0;S.reps=[];show()}
 function nextStep(){cancelRest();stopTimer();S.i++;S.set=0;S.reps=[];const n=S.steps[S.i];if(!n||n.t!=="s")S.auto=false;show()}
@@ -1094,7 +1140,7 @@ function skipPhase(){cancelRest();stopTimer();const ph=S.steps[S.i].ph;while(S.i
 function showXChoice(){const app=$("#app .wrap");if(app)app.classList.remove("tc");const p=S.px||[];
  $("#phase").textContent="Workout done";$("#exh").innerHTML="";$("#vid").style.display="none";$("#vid").dataset.k="";$("#vid").innerHTML="";$("#vbar").innerHTML="";
  const mins=Math.max(1,Math.round(p.reduce((t,k,i)=>t+XSLOTS[i].n*(setSecs(k)+XSLOTS[i].rest)+8,0)/60));
- $("#body").innerHTML=`<div class="xchoice"><div class="done-emoji" style="font-size:54px">🎉</div><div class="exname center">Great work!</div>
+ $("#body").innerHTML=`<div class="xchoice"><div class="done-emoji center" style="font-size:54px;margin-top:16px">🎉</div><div class="exname center">Great work!</div>
   <p class="muted center" style="margin:4px 0 16px">Warm Up, Block 1 and Stretch are done.</p>
   <div class="card"><div class="lbl" style="margin:0 0 6px">Extra: Balance · optional · + ≈ ${mins} min</div>
   ${p.map(k=>`<div class="tip">🪑 <span>${exName(k)}</span></div>`).join("")}
@@ -1181,11 +1227,14 @@ function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
   if(ctx==="run"&&S&&S.steps[S.i].t==="e")openReplace(S.day,S.steps[S.i].j,1);else if(m)openReplace(m[1],+m[2],0)}
  else toast(now==="more"?"You'll see it more often.":now==="less"?"You'll see it less often.":"Back to normal.")}
 function toast(t){let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800)}
-function exTop(k,n){const e=EX[k],eq=kneelOn(k)?e.kn.e:e.e;
- return `<div class="exhead"><div class="exname sp">${exName(k)}</div><button class="swap" onclick="openReplace(S.day,S.steps[S.i].j,1)" aria-label="Replace">⇄<span>Replace</span></button><button class="infob" onclick="infoSheet()" aria-label="More about this move">⋯</button></div>
- <div class="exmeta"><span class="pill acc">${presc(k,n)}</span>${eq?`<span class="pill">${eq}</span>`:""}${((curEx()&&curEx().k===k)?curEx().nw:isNew(k))?'<span class="pill ok">✨ New</span>':""}${e.cm?'<span class="mi">💪 Coddell</span>':""}${kneelOn(k)?'<span class="mi">🧎 Kneeling</span>':""}${e.b?'<span class="mi bal">🪑 Hold support</span>':""}</div>`}
+/* set screen card header: "Set 1 / 3" + set dots (tap a done one to undo), name, ⋯ menu (Replace, More/Less/Never, how-to, muscles) */
+function exTop(k,n){const e=EX[k],X=curEx(),rows=X&&X.k===k?X.rows:[],idx=rows.findIndex(r=>!r.done),tot=rows.length||n,timed=!!e.t;
+ const lab=rows.length&&idx<0?`All ${tot} ${timed?"rounds":"sets"} done ✓`:`${timed?"Round":"Set"} ${(idx<0?0:idx)+1} / ${tot}`;
+ const tags=[kneelOn(k)?'<span class="mi">🧎 Kneeling · knee pads</span>':"",e.b?'<span class="mi bal">🪑 Hold support</span>':"",((X&&X.k===k)?X.nw:isNew(k))?'<span class="mi ok">✨ New</span>':""].join("");
+ return `<div class="tchead"><div class="row" style="align-items:flex-start;gap:10px"><div class="sp"><div class="setl"><span class="rlab set">${lab}</span>${rows.length>1?`<span class="sdots">${rows.map((r,i)=>`<button class="sd${r.done?" on":""}${i===idx?" now":""}" ${r.done?`onclick="toggleRow(${i})" aria-label="Set ${i+1} done · tap to undo"`:`aria-label="Set ${i+1}" tabindex="-1"`}></button>`).join("")}</span>`:""}</div>
+ <div class="exname">${exName(k)}</div>${tags?`<div class="exmeta">${tags}</div>`:""}</div><button class="infob" onclick="infoSheet()" aria-label="More: replace, how-to, more or less">⋯</button></div></div>`}
 /* below the video: the short how-to, plainly visible (+ knee note when kneeling) */
-function exCueHTML(k){return `<p class="cue excue">${exCue(k)}</p>${kneelOn(k)?'<div class="kneel-note" style="margin-top:8px;padding:8px 12px">⚠️ Knee pads on. Stop if your knee hurts.</div>':""}`}
+function exCueHTML(k){return kneelOn(k)?'<div class="kneel-note" style="margin:8px 0 0;padding:8px 12px">⚠️ Knee pads on. Stop if your knee hurts.</div>':""}
 /* Info sheet: the secondary things (how-to, last time + today, More/Less/Never, Replace, kneeling, ± round) */
 function infoSheet(){if(!S)return;const st=S.steps[S.i];if(st.t!=="e")return;const k=curKey(),e=EX[k],X=curEx();
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>
@@ -1198,20 +1247,32 @@ function infoSheet(){if(!S)return;const st=S.steps[S.i];if(st.t!=="e")return;con
  <div style="margin-top:12px">${KNEE}</div>
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;
  openSheet()}
-function rowsHTML(k,X){const e=EX[k];
- const wl=e.w==="lb"?"Weight":e.w==="band"?"Band":"";
- let h=`<div class="rhead"><span>Round</span><span>${e.t?"Seconds":"Reps"+(e.s?" / side":"")}</span><span>${wl}</span><span>Done</span></div>`;
- X.rows.forEach((r,i)=>{h+=`<div class="rrow ${r.done?"done":""}"><span class="rn">${i+1}</span>
-  <input class="ri" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="${e.t?"Seconds":"Reps"} round ${i+1}" value="${e.t?r.sec:r.r}" onchange="setRow(${i},'${e.t?"sec":"r"}',this.value)">
-  ${e.w==="lb"?`<label class="wbox"><input class="ri" type="text" inputmode="decimal" enterkeyhint="done" aria-label="Pounds round ${i+1}" value="${r.w??""}" onchange="setRow(${i},'w',this.value)"><span class="u">lb</span></label>`:e.w==="band"?`<button class="ri bandb" onclick="cycleBand(${i})">${r.band}</button>`:`<span class="ri none">—</span>`}
-  <button class="chk ${r.done?"on":""}" onclick="toggleRow(${i})" aria-label="Round ${i+1} done">✓</button></div>
-`});
- return h}
-function drawRows(){const X=curEx();const el=$("#rows");if(X&&el)el.innerHTML=rowsHTML(X.k,X);drawDock()}
+/* bottom of the set card: big reps (left) and weight (right) for the current set, tap to edit; "lb" stays visible while typing */
+function rowsHTML(k,X){const e=EX[k],idx=X.rows.findIndex(r=>!r.done);
+ if(idx<0)return `<div class="setsum">${X.rows.map((r,i)=>`<button class="ssum" onclick="toggleRow(${i})" aria-label="Undo set ${i+1}"><b>${e.t?(r.sec||e.t)+" s":r.r}</b>${e.w==="lb"&&r.w!=null&&r.w!==""?` × ${r.w} lb`:e.w==="band"?` · ${r.band}`:""}<small>Set ${i+1} ✓</small></button>`).join("")}</div>`;
+ const r=X.rows[idx];
+ const left=e.t?`<label class="bigval"><span class="wv"><input class="bv" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Seconds set ${idx+1}" value="${r.sec}" onchange="setRow(${idx},'sec',this.value)"><span class="lbu">s</span></span><span class="u">${e.s?"total · both sides":"seconds"}</span></label>`
+  :`<label class="bigval"><input class="bv" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Reps set ${idx+1}" value="${r.r}" onchange="setRow(${idx},'r',this.value)"><span class="u">reps${e.s?" each side":""}</span></label>`;
+ const right=e.w==="lb"?`<label class="bigval r"><span class="wv"><input class="bv" type="text" inputmode="decimal" enterkeyhint="done" aria-label="Pounds set ${idx+1}" value="${r.w??""}" placeholder="0" onchange="setRow(${idx},'w',this.value)"><span class="lbu">lb</span></span><span class="u">${EX[k].kb&&KB_LB.includes(+r.w)?kgOf(+r.w)+" kg bell":"weight"}</span></label>`
+  :e.w==="band"?`<button class="bigval r" onclick="cycleBand(${idx})"><span class="bvb">${r.band}</span><span class="u">band · tap to change</span></button>`:`<div class="bigval r none"><span class="bvb">—</span><span class="u">bodyweight</span></div>`;
+ return `<div class="setrow">${left}${right}</div>`}
+function drawRows(){const X=curEx();if(!X||!S)return;const st=S.steps[S.i];if(!st||st.t!=="e")return;const k=X.k,e=EX[k];
+ $("#exh").innerHTML=exTop(k,X.rows.length);const idx=X.rows.findIndex(r=>!r.done);
+ if(e.t){const sec=(X.rows[idx]||X.rows[0]).sec;
+  $("#body").innerHTML=`<div class="tcbot">
+   <div class="tcrow"><button class="tcside" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button>
+   <button class="ringbox tcring" onclick="ppTimed()" aria-label="Start or pause timer">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${idx<0?"✓":mmssT(sec)}</div><div class="sm" id="rs">${idx<0?"Done":T&&!T.rest?(T.paused?"Paused · tap":"Hold · breathe"):"Tap to start"}</div></div></div></button>
+   <button class="tcside" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>
+   <div id="rows">${rowsHTML(k,X)}</div>${exCueHTML(k)}</div>
+   <div class="tcnext"><span class="lbl">Next</span> → <b>${idx<0?nextLabel():"Rest"}</b></div>`}
+ else $("#body").innerHTML=`<div class="tcbot"><div id="rows">${rowsHTML(k,X)}</div>${exCueHTML(k)}</div>
+   <div class="tcnext"><span class="lbl">Next</span> → <b>${idx<0?nextLabel():"Rest"}</b></div>`;
+ drawSeg();drawDock()}
 function drawDock(){const X=curEx();if(!X)return;const e=EX[X.k],idx=X.rows.findIndex(r=>!r.done);
- if(idx<0)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn pri" onclick="nextStep()">Next ›</button></div>`);
- else if(e.t)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn pri" id="pp" onclick="ppTimed()">${T&&!T.rest?(T.paused?"▶ Resume":"Pause"):"▶ Start round "+(idx+1)}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>`);
- else dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn ok" onclick="checkNext()">✓ Round ${idx+1} of ${X.rows.length}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>`)}
+ const B='<button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button>',K='<button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button>';
+ if(idx<0)dock(`<div class="ctrls">${B}<button class="btn pri" onclick="nextStep()">Next ›</button></div>`);
+ else if(e.t)dock(`<button class="btn pri" id="pp" onclick="ppTimed()">${T&&!T.rest?(T.paused?"▶ Resume":"Pause"):"▶ Start "+(X.rows.length>1?"round "+(idx+1):"")}</button>`);
+ else dock(`<div class="ctrls">${B}<button class="btn ok" onclick="checkNext()">✓ Done ${idx+1}/${X.rows.length}</button>${K}</div>`)}
 function setRow(i,f,v){const X=curEx();if(!X)return;v=String(v).replace(",",".").trim();
  if(v===""||isNaN(parseFloat(v))){drawRows();return}
  const val=Math.max(0,Math.round(parseFloat(v)*2)/2);X.rows[i][f]=val;
@@ -1233,36 +1294,35 @@ function toggleRow(i){unlock();const X=curEx();const r=X.rows[i];
   const cs=S.steps[S.i];rest(all?nextLabel():`Round ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()},cs&&cs.x?runSlot(cs.j).rest:0)}}
 
 /* rep-based exercise */
-function showRepEx(st,k){const X=initEx();$("#exh").innerHTML=exTop(k,X.rows.length);
- $("#body").innerHTML=`${exCueHTML(k)}
- <div class="card rounds" id="rows" style="margin-top:12px"></div>`;drawRows()}
-
+function showRepEx(st,k){initEx();drawRows()}
 /* timed exercise (planks, carries, balance holds) */
-function showTimedEx(st,k){const X=initEx();$("#exh").innerHTML=exTop(k,X.rows.length);
- $("#body").innerHTML=`${exCueHTML(k)}
- <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${(X.rows.find(r=>!r.done)||X.rows[0]).sec}</div><div class="sm" id="rs">Tap Start</div></div></div></div>
- <div class="card rounds" id="rows"></div>`;drawRows()}
+function showTimedEx(st,k){initEx();drawRows()}
 function ppTimed(){unlock();const X=curEx(),k=X.k,e=EX[k],i=X.rows.findIndex(r=>!r.done);if(i<0)return;if(T&&T.rest)cancelRest();
- if(T&&!T.rest){if(T.paused){resumeTimer();$("#pp").textContent="Pause"}else{pauseTimer();$("#pp").textContent="▶ Resume"}return}
+ if(T&&!T.rest){if(T.paused){resumeTimer();$("#pp").textContent="Pause"}else{pauseTimer();$("#pp").textContent="▶ Resume";if($("#rs"))$("#rs").textContent="Paused · tap"}return}
  const sec=+X.rows[i].sec||e.t;$("#pp").textContent="Pause";let switched=false;const rb=$(".ringbox");rb&&rb.scrollIntoView({block:"center",behavior:"smooth"});
  runTimer(3,{tick:r=>{$("#rt")&&($("#rt").textContent=mmss(r));$("#rs")&&($("#rs").textContent="Get ready");setRing("rg",r/3)},done:()=>{beepTick();
-  runTimer(sec,{ticks:true,tick:(r,tot)=>{if(!$("#rt"))return;$("#rt").textContent=mmss(r);setRing("rg",r/tot);if(e.s&&!switched&&r<=tot/2){switched=true;beepSwitch()}
+  runTimer(sec,{ticks:true,tick:(r,tot)=>{if(!$("#rt"))return;$("#rt").textContent=mmssT(r);setRing("rg",r/tot);if(e.s&&!switched&&r<=tot/2){switched=true;beepSwitch()}
    $("#rs").textContent=e.s?(r>tot/2?"Side 1":"Switch side → 2"):"Hold · breathe"},done:()=>{beepEnd();X.rows[i].sec=sec;toggleRow(i)}})}})}
 
 /* ===== rest timer: her length (default 60 s), −10/+10, pause, skip, minimize, beeps =====
    in-between rests: just the timer + Next. Last rest of a move (fx = that exercise): Easy/Medium/Hard + More/Less/Never */
 let RX=null,RMIN=false;
 let ROVR=0;
+/* rest: "✓ move just done" + progress, a calm blue card with "Rest", a big round timer (tap = pause) and −15 / +15;
+   Easy/Medium/Hard (+ More/Less/Never, small) only on the last rest of a move; Next → below; minimize + Skip rest */
 function rest(nextTxt,fx,after,ovr){ROVR=ovr||0;const sec=ROVR||restLen();RX=fx||null;RMIN=false;
- const el=$("#rest");el.innerHTML=`<div class="in"><div class="rtop"><button class="backb" onclick="restBack()" aria-label="Back">‹ Back</button><div class="phase sp">Rest <span class="relw">· workout <b id="rel">${S?fmtEl((Date.now()-S.t0)/1000):""}</b></span></div><button class="icon-btn sm" onclick="minRest()" aria-label="Minimize rest">⌄</button></div>
- <div class="ringbox" style="margin:8px 0">${ringSVG("rr",105)}<div class="ringtxt"><div><div class="big" id="rrt">${mmss(sec)}</div><div class="sm" id="rrs">of <span id="rlen">${sec}</span> s</div></div></div></div>
- <div class="ctrls3"><button class="btn sec" onclick="restAdj(-10)">−10</button><button class="btn sec" id="rpp" onclick="restPP()">Pause</button><button class="btn sec" onclick="restAdj(10)">+10</button></div>
- ${fx?`<div class="fbk"><div class="fq">How was <b>${exName(fx.k)}</b>?</div><div class="rate big">${RATES.map(x=>`<button class="${fx.rate===x?"on "+x:""}" onclick="rateEx('${x}')">${x}</button>`).join("")}</div>${prefBar(fx.k,"rest")}</div>`:""}
- <button class="nextup" onclick="nextPreview()" aria-label="Preview next move"><div class="lbl" style="margin:0 0 4px">Next · tap to preview</div><div class="row"><div class="sp" style="font-weight:700;font-size:17px">${nextTxt}</div><span class="chev">›</span></div></button>
- <button class="btn pri" id="rskip" style="margin-top:14px" onclick="endRest()">Skip rest ›</button></div>`;
- el.classList.add("on");el._after=after;drawRestPill();
- runTimer(sec,{rest:true,ticks:true,tick:(r,tot)=>{const t=$("#rrt");if(t)t.textContent=mmss(r);setRing("rr",Math.max(0,r/tot));const p=$("#rpt");if(p)p.textContent=fmtEl(Math.ceil(r))},
-  done:()=>{beepEnd();if(RX&&!RX.rate&&!RMIN){$("#rrt").textContent="0";$("#rrs").textContent="time's up";$("#rskip").textContent="Next ›";$("#rpill").classList.remove("on");return}endRest()}});
+ const justDone=S?exName(curKey()):"";
+ const el=$("#rest");el.innerHTML=`<div class="in r2"><div class="rtop"><button class="backb" onclick="restBack()" aria-label="Back">‹ Back</button><div class="sp rdone">✓ ${justDone}</div><button class="icon-btn sm" onclick="minRest()" aria-label="Minimize rest">⌄</button></div>
+ <div class="prog seg" style="margin:10px 0 14px"></div>
+ <div class="rcard"><div class="rmid"><button class="ringbox rring" onclick="restPP()" aria-label="Pause or resume rest">${ringSVG("rr",105)}<div class="ringtxt"><div><div class="big" id="rrt">${mmssT(sec)}</div><div class="sm" id="rrs">of <span id="rlen">${sec}</span> s</div></div></div></button>
+  <div class="radj"><button class="rbtn" onclick="restAdj(15)" aria-label="Add 15 seconds">+15s</button><button class="rbtn" onclick="restAdj(-15)" aria-label="15 seconds less">−15s</button></div></div>
+  ${fx?`<div class="rfb"><div class="fq">How was it?</div><div class="rate big">${RATES.map(x=>`<button class="${fx.rate===x?"on "+x:""}" onclick="rateEx('${x}')">${x}</button>`).join("")}</div>${prefBar(fx.k,"rest")}</div>`:""}
+  <div class="rbig">Rest<span class="relw"> · workout <b id="rel">${S?fmtEl((Date.now()-S.t0)/1000):""}</b></span></div></div>
+ <button class="nextup" onclick="nextPreview()" aria-label="Preview next move"><div class="row"><div class="sp"><span class="lbl" style="margin:0">Next</span> → <b>${nextTxt}</b></div><span class="chev">›</span></div></button>
+ <button class="btn pri" id="rskip" style="margin-top:12px" onclick="endRest()">Skip rest ›</button></div>`;
+ el.classList.add("on");el._after=after;drawRestPill();drawSeg();
+ runTimer(sec,{rest:true,ticks:true,tick:(r,tot)=>{const t=$("#rrt");if(t)t.textContent=mmssT(r);setRing("rr",Math.max(0,r/tot));const p=$("#rpt");if(p)p.textContent=fmtEl(Math.ceil(r))},
+  done:()=>{beepEnd();if(RX&&!RX.rate&&!RMIN){$("#rrt").textContent="0:00";$("#rrs").textContent="time's up";$("#rskip").textContent="Next ›";$("#rpill").classList.remove("on");return}endRest()}});
 }
 function drawRestPill(){let p=$("#rpill");if(!p){p=document.createElement("div");p.id="rpill";document.body.appendChild(p)}
  p.innerHTML=`<button class="rp-main" onclick="maxRest()" aria-label="Expand rest timer">⏱ Rest <b id="rpt">${fmtEl(T&&T.rest?Math.ceil((T.end-Date.now())/1000):restLen())}</b><span>⌃</span></button><button class="rp-next" onclick="nextPreview()" aria-label="Preview next move">Next ›</button>`;p.classList.remove("on")}
@@ -1271,7 +1331,7 @@ function maxRest(){if(!T||!T.rest)return;RMIN=false;$("#rest").classList.add("on
 function restAdj(d){if(!T||!T.rest)return;const rem=T.paused?T.rem/1000:(T.end-Date.now())/1000;
  if(!ROVR){LS.set("restLen",Math.min(180,Math.max(10,restLen()+d)))}else ROVR=Math.max(5,ROVR+d);const l=$("#rlen");if(l)l.textContent=ROVR||restLen();
  if(rem+d<=0.5){endRest();return}addTime(d)}
-function restPP(){if(!T||!T.rest)return;if(T.paused){resumeTimer();$("#rpp").textContent="Pause";$("#rrs").innerHTML=`of <span id="rlen">${ROVR||restLen()}</span> s`}else{pauseTimer();$("#rpp").textContent="▶ Resume";$("#rrs").textContent="paused"}}
+function restPP(){if(!T||!T.rest)return;if(T.paused){resumeTimer();$("#rrs").innerHTML=`of <span id="rlen">${ROVR||restLen()}</span> s`}else{pauseTimer();$("#rrs").textContent="paused · tap"}}
 /* Back on the rest screen: back to the exercise (checked rounds stay; untick one there if needed) */
 function restBack(){cancelRest();if(S){S._pos=null;show()}}
 function endRest(){if(T&&T.rest)stopTimer();hideRest();const a=$("#rest")._after;$("#rest")._after=null;RX=null;a&&a()}
@@ -1345,7 +1405,7 @@ function healthHelp(){
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.3";
+const APP_VER="6.4";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
