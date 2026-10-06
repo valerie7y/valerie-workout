@@ -275,6 +275,15 @@ button.nextup{display:block;width:100%}
 .steps{padding-left:22px;margin:10px 0;line-height:1.5;font-size:15px;color:#CDD3DE}.steps li{margin-bottom:9px}.steps b{color:var(--text)}
 .exhead .swap{margin-top:2px}
 .excue{margin:4px 0 0;font-size:16px}
+
+/* v6: Back at the top of sheets, Start here, labeled Back/Skip */
+.shtop{position:sticky;top:-18px;z-index:3;margin:-4px -4px 10px;padding:4px 0 6px;background:var(--card);display:flex;align-items:center}
+.backb{min-height:46px;padding:0 16px 0 12px;border-radius:14px;background:var(--card2);font-size:16px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:4px}
+.btn.starthere{margin-top:12px}
+.ctrls .side{flex:0 0 78px;padding:0;flex-direction:column;gap:1px;line-height:1}
+.ctrls .side b{font-size:24px;line-height:.9}
+.ctrls .side small{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.skipwu{margin-top:8px;color:var(--text);border:1px solid var(--card2);border-radius:16px}
 </style>
 </head>
 <body>
@@ -835,6 +844,9 @@ function equipOf(day){const p=getPlan(day),set=new Map();
 function fmtTarget(k,n){const e=EX[k],a=advice(k);
  if(e.t)return `${presc(k,n)}${e.w==="lb"&&a.w!==""&&a.w!=null?" × "+lbTxt(k,a.w):""}`;
  return `${n} × ${a.reps}${e.s?" each side":""}${e.w==="lb"?(a.w!==""&&a.w!=null?" × "+lbTxt(k,a.w):" × your weight"):e.w==="band"?" × "+a.band+" band":""}`}
+/* ONE order for the overview and the live session: strength work right after the warm-up, then balance (hold support), then the core finisher */
+function secOf(day,sl){return sl.g==="bal"?"Balance":sl.fin?"Core finisher":day==="E"?"Core":"Workout"}
+function slotOrder(day){const sl=DAYS[day].slots,rank=x=>x.fin?2:x.g==="bal"?1:0;return sl.map((_,j)=>j).sort((a,b)=>rank(sl[a])-rank(sl[b])||a-b)}
 function overview(day){
  const D=DAYS[day],p=getPlan(day);stopTimer();
  const nb=D.slots.filter(s=>s.g==="bal").length,ns=D.slots.length-nb,ms=sessionMuscles(p.b);
@@ -843,21 +855,21 @@ function overview(day){
  <div class="hero" style="--tc:${D.col}">${bodyFor(ms,"body big",D.col)}<div class="mt">${ms[0].map(m=>MNAME[m]).join(" · ")}${ms[1].length?`<span> + ${ms[1].slice(0,4).map(m=>MNAME[m]).join(", ")}</span>`:""}</div></div>
  <div class="facts"><div><b>≈ ${estMin(day)}</b><span>minutes</span></div><div><b>${ns}</b><span>strength</span></div><div><b>${nb}</b><span>balance</span></div></div>
  <div class="sec-t">Equipment</div><div class="chips">${equipOf(day).map(x=>`<span class="chip eq">${x}</span>`).join("")}</div>
- <div class="sec-t">Warm-up · ${Math.round(p.w.reduce((t,x)=>t+x[1]+3,0)/60)} min</div><div class="chips">${p.w.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>`;
+ <div class="sec-t">Warm-up · ${Math.round(p.w.reduce((t,x)=>t+x[1]+3,0)/60)} min</div><div class="chips">${p.w.map(([k])=>`<button class="chip" onclick="preview('${k}','${day}',-1)">${EX[k].n}</button>`).join("")}</div>`;
  let last="";
- D.slots.forEach((sl,j)=>{const k=p.b[j],e=EX[k],sec=sl.g==="bal"?"Balance · hold support":sl.fin?"Core finisher":day==="E"?"Core":"Workout";
+ slotOrder(day).forEach(j=>{const sl=D.slots[j],k=p.b[j],e=EX[k],sec=secOf(day,sl)==="Balance"?"Balance · hold support":secOf(day,sl);
   if(sec!==last)h+=`${last?"</div>":""}<div class="sec-t">${sec}</div><div class="stack">`;last=sec;
   const pf=prefOf(k);
   h+=`<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${exName(k)}${e.fav?" <span title='favorite style'>⭐</span>":""}${e.cm?" <span title='From Coddell Mutate'>💪</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m tg">${fmtTarget(k,roundsFor(k,sl))}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`});
- h+=`</div><div class="sec-t">Cool-down · ${Math.round(p.c.reduce((t,x)=>t+x[1]+3,0)/60)} min</div><div class="chips">${p.c.map(([k])=>`<button class="chip" onclick="preview('${k}')">${EX[k].n}</button>`).join("")}</div>
+ h+=`</div><div class="sec-t">Cool-down · ${Math.round(p.c.reduce((t,x)=>t+x[1]+3,0)/60)} min</div><div class="chips">${p.c.map(([k])=>`<button class="chip" onclick="preview('${k}','${day}',-1)">${EX[k].n}</button>`).join("")}</div>
  <div style="margin-top:16px">${KNEE}</div>
  <p class="muted small" style="margin-top:14px">Tap a move for the video, tips and last time. Tap ⇄ to replace it.</p></div>
  <div class="bottom"><div class="in"><button class="btn pri startbig" onclick="start('${day}')"><span>▶ Start</span><small>${D.t} · ≈ ${estMin(day)} min</small></button></div></div>`;
  $("#app").innerHTML=h;window.scrollTo(0,0);
 }
-function preview(k,day,j){const e=EX[k];const ctx=day?`ov:${day}:${j}`:"pv";
+function preview(k,day,j){const e=EX[k];const ctx=day&&j>=0?`ov:${day}:${j}`:"pv";
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="video" id="pvid"></div><div class="vbar" id="pbar2"></div>
- <div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>${e.cm?`<div class="chips" style="margin-top:8px">${CM_TAG}</div>`:""}${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,ctx)}${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${exCue(k)}</p>${day&&e.g!=="warm"&&e.g!=="cool"?`<div class="last guide">${advice(k).text}</div>`:""}${e.g!=="bonus"?prefBar(k,ctx):""}${k==="happy_walk"?`<button class="btn ok" style="margin-top:14px" onclick="logWalk()">✓ I did my walk today</button>`:""}${day?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
+ <div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>${day&&DAYS[day]?`<button class="btn pri starthere" onclick="start('${day}','${k}')">▶ Start workout here</button>`:""}${e.cm?`<div class="chips" style="margin-top:8px">${CM_TAG}</div>`:""}${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,ctx)}${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${exCue(k)}</p>${day&&e.g!=="warm"&&e.g!=="cool"?`<div class="last guide">${advice(k).text}</div>`:""}${e.g!=="bonus"?prefBar(k,ctx):""}${k==="happy_walk"?`<button class="btn ok" style="margin-top:14px" onclick="logWalk()">✓ I did my walk today</button>`:""}${day&&j>=0?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
  <div style="margin-top:14px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;
  PV={k,i:0};drawVid("pvid","pbar2",k,0);openSheet()}
 let PV=null;
@@ -869,8 +881,15 @@ function drawVid(box,bar,k,i){const L=vids(k),v=$("#"+box);if(!v)return;
  v.innerHTML=`<iframe src="${embed(id,st,en)}" title="${EX[k].n}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
  const o=L.length>1?L[1-i]:null;
  $("#"+bar).innerHTML=`${mine?'<span class="pill fav">⭐ From your favorites</span>':""}${o?`<button class="pill alt" onclick="${box==="pvid"?"PV.i=1-PV.i;drawVid('pvid','pbar2',PV.k,PV.i)":"S.vi=1-(S.vi||0);drawVid('vid','vbar',curKey(),S.vi)"}">${o[4]?o[3]:"▶ "+(o[3]||"Other video")}</button>`:""}<a class="yt" href="${watch(id,st)}" target="_blank" rel="noopener">YouTube ↗</a>`}
-function openSheet(){const p=$("#sheetPane");$("#sheet").classList.add("on");if(p)p.scrollTop=0}
-function closeSheet(){$("#sheet").classList.remove("on");$("#sheetPane").innerHTML="";if(EXITP){EXITP=false;resumeTimer();const b=$("#pp");if(b&&T)b.textContent="Pause"}}
+/* sheets: "‹ Back" at the top; Back returns to the sheet before (e.g. Replace -> details), else closes to the screen below */
+let SH=[],SHCUR=null,SHNEXT=null,SHBACK=false;
+function openSheet(){const p=$("#sheetPane"),sh=$("#sheet");if(!p)return;
+ if(!p.querySelector(".shtop")){const g=p.querySelector(".grab");const b=`<div class="shtop"><button class="backb" onclick="sheetBack()" aria-label="Back">‹ Back</button></div>`;if(g)g.insertAdjacentHTML("afterend",b);else p.insertAdjacentHTML("afterbegin",b)}
+ const nx=SHNEXT;SHNEXT=null;
+ if(!SHBACK&&sh.classList.contains("on")&&SHCUR&&(!nx||nx.key!==SHCUR.key))SH.push(SHCUR);
+ SHBACK=false;SHCUR=nx;sh.classList.add("on");p.scrollTop=0}
+function sheetBack(){const prev=SH.pop();if(prev){SHBACK=true;prev.fn()}else closeSheet()}
+function closeSheet(){SH=[];SHCUR=null;$("#sheet").classList.remove("on");$("#sheetPane").innerHTML="";if(EXITP){EXITP=false;resumeTimer();const b=$("#pp");if(b&&T)b.textContent="Pause"}}
 let EXITP=false;
 function logWalk(){const ses=LS.get("sessions",[]);ses.push({day:"W",d:new Date().toISOString(),mins:15,secs:900,sets:0,ex:["happy_walk"],pct:100,partial:false,lbs:0,rd:1,rp:1,log:[{k:"happy_walk",n:"Happy Walk · 1 mile",pl:1,rd:[],lb:0}],v:4});LS.set("sessions",ses.slice(-400));
  const ev=LS.get("everDone",[]);if(!ev.includes("happy_walk")){ev.push("happy_walk");LS.set("everDone",ev)}closeSheet();toast("Walk saved 🚶‍♀️");home()}
@@ -878,9 +897,10 @@ function logWalk(){const ses=LS.get("sessions",[]);ses.push({day:"W",d:new Date(
 /* ===== RUN ===== */
 function buildSteps(day){const p=getPlan(day);return [
  ...p.w.map(([k,sec])=>({t:"s",k,sec,ph:"Warm-up"})),
- ...DAYS[day].slots.map((b,j)=>({t:"e",j,ph:"Workout"})),
+ ...slotOrder(day).map(j=>({t:"e",j,ph:secOf(day,DAYS[day].slots[j])})),
  ...p.c.map(([k,sec])=>({t:"s",k,sec,ph:"Cool-down"}))]}
-function start(day){unlock();closeSheet();S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0,exs:{},v:4};save();keepAwake();shell();show()}
+function start(day,at){unlock();closeSheet();S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0,exs:{},v:4};
+ if(at){const i=S.steps.findIndex(st=>(st.t==="s"?st.k:pick(day,st.j))===at);if(i>0)S.i=i}save();keepAwake();shell();show()}
 function resume(){const r=LS.get("run",null);if(!r)return home();unlock();S=r;S.auto=false;S._pos=null;keepAwake();shell();show()}
 function save(){if(S){S.ts=Date.now();LS.set("run",S)}}
 /* ===== EXIT: confirm sheet, then save as a partial session ===== */
@@ -938,23 +958,26 @@ function nextLabel(){const n=S.steps[S.i+1];if(!n)return "Finish 🎉";const k=n
 function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
 
 /* stretch: timed, auto-advance */
-function showStretch(st){const e=EX[st.k];$("#exh").innerHTML="";
+function showStretch(st){const e=EX[st.k],wu=st.ph==="Warm-up",auto=S.auto&&!wu;if(wu)S.auto=false;$("#exh").innerHTML="";
  $("#body").innerHTML=`<div class="exname">${e.n}</div><div class="chips"><span class="pill">${st.sec} s${e.s?" · both sides":""}</span></div><p class="cue">${e.c}</p>
- <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${st.sec}</div><div class="sm" id="rs">${S.auto?"Get ready":"Tap Start"}</div></div></div></div>
+ <div class="ringbox">${ringSVG("rg")}<div class="ringtxt"><div><div class="big" id="rt">${st.sec}</div><div class="sm" id="rs">${auto?"Get ready":"Tap Start"}</div></div></div></div>
  <p class="muted small center" style="margin:6px 0 0">Next: ${nextLabel()}</p>
- ${S.i===0?`<button class="btn ghost" onclick="skipPhase()">Skip warm-up</button>`:st.ph==="Cool-down"?`<button class="btn ghost" onclick="skipPhase()">Skip cool-down</button>`:""}
+ ${wu?`<button class="btn ghost skipwu" onclick="skipPhase()">Skip warm-up ›</button>`:st.ph==="Cool-down"?`<button class="btn ghost" onclick="skipPhase()">Skip cool-down</button>`:""}
  <div style="margin-top:12px">${KNEE}</div>`;
- dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn pri" id="pp" onclick="ppStretch()">${S.auto?"Pause":"▶ Start"}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip">›</button></div>`);
- stopTimer();if(S.auto)go();
+ dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn pri" id="pp" onclick="ppStretch()">${auto?"Pause":"▶ Start"}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>`);
+ stopTimer();if(auto)go();
 }
 function go(){const st=S.steps[S.i],e=EX[st.k];let switched=false;
  runTimer(3,{tick:r=>{$("#rt")&&($("#rt").textContent=mmss(r));$("#rs")&&($("#rs").textContent="Get ready");setRing("rg",r/3)},done:()=>{beepTick();
   runTimer(st.sec,{ticks:true,tick:(r,tot)=>{if($("#rt"))$("#rt").textContent=mmss(r);setRing("rg",r/tot);
    if(e.s&&!switched&&r<=tot/2){switched=true;beepSwitch()}
    if($("#rs"))$("#rs").textContent=e.s?(r>tot/2?"Side 1":"Switch side → 2"):(st.ph==="Warm-up"?"Keep moving":"Relax · breathe")},
-   done:()=>{beepEnd();S.i++;const n=S.steps[S.i];if(n&&n.t==="s"&&n.ph===st.ph){show()}else{S.auto=false;show()}}})}});
+   done:()=>{beepEnd();
+    /* warm-up: stay here; she moves on with Next */
+    if(st.ph==="Warm-up"){S.auto=false;if($("#rt"))$("#rt").textContent="✓";if($("#rs"))$("#rs").textContent="Done · tap Next";setRing("rg",0);const b=$("#pp");if(b){b.textContent="Next ›";b.onclick=()=>nextStep()}return}
+    S.i++;const n=S.steps[S.i];if(n&&n.t==="s"&&n.ph===st.ph){show()}else{S.auto=false;show()}}})}});
 }
-function ppStretch(){unlock();if(!S.auto){S.auto=true;$("#pp").textContent="Pause";go();return}
+function ppStretch(){unlock();if(!T){S.auto=S.steps[S.i].ph!=="Warm-up";$("#pp").textContent="Pause";go();return}
  if(T&&T.paused){resumeTimer();$("#pp").textContent="Pause"}else{pauseTimer();$("#pp").textContent="▶ Resume"}}
 function prevStep(){cancelRest();stopTimer();if(S.i>0){S.i--;S.set=0;S.reps=[]}show()}
 function nextStep(){cancelRest();stopTimer();S.i++;S.set=0;S.reps=[];const n=S.steps[S.i];if(!n||n.t!=="s")S.auto=false;show()}
@@ -1067,9 +1090,9 @@ function rowsHTML(k,X){const e=EX[k];
  return h}
 function drawRows(){const X=curEx();const el=$("#rows");if(X&&el)el.innerHTML=rowsHTML(X.k,X);drawDock()}
 function drawDock(){const X=curEx();if(!X)return;const e=EX[X.k],idx=X.rows.findIndex(r=>!r.done);
- if(idx<0)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn pri" onclick="nextStep()">Next ›</button></div>`);
- else if(e.t)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn pri" id="pp" onclick="ppTimed()">${T&&!T.rest?(T.paused?"▶ Resume":"Pause"):"▶ Start round "+(idx+1)}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip">›</button></div>`);
- else dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back">‹</button><button class="btn ok" onclick="checkNext()">✓ Round ${idx+1} of ${X.rows.length}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip">›</button></div>`)}
+ if(idx<0)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn pri" onclick="nextStep()">Next ›</button></div>`);
+ else if(e.t)dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn pri" id="pp" onclick="ppTimed()">${T&&!T.rest?(T.paused?"▶ Resume":"Pause"):"▶ Start round "+(idx+1)}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>`);
+ else dock(`<div class="ctrls"><button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button><button class="btn ok" onclick="checkNext()">✓ Round ${idx+1} of ${X.rows.length}</button><button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>`)}
 function setRow(i,f,v){const X=curEx();if(!X)return;v=String(v).replace(",",".").trim();
  if(v===""||isNaN(parseFloat(v))){drawRows();return}
  const val=Math.max(0,Math.round(parseFloat(v)*2)/2);X.rows[i][f]=val;
@@ -1199,5 +1222,13 @@ function healthHelp(){
  <p class="muted small">Date tricky? Leave Date empty: Health then starts the workout when it's logged. Calories are an estimate (about ${KCAL_PER_MIN} per minute).</p>
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
+/* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
+const APP_VER="6.1";
+function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
+ if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
+setTimeout(checkUpdate,2500);
+/* sheets that Back can return to */
+["preview","infoSheet","openReplace","dayDetail","nextPreview","hiddenSheet","healthHelp","exitSheet"].forEach(n=>{const f=window[n];window[n]=function(...a){SHNEXT={key:n+JSON.stringify(a),fn:()=>window[n](...a)};return f.apply(this,a)}});
 home();
 </script></body></html>
