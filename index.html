@@ -351,6 +351,10 @@ html,body{overscroll-behavior-y:none}
 .rbig{font-size:40px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-top:8px;line-height:1}
 .rbig .relw{font-size:14px;color:rgba(255,255,255,.75)}.rbig .relw b{color:#fff}
 .r2 .nextup{margin-top:14px}
+
+/* v6.5 back-safe */
+.pill.bsafe{background:rgba(90,169,255,.16);color:#8EC5FF;font-weight:700;margin-left:auto;min-height:32px}
+.toggle .tsub{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -570,6 +574,10 @@ chin_tuck:{g:"cool",z:"any",pos:1,n:"Chin Tucks",v:"7rnlAVhAK-8",c:"Sit tall. Pu
 ham_floss:{g:"cool",z:"low",pos:2,n:"Lying Hamstring Floss",v:"3pTTk3GUmQE",alt:["zebW9OCA1Vg",34,38,"⭐ Your video (4th move)"],c:"Lie on your back, hold behind one thigh. Slowly straighten and bend the knee. Switch at the beep. Stop if knee hurts.",s:1,fav:1},
 sphinx:{g:"cool",z:"any",pos:2,n:"Sphinx Stretch",v:"KWi1YgyxDaQ",c:"Lie on your belly, forearms down. Lift your chest gently. Breathe.",fav:1},
 happy_walk:{g:"bonus",n:"Happy Walk · 1 mile",v:"X3q5e1pV4pc",my:1,e:"Walk at Home · about 15 min",c:"Walk in place with the video. Easy and fun. Good on rest days."},
+pelvic_tilt:{g:"warm",z:"low",pos:2,n:"Lying Pelvic Tilts",v:"44D6Xc2Fkek",c:"Lie on your back, knees bent. Gently press your low back to the floor, then relax. Small and slow."},
+heel_slides:{g:"warm",z:"low",pos:2,n:"Heel Slides (lying)",v:"6-anByqnKp8",c:"Lie on your back, knees bent. Slowly slide one heel out until the leg is straight, then back. Switch at the beep. Back stays still.",s:1},
+supine_march:{g:"warm",z:"low",pos:2,n:"Lying March",v:"-KT_SNqYD0c",c:"Lie on your back, knees bent. Tighten your belly gently. Lift one foot a little, lower it, switch. Back stays flat."},
+knee_to_chest:{g:"cool",z:"low",pos:2,n:"Knee to Chest (lying)",v:"1UVIT5G1R2k",c:"Lie on your back. Hold behind one thigh and hug it gently toward your chest. Other foot stays down. Switch at the beep.",s:1},
 breathing:{g:"cool",z:"any",pos:3,n:"Deep Breathing",v:"6YB0pv3iv0g",c:"Lie on your back. Breathe in through your nose, belly up. Breathe out slowly."}
 };
 // a few strength moves double as warm-ups
@@ -602,6 +610,20 @@ const OLD_SLOTS={
  C:[{g:"bal",n:2,rest:20},{g:"bal",n:2,rest:20},{g:"pull",f:["row"],n:3,rest:60},{g:"pull",f:["vert","rear","shrug"],n:3,rest:60},{g:"sh",f:["raise","mob"],n:3,rest:45},{g:"bi",n:3,rest:45},{g:"core",n:2,rest:30,cm:4,fin:1}],
  D:[{g:"bal",n:2,rest:20},{g:"hinge",f:["hinge"],n:3,rest:60},{g:"gb",n:3,rest:60},{g:"core",n:3,rest:45,cm:3},{g:"core",n:2,rest:30,cm:3}]};
 /* optional Extra: Balance after Stretch: 4 moves, all holding a chair, wall or counter; 1 round each, short rests */
+/* Back-safe mode (on by default while her lower back heals): these load, bend, arch or twist the low back, so they are left out */
+const BACK_BAD=new Set([
+ "kb_press","alt_db_press","lean_lat_raise","band_oh_press","bottoms_up","halo","upright_row","prone_swimmer","cuban",
+ "row","bb_row","bent_db_row","kb_row","rev_fly","shrug","pullover","kb_pullover","bb_curl",
+ "sa_oh_ext","band_oh_tri","tri_kick",
+ "sl_bridge","db_thrust","bb_thrust","kb_thrust","sl_thrust","prone_ext","prone_bent_ext","stand_kick",
+ "db_rdl","bb_rdl","kb_rdl","staggered_rdl","band_gm","seated_gm","pullthrough","reverse_hyper","kb_swing","kb_deadlift","sl_rdl",
+ "farmer","suitcase","kb_overhead_march","kb_rack_carry","slr","reverse_crunch","crunch","mb_crunch","bicycle","heel_taps","seated_knee_tuck",
+ "mb_twist","woodchop","db_side_bend","kb_around_world","kb_sword_chop","kb_digger","kb_underhand_twist","kb_rainbow","superman",
+ "torso_twist","side_bend","cat_cow_stand","good_morning","hip_circles","elephant_walk","march",
+ "upper_back","seated_twist","seated_ham","seated_piriformis","knee_drops","lying_twist","open_book","sphinx","lat_stretch",
+ "chair_hip_ext"]);
+/* if a whole slot is unsafe (e.g. RDL hinge, twisting core), pick from these instead */
+const BACK_ALT={hinge:"gb",core:"core"};
 const XSLOTS=[{g:"bal",f:["static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn","static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["str"],n:1,rest:15,fix:1,x:1}];
 /* cm = extra weight for Coddell Mutate moves in that slot; fin = core finisher at the end of the day */
 
@@ -725,7 +747,13 @@ function repRange(k){return (EX[k].r||"8-12").split("-").map(Number)}
    - it avoids anything done in the last 2 sessions of the same day, and in the last 2 workouts of any day
    - it avoids two moves of the same family (e.g. two flys) in one workout
    - it keeps the main part near 20 minutes */
-function pool(slot){const a=Object.keys(EX).filter(k=>(EX[k].g===slot.g||(EX[k].xg||[]).includes(slot.g))&&(!slot.f||slot.f.includes(EX[k].f)));const ok=a.filter(k=>prefOf(k)!=="never");return ok.length?ok:a}
+/* Back-safe mode: on by default; she can turn it off on the home screen */
+const backSafe=()=>LS.get("backSafe",true);
+const bsOK=k=>!!EX[k]&&(!backSafe()||!BACK_BAD.has(k));
+function pool(slot){const m=k=>EX[k].g===slot.g||(EX[k].xg||[]).includes(slot.g);
+ let a=Object.keys(EX).filter(k=>m(k)&&(!slot.f||slot.f.includes(EX[k].f)));
+ if(backSafe()){let b=a.filter(bsOK);if(!b.length)b=Object.keys(EX).filter(k=>m(k)&&bsOK(k));if(!b.length&&BACK_ALT[slot.g])b=Object.keys(EX).filter(k=>EX[k].g===BACK_ALT[slot.g]&&bsOK(k));a=b}
+ const ok=a.filter(k=>prefOf(k)!=="never");return ok.length?ok:a}
 function recentSet(day){const s=new Set();const r=LS.get("recent",{});(r[day]||[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));LS.get("recentAll",[]).slice(0,2).forEach(a=>a.forEach(k=>s.add(k)));return s}
 function choose(cands,used,fams,avoid,sl){
  const tiers=[k=>!used.has(k)&&!avoid.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)&&!avoid.has(k),k=>!used.has(k)&&!fams.has(EX[k].g+EX[k].f),k=>!used.has(k)];
@@ -747,27 +775,30 @@ function genBlocks(day,extraAvoid){
 /* warm-up: 3-4 knee-safe moves that warm and stretch the day's muscles. No balance / one-leg moves. */
 const WARM_FOR={A:["arm_circles","shoulder_rolls","arm_swings","wall_slides","pass_through","wrist_circles","wall_pushup"],
  C:["pull_apart","shoulder_rolls","wall_angel","arm_circles","pass_through","wrist_circles"],
- B:["hip_circles","good_morning","bridge_basic"],D:["hip_circles","good_morning","bridge_basic","side_bend"],
- E:["shoulder_rolls","hip_circles","side_bend"]};
+ B:["hip_circles","good_morning","bridge_basic","pelvic_tilt","heel_slides","supine_march"],D:["hip_circles","good_morning","bridge_basic","side_bend","pelvic_tilt","heel_slides","supine_march"],
+ E:["shoulder_rolls","hip_circles","side_bend","pelvic_tilt","supine_march","heel_slides"]};
+const WARM_BS_ANY=["neck_rolls","shoulder_rolls","wall_slides","arm_circles"];
 const WARM_ANY=["cat_cow_stand","torso_twist"];
 const WARM_N={A:4,B:4,C:4,D:4,E:4},WARM_R={A:2,B:2,C:2,D:2,E:1},WARM_SEC=30;
 /* Stretch: 4 knee-safe stretches (standing, chair or lying; no kneeling), 30 s each or 30 s per side */
 const STRETCH_FOR={A:["cross_shoulder","tri_stretch","doorway","chest_behind_back","side_bend","upper_back","wrist_stretch"],
  C:["lat_stretch","biceps_stretch","upper_back","cross_shoulder","side_bend","open_book","chest_behind_back"],
- B:["seated_ham","ham_stretch","knee_drops","lying_twist","calf","legs_up_wall","ham_floss"],
- D:["seated_ham","ham_stretch","knee_drops","lying_twist","calf","open_book","sphinx","side_bend"],
- E:["open_book","lying_twist","side_bend","knee_drops","sphinx","seated_twist"]};
+ B:["seated_ham","ham_stretch","knee_drops","lying_twist","calf","legs_up_wall","ham_floss","knee_to_chest","fig4"],
+ D:["seated_ham","ham_stretch","knee_drops","lying_twist","calf","open_book","sphinx","side_bend","knee_to_chest","fig4"],
+ E:["open_book","lying_twist","side_bend","knee_drops","sphinx","seated_twist","knee_to_chest","fig4","legs_up_wall"]};
+const STRETCH_BS_ANY=["knee_to_chest","fig4","ham_stretch","legs_up_wall","cross_shoulder","doorway","calf"];
 const STRETCH_N=4,STRETCH_SEC=30;
-function stretchOK(day,c){const ok=new Set(STRETCH_FOR[day]||[]);return Array.isArray(c)&&c.length===STRETCH_N&&c.every(x=>ok.has(x[0])&&x[1]===(EX[x[0]].s?STRETCH_SEC*2:STRETCH_SEC))}
-function genStretch(day,avoid){const ok=k=>EX[k]&&prefOf(k)!=="never",L=STRETCH_FOR[day]||[];
+function stretchOK(day,c){const ok=new Set([...(STRETCH_FOR[day]||[]),...STRETCH_BS_ANY]);return Array.isArray(c)&&c.length===STRETCH_N&&c.every(x=>ok.has(x[0])&&bsOK(x[0])&&x[1]===(EX[x[0]].s?STRETCH_SEC*2:STRETCH_SEC))}
+function genStretch(day,avoid){const ok=k=>bsOK(k)&&prefOf(k)!=="never",L=STRETCH_FOR[day]||[];
  let pick=wshuffle(L.filter(k=>ok(k)&&!avoid.has(k))).concat(wshuffle(L.filter(k=>ok(k)&&avoid.has(k)))).slice(0,STRETCH_N);
+ for(const k of wshuffle(STRETCH_BS_ANY.filter(ok)))if(pick.length<STRETCH_N&&!pick.includes(k))pick.push(k);
  pick.sort((a,b)=>(EX[a].pos||0)-(EX[b].pos||0));return pick.map(k=>[k,EX[k].s?STRETCH_SEC*2:STRETCH_SEC])}
-function warmOK(day,w){const ok=new Set([...(WARM_FOR[day]||[]),...WARM_ANY]);return Array.isArray(w)&&w.length===(WARM_N[day]||4)&&w.every(x=>ok.has(x[0])&&x[1]===WARM_SEC)}
-function genWarm(day,avoid,b){const n=WARM_N[day]||4,ok=k=>EX[k]&&prefOf(k)!=="never"&&!(b||[]).includes(k);
+function warmOK(day,w){if(Array.isArray(w)&&new Set(w.map(x=>x[0])).size!==w.length)return false;const ok=new Set([...(WARM_FOR[day]||[]),...WARM_ANY,...WARM_BS_ANY]);return Array.isArray(w)&&w.length===(WARM_N[day]||4)&&w.every(x=>ok.has(x[0])&&bsOK(x[0])&&x[1]===WARM_SEC)}
+function genWarm(day,avoid,b){const n=WARM_N[day]||4,ok=k=>bsOK(k)&&prefOf(k)!=="never"&&!(b||[]).includes(k);
  const fresh=a=>wshuffle(a.filter(k=>ok(k)&&!avoid.has(k))).concat(wshuffle(a.filter(k=>ok(k)&&avoid.has(k))));
- const any=fresh(WARM_ANY),main=fresh(WARM_FOR[day]||[]);
- let pick=[any[0]].concat(main.slice(0,n-1)).filter(Boolean);
- for(const k of any.concat(main))if(pick.length<n&&!pick.includes(k))pick.push(k);
+ const any=fresh(backSafe()?WARM_BS_ANY:WARM_ANY),main=fresh(WARM_FOR[day]||[]);
+ let pick=[];for(const k of [any[0]].concat(main.slice(0,n-1)))if(k&&!pick.includes(k))pick.push(k);
+ for(const k of any.concat(main,fresh(WARM_BS_ANY)))if(pick.length<n&&!pick.includes(k))pick.push(k);
  pick.sort((a,b)=>(EX[a].pos||0)-(EX[b].pos||0));
  return pick.map(k=>[k,WARM_SEC])}
 function stretchPool(g,z){return Object.keys(EX).filter(k=>EX[k].g===g&&(EX[k].z===z||EX[k].z==="any")).concat(g==="warm"?(WARM_EXTRA[z]||[]):[]).filter(k=>prefOf(k)!=="never")}
@@ -790,7 +821,9 @@ function getPlan(day){const P=LS.get("plans",{});let p=P[day],ch=false;
  else{const av=recentSet(day);
   if(!warmOK(day,p.w)){p.w=genWarm(day,av,p.b);ch=true}
   if(!stretchOK(day,p.c)){p.c=genStretch(day,av);ch=true}
-  if(!Array.isArray(p.x)||p.x.length!==XSLOTS.length||!p.x.every(k=>EX[k]&&EX[k].g==="bal")){p.x=genExtra(day,av,p.b);ch=true}}
+  if(!Array.isArray(p.x)||p.x.length!==XSLOTS.length||!p.x.every(k=>EX[k]&&EX[k].g==="bal")){p.x=genExtra(day,av,p.b);ch=true}
+  if(backSafe()){const fix=(arr,slots)=>arr.forEach((k,j)=>{if(bsOK(k))return;const all=p.b.concat(p.x),used=new Set(all),fams=new Set(all.filter(x=>x!==k).map(x=>EX[x].g+EX[x].f));arr[j]=choose(pool(slots[j]),used,fams,av,slots[j]);ch=true});
+   fix(p.b,DAYS[day].slots);fix(p.x,XSLOTS)}}
  if(ch)LS.set("plans",P);return p}
 function savePlan(day,p){const P=LS.get("plans",{});P[day]=p;LS.set("plans",P)}
 function refreshPlan(day){const old=getPlan(day);const keep=old.b.concat(old.w.map(x=>x[0]),old.c.map(x=>x[0]),old.x||[]);savePlan(day,generate(day,keep.filter(k=>k!=="march"&&k!=="breathing")))}
@@ -803,7 +836,7 @@ function slotOf(day,j){return j>=100?XSLOTS[j-100]:DAYS[day].slots[j]}
 function altsFor(day,j){const p=getPlan(day),cur=pick(day,j),sl=slotOf(day,j),used=new Set(p.b.concat(p.x||[])),cm=musclesOf(cur)[0];
  const score=k=>(EX[k].f===EX[cur].f?3:0)+musclesOf(k)[0].filter(m=>cm.includes(m)).length*2+(EX[k].fav?.6:0)+(sl.cm&&EX[k].cm?1:0)+(prefOf(k)==="more"?1.5:prefOf(k)==="less"?-1.5:0)+Math.random()*1.2;
  let c=pool(sl).filter(k=>!used.has(k));
- if(c.length<3)c=c.concat(Object.keys(EX).filter(k=>EX[k].g===sl.g&&!used.has(k)&&!c.includes(k)&&prefOf(k)!=="never"));
+ if(c.length<3)c=c.concat(Object.keys(EX).filter(k=>EX[k].g===sl.g&&bsOK(k)&&!used.has(k)&&!c.includes(k)&&prefOf(k)!=="never"));
  return c.map(k=>[k,score(k)]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0])}
 function replaceSlot(day,j,k){const p=getPlan(day);if(j>=100)p.x[j-100]=k;else p.b[j]=k;savePlan(day,p)}
 /* minutes: Warm Up (× rounds) + Block 1 (sets + her rest) + Stretch; the balance extra is shown on its own */
@@ -881,6 +914,7 @@ function home(){
  <div class="tip">🪑 <span>Balance moves: <b>always hold a chair or wall.</b></span></div>
  <div style="margin-top:6px">${KNEE}</div></div>
  ${(()=>{const p=LS.get("pref",{}),n=Object.keys(p).filter(k=>p[k]==="never").length;return n?`<div style="margin-top:12px"><button class="toggle" onclick="hiddenSheet()"><span>🚫 Hidden moves (${n})</span><span class="chev">›</span></button></div>`:""})()}
+ <div style="margin-top:12px"><button class="toggle" role="switch" aria-checked="${backSafe()}" onclick="toggleBack()"><span>🛡️ Lower back: protect<small class="tsub">${backSafe()?"On · no bending, twisting or heavy standing loads":"Off · all moves allowed"}</small></span><span class="sw ${backSafe()?"on":""}"></span></button></div>
  <div style="margin-top:12px"><button class="toggle" onclick="LS.set('sound',!LS.get('sound',true));home()"><span>🔔 Sound</span><span class="sw ${LS.get("sound",true)?"on":""}"></span></button></div>
  <p class="muted small center" style="margin-top:22px">Your data stays on this phone.</p></div>
  <div class="bottom"><div class="in"><button class="btn pri startbig" onclick="chooseScreen()"><span>▶ Start Workout</span><small>Up next: ${DAYS[nu].t}</small></button></div></div>`;
@@ -902,6 +936,7 @@ function calHTML(){const {y,m}=CAL,first=new Date(y,m,1),nd=new Date(y,m+1,0).ge
   h+=`<button class="cd ${k===tk?"today":""} ${L.length?"has":""}" data-d="${k}" onclick="dayDetail('${k}')" aria-label="${k}${L.length?": "+L.map(s=>typeOf(s.day).t+" "+sesPct(s)+"%").join(", "):""}">${ring}<span class="dn">${d}</span>${pc}${dots}</button>`}
  h+=`</div><div class="legend">${["A","B","C","D","E","W"].map(d=>`<span><i style="background:${typeOf(d).col}"></i>${typeOf(d).sh}</span>`).join("")}<span class="lg2"><svg viewBox="0 0 40 40" class="lgring"><circle cx="20" cy="20" r="15" class="tr"/><circle cx="20" cy="20" r="15" class="arc" style="stroke:var(--muted)" stroke-dasharray="56 94.2" transform="rotate(-90 20 20)"/></svg>partial</span></div>`;
  return h}
+function toggleBack(){LS.set("backSafe",!backSafe());toast(backSafe()?"Back-safe on: today's moves are swapped to back-friendly ones.":"Back-safe off: all moves can come back.");home()}
 function calMove(d){CAL.m+=d;if(CAL.m<0){CAL.m=11;CAL.y--}if(CAL.m>11){CAL.m=0;CAL.y++}$("#cal").innerHTML=calHTML()}
 /* tap a day: each session that day with type, % done, time, weight, and the moves */
 function dayDetail(k){const L=allSes().filter(s=>dkey(s.d)===k),dt=new Date(k+"T12:00:00");
@@ -961,7 +996,7 @@ function overview(day){
   return `<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${exName(k)}${e.fav?" <span title='favorite style'>⭐</span>":""}${e.cm?" <span title='From Coddell Mutate'>💪</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m tg">${fmtTarget(k,roundsFor(k,sl))}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`};
  const beq=equipOf(day,p.b).join(", ");
  let h=`<div class="wrap"><div class="top"><button class="icon-btn" onclick="chooseScreen()" aria-label="Back">‹</button><div class="sp"></div><button class="pill acc" style="min-height:44px;padding:0 16px;font-size:15px" onclick="refreshPlan('${day}');overview('${day}')">↻ New mix</button></div>
- <div class="ovh"><span class="dot" style="background:${D.col}"></span><h2 style="margin:0">${D.t}</h2></div><div class="muted" style="margin-top:2px">${D.s}</div>
+ <div class="ovh"><span class="dot" style="background:${D.col}"></span><h2 style="margin:0">${D.t}</h2>${backSafe()?'<button class="pill bsafe" onclick="toast(\'Back-safe mode is on. Turn it off on the home screen.\')">🛡️ Back-safe</button>':""}</div><div class="muted" style="margin-top:2px">${D.s}</div>
  <div class="hero" style="--tc:${D.col}">${bodyFor(ms,"body big",D.col)}<div class="mt">${ms[0].map(m=>MNAME[m]).join(" · ")}${ms[1].length?`<span> + ${ms[1].slice(0,4).map(m=>MNAME[m]).join(", ")}</span>`:""}</div></div>
  <div class="facts"><div><b>≈ ${em}</b><span>minutes</span></div><div><b>${D.slots.length}</b><span>exercises</span></div><div><b>${sets}</b><span>sets</span></div></div>
  <div class="sec-t">Equipment</div><div class="chips">${equipOf(day).map(x=>`<span class="chip eq">${x}</span>`).join("")}</div>
@@ -1405,7 +1440,7 @@ function healthHelp(){
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.4";
+const APP_VER="6.5";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
