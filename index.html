@@ -355,6 +355,23 @@ html,body{overscroll-behavior-y:none}
 /* v6.5 back-safe */
 .pill.bsafe{background:rgba(90,169,255,.16);color:#8EC5FF;font-weight:700;margin-left:auto;min-height:32px}
 .toggle .tsub{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
+
+/* v6.6: rating + More/Less/Never on the blue rest card: clearly selected */
+#rest .rfb .rate.big button.on{font-weight:800;box-shadow:0 0 0 3px rgba(255,255,255,.9)}
+#rest .rfb .rate.big button.on::before,#rest .rfb .prefs button.on::before{content:"✓ "}
+#rest .rfb .rate.big button.on.Easy{background:#3DD6B5;color:#05261E}
+#rest .rfb .rate.big button.on.Medium{background:#F5B544;color:#2B1D02}
+#rest .rfb .rate.big button.on.Hard{background:#FF7A7A;color:#2A0505}
+#rest .rfb .prefs button.on{background:#fff;color:#1C3B6E;outline:none;font-weight:800}
+#rest .rfb .prefs button.on.no{background:#FF8A8A;color:#2A0505}
+
+/* v6.6: same top bar on the rest screen */
+#rest .in.r2{max-width:520px}
+#rest{justify-content:flex-start}
+.r2 .runtop{margin-bottom:10px}
+.rtop2{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.backb.sm{min-height:40px;padding:0 12px 0 10px;font-size:15px}
+.scname{display:inline-block;background:var(--card2);padding:4px 10px;border-radius:8px;margin:4px 0;-webkit-user-select:all;user-select:all}
 </style>
 </head>
 <body>
@@ -840,7 +857,7 @@ function altsFor(day,j){const p=getPlan(day),cur=pick(day,j),sl=slotOf(day,j),us
  return c.map(k=>[k,score(k)]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0])}
 function replaceSlot(day,j,k){const p=getPlan(day);if(j>=100)p.x[j-100]=k;else p.b[j]=k;savePlan(day,p)}
 /* minutes: Warm Up (× rounds) + Block 1 (sets + her rest) + Stretch; the balance extra is shown on its own */
-function estMin(day){const p=getPlan(day),st=a=>a.reduce((s,x)=>s+x[1]+6,0);return Math.round((st(p.w)*(WARM_R[day]||1)+st(p.c)+mainSecs(day,p.b,restLen())+20)/60)}
+function estMin(day){const p=getPlan(day),st=a=>a.reduce((s,x)=>s+x[1]+6,0),wu=p.w.reduce((t,[k,sec])=>t+(EX[k].hold?sec+6:warmSets(day)*(wReps(k)[0]*(EX[k].s?2:1)*2.5+6)),0);return Math.round((wu+st(p.c)+mainSecs(day,p.b,restLen())+20)/60)}
 function estX(day){const p=getPlan(day);return Math.max(1,Math.round((p.x||[]).reduce((t,k,i)=>t+XSLOTS[i].n*(setSecs(k)+XSLOTS[i].rest)+8,0)/60))}
 function isNew(k){return !LS.get("hist",{})[k]&&!(LS.get("everDone",[])).includes(k)}
 
@@ -1000,8 +1017,8 @@ function overview(day){
  <div class="hero" style="--tc:${D.col}">${bodyFor(ms,"body big",D.col)}<div class="mt">${ms[0].map(m=>MNAME[m]).join(" · ")}${ms[1].length?`<span> + ${ms[1].slice(0,4).map(m=>MNAME[m]).join(", ")}</span>`:""}</div></div>
  <div class="facts"><div><b>≈ ${em}</b><span>minutes</span></div><div><b>${D.slots.length}</b><span>exercises</span></div><div><b>${sets}</b><span>sets</span></div></div>
  <div class="sec-t">Equipment</div><div class="chips">${equipOf(day).map(x=>`<span class="chip eq">${x}</span>`).join("")}</div>
- <div class="sec-t" data-sec="Warm Up">Warm Up <span class="sub">· ${p.w.length} × ${WARM_SEC} s${wr>1?` · ${wr} rounds`:""}</span></div><div class="stack">${p.w.map(([k,sec],i)=>lite(k,i,`${sec} s${EX[k].s?" · both sides":""}${wr>1?` · circuit × ${wr}`:""}`)).join("")}</div>
- <div class="sec-t" data-sec="Block 1">Block 1 <span class="sub">· ${beq||"Bodyweight"}</span></div><div class="stack">${D.slots.map((_,j)=>slot(j)).join("")}</div>
+ <div class="sec-t" data-sec="Warm Up">Warm Up <span class="sub">· ${p.w.length} moves · ${wr} set${wr>1?"s":""} each</span></div><div class="stack">${p.w.map(([k,sec],i)=>{const [rr,lab]=wReps(k);return lite(k,i,EX[k].hold?`${sec} s hold`:`${wr} × ${rr} reps${lab?" "+lab:""}`)}).join("")}</div>
+ <div class="sec-t" data-sec="Block 1">Block 1 <span class="sub">· ${beq||"Bodyweight"}</span></div><div class="muted small" style="margin:-2px 2px 8px">All sets of one move, then the next.</div><div class="stack">${D.slots.map((_,j)=>slot(j)).join("")}</div>
  <div class="sec-t" data-sec="Stretch">Stretch <span class="sub">· ${p.c.length} × ${STRETCH_SEC} s</span></div><div class="stack">${p.c.map(([k,sec],i)=>lite(k,i,EX[k].s?`${STRETCH_SEC} s each side`:`${sec} s`)).join("")}</div>
  <div class="sec-t" data-sec="Extra: Balance">Extra: Balance <span class="sub">· optional · + ≈ ${estX(day)} min</span></div>
  <div class="muted small" style="margin:-2px 2px 8px">After Stretch, finish or do these 4. Always hold a chair, wall or counter.</div><div class="stack">${(p.x||[]).map((_,i)=>slot(100+i)).join("")}</div>
@@ -1038,18 +1055,22 @@ function logWalk(){const ses=LS.get("sessions",[]);ses.push({day:"W",d:new Date(
  const ev=LS.get("everDone",[]);if(!ev.includes("happy_walk")){ev.push("happy_walk");LS.set("everDone",ev)}closeSheet();toast("Walk saved 🚶‍♀️");home()}
 
 /* ===== RUN ===== */
-function buildSteps(day){const p=getPlan(day),wr=WARM_R[day]||1,st=[];
- for(let r=1;r<=wr;r++)p.w.forEach(([k,sec],i)=>st.push({t:"s",k,sec,ph:"Warm Up",r,rn:wr,wi:i+1,wn:p.w.length}));
+/* Warm Up: each move is done as sets of reps, all its sets back to back (no timer, no rest); only real holds (EX.hold) keep a timer */
+const WREP={arm_circles:[10,"each way"],wrist_circles:[10,"each way"],neck_rolls:[6,"each side"],shoulder_rolls:[10,"back & forward"],pass_through:[10,""],wall_pushup:[10,""],pull_apart:[12,""],bridge_basic:[10,""],pelvic_tilt:[12,""]};
+function wReps(k){return WREP[k]||(EX[k].s?[8,"each side"]:[12,""])}
+function warmSets(day){return WARM_R[day]||2}
+function buildSteps(day){const p=getPlan(day),st=[];
+ p.w.forEach(([k,sec],i)=>{if(EX[k].hold)st.push({t:"s",k,sec,ph:"Warm Up"});else st.push({t:"e",j:200+i,ph:"Warm Up"})});
  DAYS[day].slots.forEach((_,j)=>st.push({t:"e",j,ph:"Block 1"}));
  p.c.forEach(([k,sec])=>st.push({t:"s",k,sec,ph:"Stretch"}));
  (p.x||[]).forEach((_,i)=>st.push({t:"e",j:100+i,ph:"Extra: Balance",x:1}));return st}
 /* the run keeps its own copy of the picks (S.pb/S.px), so a running workout never changes under her */
-function runPick(j){if(S&&S.pb)return j>=100?(S.px||[])[j-100]:S.pb[j];return pick(S.day,j)}
-function runSlot(j){return j>=100?XSLOTS[j-100]:((S&&S.slots)||DAYS[S.day].slots)[j]}
+function runPick(j){if(j>=200)return (S&&S.pw?S.pw:getPlan(S.day).w.map(x=>x[0]))[j-200];if(S&&S.pb)return j>=100?(S.px||[])[j-100]:S.pb[j];return pick(S.day,j)}
+function runSlot(j){if(j>=200)return {g:"warm",n:warmSets(S.day),fix:1,warm:1,rest:0};return j>=100?XSLOTS[j-100]:((S&&S.slots)||DAYS[S.day].slots)[j]}
 const isWarm=st=>st&&(st.ph==="Warm Up"||st.ph==="Warm-up"),isStretch=st=>st&&(st.ph==="Stretch"||st.ph==="Cool-down");
 /* steps that count: the balance extra only once she chose to do it */
 const live=st=>!st.x||(S&&S.xok);
-function start(day,at){unlock();closeSheet();const p=getPlan(day);S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0,exs:{},v:6,pb:p.b.slice(),px:(p.x||[]).slice()};
+function start(day,at){unlock();closeSheet();const p=getPlan(day);S={day,steps:buildSteps(day),i:0,set:0,auto:false,reps:[],t0:Date.now(),sets:0,exs:{},v:6,pb:p.b.slice(),px:(p.x||[]).slice(),pw:p.w.map(x=>x[0])};
  if(at){const i=S.steps.findIndex(st=>(st.t==="s"?st.k:runPick(st.j))===at);if(i>0){S.i=i;if(S.steps[i].x)S.xok=true}}save();keepAwake();shell();show()}
 function resume(){const r=LS.get("run",null);if(!r)return home();
  /* a workout started before v6: rebuild its own move list from the old plan so it can be finished */
@@ -1074,7 +1095,7 @@ function endEarly(){EXITP=false;stopTimer();hideRest();const R=runSummary();
  if(R.rd){const day=S.day,rec=saveSession(R);doneScreen(day,R,rec);S=null}else{LS.set("run",null);home()}}
 /* rounds done / rounds planned (strength + balance rounds), weight so far, and a per-move log */
 function runSummary(){let rp=0,rd=0,lbs=0;const log=[];
- S.steps.forEach((st,i)=>{if(st.t!=="e"||!live(st))return;const X=S.exs&&S.exs[i],k=X?X.k:runPick(st.j),e=EX[k];
+ S.steps.forEach((st,i)=>{if(st.t!=="e"||!live(st)||st.j>=200)return;const X=S.exs&&S.exs[i],k=X?X.k:runPick(st.j),e=EX[k];
   const pl=X?X.rows.length:roundsFor(k,runSlot(st.j)),d=X?X.rows.filter(r=>r.done):[];
   const rows=d.map(r=>({r:+r.r||0,w:e.w==="lb"&&r.w!==""&&r.w!=null?+r.w:null,band:e.w==="band"?r.band:undefined,sec:e.t?(+r.sec||e.t):undefined,rate:r.rate||""}));
   const lb=roundsLb(k,rows);rp+=pl;rd+=d.length;lbs+=lb;log.push({k,n:exName(k),pl,rd:rows,lb:Math.round(lb)})});
@@ -1129,7 +1150,8 @@ function show(){
  save();
 }
 /* top bar: % done · elapsed (keeps counting during rest) */
-function updTop(){if(!S||!S.steps)return;const el=fmtEl((Date.now()-S.t0)/1000),n=$("#pnum");if(n)n.textContent=Math.round(progress()*100)+"% · "+el;const r=$("#rel");if(r)r.textContent=el}
+/* one workout clock (from the start time S.t0) in the same top bar on every workout screen, rest included */
+function updTop(){if(!S||!S.steps)return;const el=fmtEl((Date.now()-S.t0)/1000),t=Math.round(progress()*100)+"% · "+el;document.querySelectorAll(".runtop .tnum").forEach(n=>n.textContent=t);const r=$("#rel");if(r)r.textContent=el}
 setInterval(updTop,1000);
 function nextLabel(){const n=S.steps[S.i+1];if(!n||(n.x&&!S.xok))return "Finish 🎉";const k=n.t==="s"?n.k:runPick(n.j);return (n.ph!==S.steps[S.i].ph?n.ph+": ":"")+exName(k)}
 function dock(h){const d=$("#dockin");if(d)d.innerHTML=h}
@@ -1252,6 +1274,7 @@ function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);const h=LS.get(
 /* ===== exercise state: rows of rounds × reps × weight ===== */
 function initEx(){const st=S.steps[S.i],k=curKey();S.exs=S.exs||{};let X=S.exs[S.i];
  if(X&&X.k===k)return X;
+ if(st.j>=200){const [rr,lab]=wReps(k);X=S.exs[S.i]={k,warm:1,lab,adv:"",nw:false,rows:Array.from({length:warmSets(S.day)},()=>({r:rr,done:false,rate:""}))};save();return X}
  const n=roundsFor(k,runSlot(st.j)),a=advice(k);
  X=S.exs[S.i]={k,adv:a.text,nw:isNew(k),rows:Array.from({length:n},()=>({r:a.reps,w:a.w,band:a.band,sec:a.sec,done:false,rate:""}))};save();return X}
 function curEx(){return S&&S.exs&&S.exs[S.i]}
@@ -1264,8 +1287,8 @@ function prefClick(k,v,ctx){setPref(k,v);const now=prefOf(k);
 function toast(t){let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";document.body.appendChild(el)}el.textContent=t;el.classList.add("on");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("on"),1800)}
 /* set screen card header: "Set 1 / 3" + set dots (tap a done one to undo), name, ⋯ menu (Replace, More/Less/Never, how-to, muscles) */
 function exTop(k,n){const e=EX[k],X=curEx(),rows=X&&X.k===k?X.rows:[],idx=rows.findIndex(r=>!r.done),tot=rows.length||n,timed=!!e.t;
- const lab=rows.length&&idx<0?`All ${tot} ${timed?"rounds":"sets"} done ✓`:`${timed?"Round":"Set"} ${(idx<0?0:idx)+1} / ${tot}`;
- const tags=[kneelOn(k)?'<span class="mi">🧎 Kneeling · knee pads</span>':"",e.b?'<span class="mi bal">🪑 Hold support</span>':"",((X&&X.k===k)?X.nw:isNew(k))?'<span class="mi ok">✨ New</span>':""].join("");
+ const lab=rows.length&&idx<0?`All ${tot} ${timed?"rounds":"sets"} done ✓`:`${timed?"Round":"Set"} ${(idx<0?0:idx)+1} of ${tot}`;
+ const tags=[kneelOn(k)?'<span class="mi">🧎 Kneeling · knee pads</span>':"",e.b?'<span class="mi bal">🪑 Hold support</span>':"",(X&&X.warm)?"":((X&&X.k===k)?X.nw:isNew(k))?'<span class="mi ok">✨ New</span>':""].join("");
  return `<div class="tchead"><div class="row" style="align-items:flex-start;gap:10px"><div class="sp"><div class="setl"><span class="rlab set">${lab}</span>${rows.length>1?`<span class="sdots">${rows.map((r,i)=>`<button class="sd${r.done?" on":""}${i===idx?" now":""}" ${r.done?`onclick="toggleRow(${i})" aria-label="Set ${i+1} done · tap to undo"`:`aria-label="Set ${i+1}" tabindex="-1"`}></button>`).join("")}</span>`:""}</div>
  <div class="exname">${exName(k)}</div>${tags?`<div class="exmeta">${tags}</div>`:""}</div><button class="infob" onclick="infoSheet()" aria-label="More: replace, how-to, more or less">⋯</button></div></div>`}
 /* below the video: the short how-to, plainly visible (+ knee note when kneeling) */
@@ -1275,10 +1298,10 @@ function infoSheet(){if(!S)return;const st=S.steps[S.i];if(st.t!=="e")return;con
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>
  ${e.cm?`<div class="chips" style="margin-top:8px">${CM_TAG}</div>`:""}${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,"runinfo")}
  <div class="lbl" style="margin:16px 0 4px">How to</div><p class="cue" style="margin:0">${exCue(k)}</p>
- ${X?`<div class="lbl" style="margin:16px 0 4px">Last time &amp; today</div><div class="last guide">${X.adv}</div>`:""}
+ ${X&&X.adv?`<div class="lbl" style="margin:16px 0 4px">Last time &amp; today</div><div class="last guide">${X.adv}</div>`:""}
  <div class="lbl" style="margin:16px 0 4px">Works</div><div class="mtxt">${muscleText(k)}</div>
  ${prefBar(k,"run")}
- <button class="btn sec" style="margin-top:12px" onclick="openReplace(S.day,${st.j},1)">⇄ Replace this move</button>
+ ${st.j>=200?"":`<button class="btn sec" style="margin-top:12px" onclick="openReplace(S.day,${st.j},1)">⇄ Replace this move</button>`}
  <div style="margin-top:12px">${KNEE}</div>
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;
  openSheet()}
@@ -1287,8 +1310,8 @@ function rowsHTML(k,X){const e=EX[k],idx=X.rows.findIndex(r=>!r.done);
  if(idx<0)return `<div class="setsum">${X.rows.map((r,i)=>`<button class="ssum" onclick="toggleRow(${i})" aria-label="Undo set ${i+1}"><b>${e.t?(r.sec||e.t)+" s":r.r}</b>${e.w==="lb"&&r.w!=null&&r.w!==""?` × ${r.w} lb`:e.w==="band"?` · ${r.band}`:""}<small>Set ${i+1} ✓</small></button>`).join("")}</div>`;
  const r=X.rows[idx];
  const left=e.t?`<label class="bigval"><span class="wv"><input class="bv" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Seconds set ${idx+1}" value="${r.sec}" onchange="setRow(${idx},'sec',this.value)"><span class="lbu">s</span></span><span class="u">${e.s?"total · both sides":"seconds"}</span></label>`
-  :`<label class="bigval"><input class="bv" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Reps set ${idx+1}" value="${r.r}" onchange="setRow(${idx},'r',this.value)"><span class="u">reps${e.s?" each side":""}</span></label>`;
- const right=e.w==="lb"?`<label class="bigval r"><span class="wv"><input class="bv" type="text" inputmode="decimal" enterkeyhint="done" aria-label="Pounds set ${idx+1}" value="${r.w??""}" placeholder="0" onchange="setRow(${idx},'w',this.value)"><span class="lbu">lb</span></span><span class="u">${EX[k].kb&&KB_LB.includes(+r.w)?kgOf(+r.w)+" kg bell":"weight"}</span></label>`
+  :`<label class="bigval"><input class="bv" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Reps set ${idx+1}" value="${r.r}" onchange="setRow(${idx},'r',this.value)"><span class="u">reps${X.warm?(X.lab?" "+X.lab:""):e.s?" each side":""}</span></label>`;
+ const right=X.warm?"":e.w==="lb"?`<label class="bigval r"><span class="wv"><input class="bv" type="text" inputmode="decimal" enterkeyhint="done" aria-label="Pounds set ${idx+1}" value="${r.w??""}" placeholder="0" onchange="setRow(${idx},'w',this.value)"><span class="lbu">lb</span></span><span class="u">${EX[k].kb&&KB_LB.includes(+r.w)?kgOf(+r.w)+" kg bell":"weight"}</span></label>`
   :e.w==="band"?`<button class="bigval r" onclick="cycleBand(${idx})"><span class="bvb">${r.band}</span><span class="u">band · tap to change</span></button>`:`<div class="bigval r none"><span class="bvb">—</span><span class="u">bodyweight</span></div>`;
  return `<div class="setrow">${left}${right}</div>`}
 function drawRows(){const X=curEx();if(!X||!S)return;const st=S.steps[S.i];if(!st||st.t!=="e")return;const k=X.k,e=EX[k];
@@ -1300,8 +1323,9 @@ function drawRows(){const X=curEx();if(!X||!S)return;const st=S.steps[S.i];if(!s
    <button class="tcside" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button></div>
    <div id="rows">${rowsHTML(k,X)}</div>${exCueHTML(k)}</div>
    <div class="tcnext"><span class="lbl">Next</span> → <b>${idx<0?nextLabel():"Rest"}</b></div>`}
- else $("#body").innerHTML=`<div class="tcbot"><div id="rows">${rowsHTML(k,X)}</div>${exCueHTML(k)}</div>
-   <div class="tcnext"><span class="lbl">Next</span> → <b>${idx<0?nextLabel():"Rest"}</b></div>`;
+ else $("#body").innerHTML=`<div class="tcbot"><div id="rows">${rowsHTML(k,X)}</div>${X.warm?`<p class="cue tccue">${exCue(k)}</p>`:exCueHTML(k)}</div>
+   <div class="tcnext"><span class="lbl">Next</span> → <b>${idx<0||(X.warm&&idx===X.rows.length-1)?nextLabel():X.warm?"Set "+(idx+2)+" of "+X.rows.length:"Rest"}</b></div>
+   ${X.warm?`<button class="btn ghost skipwu" onclick="skipPhase()">Skip warm-up ›</button><div style="margin-top:12px">${KNEE}</div>`:""}`;
  drawSeg();drawDock()}
 function drawDock(){const X=curEx();if(!X)return;const e=EX[X.k],idx=X.rows.findIndex(r=>!r.done);
  const B='<button class="btn sec side" onclick="prevStep()" aria-label="Back"><b>‹</b><small>Back</small></button>',K='<button class="btn sec side" onclick="nextStep()" aria-label="Skip"><b>›</b><small>Skip</small></button>';
@@ -1317,16 +1341,19 @@ function setRow(i,f,v){const X=curEx();if(!X)return;v=String(v).replace(",",".")
 function cycleBand(i){const X=curEx();const r=X.rows[i];r.band=BANDS[(BANDS.indexOf(r.band)+1)%3];for(let j=i+1;j<X.rows.length;j++)if(!X.rows[j].done)X.rows[j].band=r.band;setBand(X.k,r.band);if(r.done)logEx(X);save();drawRows()}
 function addRound(d){const X=curEx();if(d>0){const l=X.rows[X.rows.length-1];X.rows.push({...l,done:false,rate:""})}else{if(X.rows.length>1&&!X.rows[X.rows.length-1].done)X.rows.pop()}save();drawRows()}
 /* one rating per exercise (asked on the last rest screen); it is copied to every done round so progression reads it */
-function rateEx(x){const X=RX||curEx();if(!X)return;X.rate=X.rate===x?"":x;X.rows.forEach(r=>{if(r.done)r.rate=X.rate});logEx(X);save();
- document.querySelectorAll("#rest .rate button").forEach(b=>b.className=X.rate===b.textContent?"on "+b.textContent:"")}
+function rateEx(x){const X=RX||curEx();if(!X)return;X.rate=X.rate===x?"":x;X.rows.forEach(r=>{if(r.done)r.rate=X.rate});logEx(X);save();buzz(20);
+ document.querySelectorAll("#rest .rate button").forEach(b=>{const on=X.rate===b.dataset.r;b.className=on?"on "+b.dataset.r:"";b.setAttribute("aria-pressed",on)});
+ if(X.rate)toast("Saved: "+X.rate+". Next time adjusts.")}
 function rateRow(i,x){const X=curEx();X.rows[i].rate=X.rows[i].rate===x?"":x;logEx(X);save();drawRows();
  document.querySelectorAll("#rest .rate button").forEach(b=>b.className=X.rows[i].rate===b.textContent?"on "+b.textContent:"")}
 function checkNext(){const X=curEx();const i=X.rows.findIndex(r=>!r.done);if(i>=0)toggleRow(i)}
 function toggleRow(i){unlock();const X=curEx();const r=X.rows[i];
  document.querySelectorAll("#rows input").forEach(el=>el.blur());
- r.done=!r.done;S.sets+=r.done?1:-1;if(!r.done)r.rate="";else if(X.rate)r.rate=X.rate;logEx(X);save();drawRows();
+ r.done=!r.done;if(!X.warm)S.sets+=r.done?1:-1;if(!r.done)r.rate="";else if(X.rate)r.rate=X.rate;if(!X.warm)logEx(X);save();drawRows();
+ /* warm-up: no rest, next set (or next move) right away */
+ if(r.done&&X.warm){buzz(40);stopTimer();if(X.rows.every(x=>x.done)){S.i++;S.auto=false}S._pos=null;show();return}
  if(r.done){buzz(40);stopTimer();const all=X.rows.every(x=>x.done),nx=X.rows.findIndex(x=>!x.done);
-  const cs=S.steps[S.i];rest(all?nextLabel():`Round ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()},cs&&cs.x?runSlot(cs.j).rest:0)}}
+  const cs=S.steps[S.i];rest(all?nextLabel():`Set ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()},cs&&cs.x?runSlot(cs.j).rest:0)}}
 
 /* rep-based exercise */
 function showRepEx(st,k){initEx();drawRows()}
@@ -1347,15 +1374,15 @@ let ROVR=0;
    Easy/Medium/Hard (+ More/Less/Never, small) only on the last rest of a move; Next → below; minimize + Skip rest */
 function rest(nextTxt,fx,after,ovr){ROVR=ovr||0;const sec=ROVR||restLen();RX=fx||null;RMIN=false;
  const justDone=S?exName(curKey()):"";
- const el=$("#rest");el.innerHTML=`<div class="in r2"><div class="rtop"><button class="backb" onclick="restBack()" aria-label="Back">‹ Back</button><div class="sp rdone">✓ ${justDone}</div><button class="icon-btn sm" onclick="minRest()" aria-label="Minimize rest">⌄</button></div>
- <div class="prog seg" style="margin:10px 0 14px"></div>
+ const el=$("#rest");el.innerHTML=`<div class="in r2"><div class="top runtop"><button class="exitb" onclick="exitSheet()" aria-label="Exit workout">✕ <span>Exit</span></button><div class="prog seg"></div><span class="tnum"></span></div>
+ <div class="rtop2"><button class="backb sm" onclick="restBack()" aria-label="Back">‹ Back</button><div class="sp rdone">✓ ${justDone}</div><button class="icon-btn sm" onclick="minRest()" aria-label="Minimize rest">⌄</button></div>
  <div class="rcard"><div class="rmid"><button class="ringbox rring" onclick="restPP()" aria-label="Pause or resume rest">${ringSVG("rr",105)}<div class="ringtxt"><div><div class="big" id="rrt">${mmssT(sec)}</div><div class="sm" id="rrs">of <span id="rlen">${sec}</span> s</div></div></div></button>
   <div class="radj"><button class="rbtn" onclick="restAdj(15)" aria-label="Add 15 seconds">+15s</button><button class="rbtn" onclick="restAdj(-15)" aria-label="15 seconds less">−15s</button></div></div>
-  ${fx?`<div class="rfb"><div class="fq">How was it?</div><div class="rate big">${RATES.map(x=>`<button class="${fx.rate===x?"on "+x:""}" onclick="rateEx('${x}')">${x}</button>`).join("")}</div>${prefBar(fx.k,"rest")}</div>`:""}
-  <div class="rbig">Rest<span class="relw"> · workout <b id="rel">${S?fmtEl((Date.now()-S.t0)/1000):""}</b></span></div></div>
+  ${fx?`<div class="rfb"><div class="fq">How was it?</div><div class="rate big">${RATES.map(x=>`<button data-r="${x}" class="${fx.rate===x?"on "+x:""}" aria-pressed="${fx.rate===x}" onclick="rateEx('${x}')">${x}</button>`).join("")}</div>${prefBar(fx.k,"rest")}</div>`:""}
+  <div class="rbig">Rest</div></div>
  <button class="nextup" onclick="nextPreview()" aria-label="Preview next move"><div class="row"><div class="sp"><span class="lbl" style="margin:0">Next</span> → <b>${nextTxt}</b></div><span class="chev">›</span></div></button>
  <button class="btn pri" id="rskip" style="margin-top:12px" onclick="endRest()">Skip rest ›</button></div>`;
- el.classList.add("on");el._after=after;drawRestPill();drawSeg();
+ el.classList.add("on");el._after=after;drawRestPill();drawSeg();updTop();
  runTimer(sec,{rest:true,ticks:true,tick:(r,tot)=>{const t=$("#rrt");if(t)t.textContent=mmssT(r);setRing("rr",Math.max(0,r/tot));const p=$("#rpt");if(p)p.textContent=fmtEl(Math.ceil(r))},
   done:()=>{beepEnd();if(RX&&!RX.rate&&!RMIN){$("#rrt").textContent="0:00";$("#rrs").textContent="time's up";$("#rskip").textContent="Next ›";$("#rpill").classList.remove("on");return}endRest()}});
 }
@@ -1376,7 +1403,7 @@ function hideRest(){$("#rest").classList.remove("on");const p=$("#rpill");if(p)p
 function nextLabelKey(){if(!S)return null;const X=curEx();if(X&&X.rows.some(r=>!r.done))return {k:X.k,i:S.i,same:true};
  const n=S.steps[S.i+1];if(!n||(n.x&&!S.xok))return null;return {k:n.t==="s"?n.k:runPick(n.j),i:S.i+1}}
 function nextPreview(){const N=nextLabelKey();if(!N){toast("That was the last move. 🎉");return}const k=N.k,e=EX[k],st=S.steps[N.i];
- let tgt;if(st.t==="s")tgt=`${st.sec} s${e.s?" · both sides":""}`;else{const X=S.exs&&S.exs[N.i];const sl=runSlot(st.j);
+ let tgt;if(st.t==="s")tgt=`${st.sec} s${e.s?" · both sides":""}`;else if(st.j>=200){const [rr,lab]=wReps(k);tgt=`${warmSets(S.day)} × ${rr} reps${lab?" "+lab:""}`}else{const X=S.exs&&S.exs[N.i];const sl=runSlot(st.j);
   if(X&&X.k===k){const r=X.rows.find(r=>!r.done)||X.rows[0],left=X.rows.filter(r=>!r.done).length;tgt=e.t?`${left} × ${r.sec} s left`:`${left} × ${r.r}${e.s?" each side":""}${e.w==="lb"?" × "+lbTxt(k,r.w):e.w==="band"?" × "+r.band+" band":""} left`}else tgt=fmtTarget(k,roundsFor(k,sl))}
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="phase">${N.same?"Next round":"Up next"} · ${st.ph}</div><div class="exname" style="margin-top:6px">${exName(k)}</div>
  <div class="chips" style="margin-bottom:10px"><span class="pill acc">${tgt}</span>${e.e?`<span class="pill">${kneelOn(k)?e.kn.e:e.e}</span>`:""}</div>
@@ -1417,30 +1444,36 @@ function isoLocal(dt){const p=n=>String(n).padStart(2,"0"),o=-dt.getTimezoneOffs
 function healthPayload(rec){const end=new Date(rec.d),secs=rec.secs||(rec.mins||1)*60,start=new Date(end-secs*1000),min=Math.max(1,Math.round(secs/60));
  return {type:"Traditional Strength Training",name:"Valerie's Workout · "+typeOf(rec.day).t+(rec.pct<100?` (${rec.pct}%)`:""),start:isoLocal(start),end:isoLocal(end),
   startText:start.toLocaleString("en-US",{year:"numeric",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),durationMin:min,calories:Math.round(min*KCAL_PER_MIN),percentDone:rec.pct??100,lbLifted:Math.round(sesLbs(rec))}}
-function healthURL(rec){return "shortcuts://run-shortcut?name="+encodeURIComponent(HEALTH_SC)+"&input=text&text="+encodeURIComponent(JSON.stringify(healthPayload(rec)))}
+/* run the Shortcut via x-callback-url: if it isn't installed, Shortcuts opens the setup page (x-error) instead of a dead end */
+const HEALTH_SETUP_URL="https://valerie7y.github.io/valerie-workout/health-setup.html";
+function healthURL(rec){return "shortcuts://x-callback-url/run-shortcut?name="+encodeURIComponent(HEALTH_SC)+"&input=text&text="+encodeURIComponent(JSON.stringify(healthPayload(rec)))+"&x-error="+encodeURIComponent(HEALTH_SETUP_URL+"?err=1")}
 function healthBtn(rec){const on=!!rec.health;
- return `<div class="hbox" data-hd="${rec.d}"><a class="btn health ${on?"on":""}" href="${healthURL(rec)}" onclick="markHealth('${rec.d}')">${on?"✓ Saved to Apple Health":"❤️ Save to Apple Health"}</a>
- <button class="linkb" onclick="healthHelp()">How to set up</button></div>`}
+ return `<div class="hbox" data-hd="${rec.d}"><button class="btn health ${on?"on":""}" onclick="healthTap('${rec.d}')">${on?"✓ Sent to Apple Health":"❤️ Save to Apple Health"}</button>
+ <button class="linkb" onclick="healthHelp('${rec.d}')">${LS.get("healthReady",false)?"How to set up":"Set up Apple Health first (5 min)"}</button></div>`}
+function recByD(d){return LS.get("sessions",[]).find(x=>x.d===d)}
+/* first time: show the setup steps; after she says the Shortcut is made, the button runs it */
+function healthTap(d){const rec=recByD(d);if(!rec)return;if(!LS.get("healthReady",false)){healthHelp(d);return}healthRun(d)}
+function healthRun(d){const rec=recByD(d);if(!rec)return;LS.set("healthReady",true);markHealth(d);closeSheet();location.href=healthURL(rec)}
 function markHealth(d){const ses=LS.get("sessions",[]),s=ses.find(x=>x.d===d);if(s){s.health=new Date().toISOString();LS.set("sessions",ses);
- document.querySelectorAll(`.hbox[data-hd="${d}"]`).forEach(el=>el.outerHTML=healthBtn(s));toast("Sent to Shortcuts ❤️")}}
-function healthHelp(){
- $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">Save to Apple Health</div>
- <p class="muted" style="margin-top:0">One-time setup in the Shortcuts app (about 5 minutes). After that, the ❤️ button logs each workout in Health.</p>
- <ol class="steps">
+ document.querySelectorAll(`.hbox[data-hd="${d}"]`).forEach(el=>el.outerHTML=healthBtn(s));toast("Opening Shortcuts ❤️")}}
+const HEALTH_STEPS=`<ol class="steps">
  <li>Open the <b>Shortcuts</b> app. Tap <b>+</b> (top right).</li>
- <li>Tap the name at the top, choose <b>Rename</b>, and type exactly: <b>${HEALTH_SC}</b>. Tap <b>Done</b>.</li>
- <li>In <b>Search Actions</b>, type <b>Get Dictionary from Input</b> and tap it. It should say <b>Shortcut Input</b>. If not, tap the blue word and pick it.</li>
- <li>Search <b>Get Dictionary Value</b> and add it. Tap <b>Key</b> and type <b>start</b>. Then add <b>Set Variable</b> and name it <b>Start</b>.</li>
- <li>Add <b>Get Dictionary Value</b> again (key <b>durationMin</b>), then <b>Set Variable</b> named <b>Minutes</b>. Make sure its Dictionary is the one from step 3.</li>
- <li>Add <b>Get Dictionary Value</b> again (key <b>calories</b>), then <b>Set Variable</b> named <b>Calories</b>.</li>
- <li>Search <b>Log Workout</b> (Health) and add it. Tap <b>Type</b> and choose <b>Traditional Strength Training</b>. Tap the arrow to show more.</li>
- <li>Set <b>Date</b> to the <b>Start</b> variable, <b>Duration</b> to <b>Minutes</b> (unit: min), <b>Calories</b> to <b>Calories</b> (kcal). Tap <b>Done</b>.</li>
- <li>Back here, tap <b>❤️ Save to Apple Health</b>. Tap <b>Open</b>, then <b>Allow</b> when Health asks. Check it in Health › Browse › Activity › Workouts.</li></ol>
- <p class="muted small">Date tricky? Leave Date empty: Health then starts the workout when it's logged. Calories are an estimate (about ${KCAL_PER_MIN} per minute).</p>
+ <li>Tap the name at the top. Tap <b>Rename</b>. Type exactly:<br><b class="scname">Log Valerie Workout</b><br>Tap <b>Done</b>.</li>
+ <li>Tap <b>Search Actions</b>. Type <b>Get Dictionary Value</b>. Tap it.</li>
+ <li>In this action: tap <b>Key</b>, type <b>durationMin</b>.<br>Tap <b>Dictionary</b>, choose <b>Shortcut Input</b>.</li>
+ <li>Search again: <b>Log Workout</b>. Tap it.<br><b>Type</b>: Traditional Strength Training.<br><b>Duration</b>: tap, choose <b>Dictionary Value</b>, unit <b>min</b>.</li>
+ <li>Tap <b>Done</b> (top right). The Shortcut is ready.</li>
+ <li>Come back here. Tap <b>Save to Apple Health</b>. Tap <b>Open</b>, then <b>Allow</b> (only the first time).</li></ol>`;
+function healthHelp(d){const rec=d?recByD(d):null;
+ $("#sheetPane").innerHTML=`<div class="grab"></div><div class="exname">Save to Apple Health</div>
+ <p class="muted" style="margin-top:0">One time only: make a small Shortcut on your iPhone (about 5 minutes). Then the ❤️ button saves each workout to Health.</p>
+ ${HEALTH_STEPS}
+ <p class="muted small">Check: Health app › Browse › Activity › Workouts.<br>If Shortcuts says it can't find the shortcut, check the name in step 2.</p>
+ ${rec?`<button class="btn health" style="margin-top:8px" onclick="healthRun('${d}')">✓ I made it · Save now</button>`:""}
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.5";
+const APP_VER="6.6";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
