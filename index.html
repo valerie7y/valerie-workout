@@ -534,6 +534,12 @@ reel_toe_reach:{g:"core",f:"chop",n:"Dumbbell Cross Reach (to shin)",v:"gSDi-M8p
 reel_chop_up:{g:"core",f:"chop",n:"Low-to-High Dumbbell Chop (standing)",v:"HtG6ybpEAZ0",c:"Feet wide, soft knees. Dumbbell in both hands at the outside of one hip. Lift it up and across to above the other shoulder. Pivot your back foot. Lower slowly. Switch sides.",e:"Dumbbell",w:"lb",r:"12-16",sw:8,fav:1,rl:1,m:[["obliques","shoulders"],["abs","glutes"]],rln:"Kassandra does 15 alternating reps. Keep the knee bend small, no squat."},
 reel_body_pass:{g:"core",f:"rot",n:"Dumbbell Around-the-Body Pass",v:"L1mmEBRHZrs",c:"Stand tall, feet hip-width, soft knees. Pass one dumbbell around your waist from hand to hand. Hips stay still, belly tight. Change direction every 5.",e:"Dumbbell",w:"lb",r:"16-20",sw:8,fav:1,rl:1,m:[["abs","obliques"],["shoulders","forearms"]],rln:"Kassandra does 20 reps, changing direction every 5."},
 reel_chop_down:{g:"core",f:"chop",xg:["sh"],n:"High-to-Low Dumbbell Chop (standing)",v:"bxSY805t8CQ",c:"Feet wide, soft knees. Hold one dumbbell with both hands above one shoulder. Pull it down and across to the outside of the other hip. Pivot your back foot. Lift back up slowly. Switch sides halfway.",e:"Dumbbell",w:"lb",r:"12-16",sw:8,fav:1,rl:1,m:[["obliques","shoulders"],["abs","lats"]],rln:"Kassandra does 15 reps from overhead."},
+// ---------- From Attainable Health and Fitness reel "Bulletproof shoulders and core in 4 weeks" (Facebook, Oct 2026). rl:2 ----------
+ahf_carry_over:{g:"core",f:"rot",n:"Seated Carry Over",v:"O7JzINCNMtA",c:"Sit tall on the mat (or the bench), legs out in front. Hold a light weight at one hip. Lift it and carry it across to the other hip. Sit tall, belly tight. Slow and controlled.",e:"Dumbbell or plate · Mat",w:"lb",r:"10-12",sw:8,fav:1,rl:2,m:[["obliques","abs"],["shoulders"]],rln:"She does 10 reps sitting on the floor. The demo shows it on a couch; same move."},
+ahf_heel_slide_oh:{g:"core",f:"anti",n:"Heel Slides + Overhead Hold",v:"F1voUJEWcoI",c:"Sit tall, knees bent, feet flat. Press a light weight straight up and hold it there. Slide one heel out until the leg is long, then pull it back. Switch legs. Ribs down, arms stay up.",e:"Light dumbbell or plate · Mat",w:"lb",r:"8-10",s:1,sw:5,fav:1,rl:2,m:[["abs","shoulders"],["obliques","triceps"]],rln:"She does 10 reps per leg. The demo shows the heel slide only; add the weight held overhead."},
+ahf_curl_up_oh:{g:"core",f:"flex",n:"Curl Up + Overhead Press (offset weight)",v:"lNNER_mpJfQ",c:"Lie on your back, knees bent, feet flat. Hold a light weight in one hand straight up. Curl up to sitting, keep the weight pointing to the ceiling. Lower slowly. Switch hands halfway.",e:"Light dumbbell · Mat",w:"lb",r:"8-10",sw:5,fav:1,rl:2,m:[["abs","shoulders"],["obliques","triceps"]],rln:"She does 10 reps. The weight in one hand makes it easier. Go only as high as feels good."},
+ahf_plank_dd:{g:"core",f:"anti",xg:["sh"],n:"Elevated Plank to Down Dog Reach",v:"qFkBCWYR_G8",c:"Hands on two dumbbells (or the bench), toes on the floor, body straight. Push hips up into a down dog. Reach one hand back toward the other shin. Back to plank. Switch. No knees on the floor.",e:"Dumbbells or bench",w:"none",r:"8-10",s:1,fav:1,rl:2,m:[["abs","shoulders"],["obliques","hamstrings","lats"]],rln:"She does 10 reps per arm with hands on dumbbells."},
+ahf_bridge_press:{g:"gb",f:"bridge",xg:["push"],n:"Single-Leg Bridge + Rotational Chest Press",v:"9wGQIwzHKCk",c:"Lie on your back, one foot flat, other leg up. Lift hips into a bridge. Press one dumbbell up, turning a little toward it. Lower slowly. Hips stay up. Switch sides.",e:"Dumbbell · Mat",w:"lb",r:"8-10",s:1,sw:10,fav:1,rl:2,m:[["glutes","chest"],["hamstrings","triceps","obliques"]],rln:"She does 10 reps per leg on the floor. The demo does it with shoulders on a bench; both are fine."},
 // ---------- BALANCE (always hold support) ----------
 sl_stand:{g:"bal",f:"static",n:"Single-Leg Stand (hold chair)",v:"E3j7nJyqLys",c:"Hold a chair or wall. Lift one foot a little. Stand tall. Switch at the beep.",e:"Chair or wall",w:"none",t:40,s:1,b:1,st:602,en:805,my:1,alt:["8xRDWe3pj30",0,0,"Short demo"],fav:1},
 tandem:{g:"bal",f:"static",n:"Heel-to-Toe Stand (at wall)",v:"E3j7nJyqLys",c:"Stand next to a wall, hand on it. One foot right in front of the other. Switch at the beep.",e:"Wall",w:"none",t:40,s:1,b:1,st:325,en:382,my:1,alt:["ra7tzlPxnsQ",0,0,"Short demo"],fav:1},
@@ -646,10 +652,10 @@ const BACK_BAD=new Set([
  "torso_twist","side_bend","cat_cow_stand","good_morning","hip_circles","elephant_walk","march",
  "upper_back","seated_twist","seated_ham","seated_piriformis","knee_drops","lying_twist","open_book","sphinx","lat_stretch",
  "chair_hip_ext",
- "reel_toe_reach"]);
+ "reel_toe_reach","ahf_curl_up_oh"]);
 /* if a whole slot is unsafe (e.g. RDL hinge, twisting core), pick from these instead */
 /* reel moves: Valerie says her back is fine, so only the loaded reach-to-the-floor is left out in back-safe mode */
-const REEL_FB="https://www.facebook.com/reel/878490528387532/";
+const REELS={1:{who:"Kassandra's reel",u:"https://www.facebook.com/reel/878490528387532/"},2:{who:"Attainable Health reel",u:"https://www.facebook.com/reel/28786485240989049/"}};
 const BACK_ALT={hinge:"gb",core:"core"};
 const XSLOTS=[{g:"bal",f:["static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn","static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["str"],n:1,rest:15,fix:1,x:1}];
 /* cm = extra weight for Coddell Mutate moves in that slot; fin = core finisher at the end of the day */
@@ -759,8 +765,8 @@ const RLW=()=>backSafe()?0.12:1;
 const wOf=(k,sl)=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(EX[k].rl?RLW():1)*(sl&&sl.cm&&EX[k].cm?sl.cm:1)*(p==="more"?2:p==="less"?0.4:1)};
 function wpick(a,sl){let t=a.reduce((s,k)=>s+wOf(k,sl),0),r=Math.random()*t;for(const k of a){r-=wOf(k,sl);if(r<=0)return k}return a[a.length-1]}
 const CM_TAG='<span class="pill cm">💪 From Coddell Mutate</span>';
-const RL_TAG=`<a class="pill rl" href="${REEL_FB}" target="_blank" rel="noopener">🎬 From Kassandra's reel ↗</a>`;
-const srcTag=e=>(e.cm||e.rl)?`<div class="chips" style="margin-top:8px">${e.cm?CM_TAG:""}${e.rl?RL_TAG:""}</div>`:"";
+const RL_TAG=n=>{const r=REELS[n]||REELS[1];return `<a class="pill rl" href="${r.u}" target="_blank" rel="noopener">🎬 From ${r.who} ↗</a>`};
+const srcTag=e=>(e.cm||e.rl)?`<div class="chips" style="margin-top:8px">${e.cm?CM_TAG:""}${e.rl?RL_TAG(e.rl):""}</div>`:"";
 /* kettlebells come in fixed sizes: lb values of 4, 6, 8, 10, 12, 14, 16, 18, 20, 24 kg bells */
 const KB_LB=[9,13,18,22,26,31,35,40,44,53];
 const kgOf=lb=>Math.round(lb/2.2046);
@@ -1024,7 +1030,7 @@ function overview(day){
  const ms=sessionMuscles(p.b),sets=D.slots.reduce((t,sl,j)=>t+roundsFor(p.b[j],sl),0),em=estMin(day);
  const lite=(k,i,m)=>`<button class="item lite" onclick="preview('${k}','${day}',-1)"><span class="num">${i+1}</span><span class="sp" style="text-align:left"><span class="n">${exName(k)}</span><span class="m">${m}</span></span><span class="chev">›</span></button>`;
  const slot=j=>{const k=pick(day,j),e=EX[k],sl=slotOf(day,j),pf=prefOf(k);
-  return `<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${exName(k)}${e.fav?" <span title='favorite style'>⭐</span>":""}${e.cm?" <span title='From Coddell Mutate'>💪</span>":""}${e.rl?" <span title=\"From Kassandra's reel\">🎬</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m tg">${fmtTarget(k,roundsFor(k,sl))}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`};
+  return `<div class="item"><button class="mthumbbtn" onclick="preview('${k}','${day}',${j})" aria-label="Watch">${bodySVG(k,"mthumb")}</button><button class="sp" style="text-align:left" onclick="preview('${k}','${day}',${j})"><div class="n">${exName(k)}${e.fav?" <span title='favorite style'>⭐</span>":""}${e.cm?" <span title='From Coddell Mutate'>💪</span>":""}${e.rl?" <span title=\"${(REELS[e.rl]||REELS[1]).who}\">🎬</span>":""}${pf==="more"?" 👍":pf==="less"?" 👎":""}${isNew(k)?' <span class="pill ok" style="padding:2px 8px;font-size:11px;vertical-align:2px">NEW</span>':""}</div><div class="m tg">${fmtTarget(k,roundsFor(k,sl))}</div><div class="m mm">${musclesOf(k)[0].map(m=>MNAME[m]).join(" · ")}</div></button><button class="swap" onclick="openReplace('${day}',${j},0)" aria-label="Replace">⇄</button></div>`};
  const beq=equipOf(day,p.b).join(", ");
  let h=`<div class="wrap"><div class="top"><button class="icon-btn" onclick="chooseScreen()" aria-label="Back">‹</button><div class="sp"></div><button class="pill acc" style="min-height:44px;padding:0 16px;font-size:15px" onclick="refreshPlan('${day}');overview('${day}')">↻ New mix</button></div>
  <div class="ovh"><span class="dot" style="background:${D.col}"></span><h2 style="margin:0">${D.t}</h2>${backSafe()?'<button class="pill bsafe" onclick="toast(\'Back-safe mode is on. Turn it off on the home screen.\')">🛡️ Back-safe</button>':""}</div><div class="muted" style="margin-top:2px">${D.s}</div>
@@ -1487,7 +1493,7 @@ function healthHelp(d){const rec=d?recByD(d):null;
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.7";
+const APP_VER="6.8";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
