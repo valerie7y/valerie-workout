@@ -540,6 +540,11 @@ ahf_heel_slide_oh:{g:"core",f:"anti",n:"Heel Slides + Overhead Hold",v:"F1voUJEW
 ahf_curl_up_oh:{g:"core",f:"flex",n:"Curl Up + Overhead Press (offset weight)",v:"lNNER_mpJfQ",c:"Lie on your back, knees bent, feet flat. Hold a light weight in one hand straight up. Curl up to sitting, keep the weight pointing to the ceiling. Lower slowly. Switch hands halfway.",e:"Light dumbbell · Mat",w:"lb",r:"8-10",sw:5,fav:1,rl:2,m:[["abs","shoulders"],["obliques","triceps"]],rln:"She does 10 reps. The weight in one hand makes it easier. Go only as high as feels good."},
 ahf_plank_dd:{g:"core",f:"anti",xg:["sh"],n:"Elevated Plank to Down Dog Reach",v:"qFkBCWYR_G8",c:"Hands on two dumbbells (or the bench), toes on the floor, body straight. Push hips up into a down dog. Reach one hand back toward the other shin. Back to plank. Switch. No knees on the floor.",e:"Dumbbells or bench",w:"none",r:"8-10",s:1,fav:1,rl:2,m:[["abs","shoulders"],["obliques","hamstrings","lats"]],rln:"She does 10 reps per arm with hands on dumbbells."},
 ahf_bridge_press:{g:"gb",f:"bridge",xg:["push"],n:"Single-Leg Bridge + Rotational Chest Press",v:"9wGQIwzHKCk",c:"Lie on your back, one foot flat, other leg up. Lift hips into a bridge. Press one dumbbell up, turning a little toward it. Lower slowly. Hips stay up. Switch sides.",e:"Dumbbell · Mat",w:"lb",r:"8-10",s:1,sw:10,fav:1,rl:2,m:[["glutes","chest"],["hamstrings","triceps","obliques"]],rln:"She does 10 reps per leg on the floor. The demo does it with shoulders on a bench; both are fine."},
+// ---------- From Nelymar Bento Pilates reel "Pilates em casa: braços, costas e postura" (Facebook, Oct 2026; credit comotreinaremcasacomcarol). Seated long-sit band moves. rl:3 ----------
+nb_high_row:{g:"pull",f:"shrug",n:"Seated Band High Row (elbows wide)",v:"wULy0tev5yg",c:"Sit tall on the mat, legs long, band around your feet (bend knees a little or sit on a folded towel if that's easier). Hold the band ends. Pull your hands up toward your chest, elbows wide and high. Squeeze between your shoulder blades. Slowly back.",e:"Long band · Mat",w:"band",r:"12-15",fav:1,rl:3,m:[["traps","upperback"],["shoulders","biceps"]],rln:"No rep count in the reel; the app starts you at 12-15."},
+nb_rear_row:{g:"pull",f:"rear",n:"Seated Band Rear-Delt Row (one arm at a time)",v:"dOZyuwzZxks",c:"Sit tall on the mat, legs long, band around your feet (bend knees a little or sit on a folded towel if that's easier). Pull one elbow back and out at shoulder height, then the other. Chest tall. Slow and controlled.",e:"Long band · Mat",w:"band",r:"10-12",s:1,fav:1,rl:3,m:[["shoulders","upperback"],["traps"]],rln:"She alternates arms. No rep count in the reel."},
+nb_diag_raise:{g:"sh",f:"raise",n:"Seated Band Diagonal Raise",v:"eLeAdjZZwFs",c:"Sit tall on the mat, legs long, band around your feet (bend knees a little or sit on a folded towel if that's easier). Hold one end at the opposite hip. Raise the arm up and out on a diagonal, thumb up, to above your shoulder. Lower slowly. Switch arms.",e:"Long band · Mat",w:"band",r:"10-12",s:1,fav:1,rl:3,m:[["shoulders"],["upperback","traps"]],rln:"The demo is standing on the band; she does it sitting with the band around her feet."},
+nb_pull_back:{g:"pull",f:"vert",n:"Seated Band Straight-Arm Pull-Back",v:"gTK-S4V4-Ok",c:"Sit tall on the mat, legs long, band around your feet (bend knees a little or sit on a folded towel if that's easier). Arms long, hands by your knees. Keep arms straight and pull them back past your hips. Squeeze, then slowly forward.",e:"Long band · Mat",w:"band",r:"12-15",fav:1,rl:3,m:[["lats","triceps"],["upperback","shoulders"]],rln:"The demo is standing with the band anchored; she does it sitting. No rep count in the reel."},
 // ---------- BALANCE (always hold support) ----------
 sl_stand:{g:"bal",f:"static",n:"Single-Leg Stand (hold chair)",v:"E3j7nJyqLys",c:"Hold a chair or wall. Lift one foot a little. Stand tall. Switch at the beep.",e:"Chair or wall",w:"none",t:40,s:1,b:1,st:602,en:805,my:1,alt:["8xRDWe3pj30",0,0,"Short demo"],fav:1},
 tandem:{g:"bal",f:"static",n:"Heel-to-Toe Stand (at wall)",v:"E3j7nJyqLys",c:"Stand next to a wall, hand on it. One foot right in front of the other. Switch at the beep.",e:"Wall",w:"none",t:40,s:1,b:1,st:325,en:382,my:1,alt:["ra7tzlPxnsQ",0,0,"Short demo"],fav:1},
@@ -655,7 +660,7 @@ const BACK_BAD=new Set([
  "reel_toe_reach","ahf_curl_up_oh"]);
 /* if a whole slot is unsafe (e.g. RDL hinge, twisting core), pick from these instead */
 /* reel moves: Valerie says her back is fine, so only the loaded reach-to-the-floor is left out in back-safe mode */
-const REELS={1:{who:"Kassandra's reel",u:"https://www.facebook.com/reel/878490528387532/"},2:{who:"Attainable Health reel",u:"https://www.facebook.com/reel/28786485240989049/"}};
+const REELS={1:{who:"Kassandra's reel",u:"https://www.facebook.com/reel/878490528387532/"},2:{who:"Attainable Health reel",u:"https://www.facebook.com/reel/28786485240989049/"},3:{who:"Nelymar Bento Pilates reel",u:"https://www.facebook.com/reel/28822648104031352/"}};
 const BACK_ALT={hinge:"gb",core:"core"};
 const XSLOTS=[{g:"bal",f:["static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["dyn","static"],n:1,rest:15,fix:1,x:1},{g:"bal",f:["str"],n:1,rest:15,fix:1,x:1}];
 /* cm = extra weight for Coddell Mutate moves in that slot; fin = core finisher at the end of the day */
@@ -761,8 +766,8 @@ function prefOf(k){return (LS.get("pref",{}))[k]||""}
 function setPref(k,v){const p=LS.get("pref",{});if(p[k]===v)delete p[k];else p[k]=v;LS.set("pref",p)}
 /* Coddell Mutate moves (cm) get the slot's cm weight on top (core slots on Day D, core finishers on A-C) */
 /* reel moves (rl): "sprinkled in". In back-safe mode most other twisting core moves are out, so the reel ones are toned down there to stay occasional */
-const RLW=()=>backSafe()?0.12:1;
-const wOf=(k,sl)=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(EX[k].rl?RLW():1)*(sl&&sl.cm&&EX[k].cm?sl.cm:1)*(p==="more"?2:p==="less"?0.4:1)};
+const RLW=k=>backSafe()&&EX[k].g==="core"?0.12:1;
+const wOf=(k,sl)=>{const p=prefOf(k);return (EX[k].fav?FAVW:1)*(EX[k].rl?RLW(k):1)*(sl&&sl.cm&&EX[k].cm?sl.cm:1)*(p==="more"?2:p==="less"?0.4:1)};
 function wpick(a,sl){let t=a.reduce((s,k)=>s+wOf(k,sl),0),r=Math.random()*t;for(const k of a){r-=wOf(k,sl);if(r<=0)return k}return a[a.length-1]}
 const CM_TAG='<span class="pill cm">💪 From Coddell Mutate</span>';
 const RL_TAG=n=>{const r=REELS[n]||REELS[1];return `<a class="pill rl" href="${r.u}" target="_blank" rel="noopener">🎬 From ${r.who} ↗</a>`};
@@ -1493,7 +1498,7 @@ function healthHelp(d){const rec=d?recByD(d):null;
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.8";
+const APP_VER="6.9";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
