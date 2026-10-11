@@ -17,7 +17,7 @@
   --bg:#0E1116;--card:#171B23;--card2:#1E2330;--line:rgba(255,255,255,.07);
   --text:#F3F5F9;--muted:#99A2B3;--dim:#6B7385;
   --acc:#FF7A59;--acc2:#FF9F7A;--ok:#3DD6B5;--warn:#F5B544;
-  --A:#FF7A59;--B:#3DD6B5;--C:#8B7CF6;--D:#F5B544;--E:#5AA9FF;--W:#F06BA8;
+  --A:#FF7A59;--B:#3DD6B5;--C:#8B7CF6;--D:#F5B544;--E:#5AA9FF;--W:#F06BA8;--M:#FFC86B;
   --r:20px;--safeT:env(safe-area-inset-top,0px);--safeB:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -373,6 +373,8 @@ html,body{overscroll-behavior-y:none}
 .rtop2{display:flex;align-items:center;gap:10px;margin:0 0 12px}
 .backb.sm{min-height:40px;padding:0 12px 0 10px;font-size:15px}
 .scname{display:inline-block;background:var(--card2);padding:4px 10px;border-radius:8px;margin:4px 0;-webkit-user-select:all;user-select:all}
+.morning{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:14px 0;padding:16px;border-radius:20px;border:1px solid rgba(255,200,107,.35);background:linear-gradient(135deg,rgba(255,200,107,.16),rgba(255,140,90,.08));color:var(--text);font:inherit}
+.morning .sun{font-size:34px;line-height:1}.morning .t{font-weight:800;font-size:18px}.morning .s{color:var(--muted);font-size:14px;margin-top:2px}.morning .pill{margin-left:auto;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -638,6 +640,11 @@ const DAYS={
   {g:"core",f:["anti","flex","ext"],n:3,rest:30,cm:2},
   {g:"core",f:["chop","rot","arc","carry"],n:2,rest:30,cm:4}]}
 };
+/* optional ~8 min morning routine (v7.0), modeled on the Nelymar Bento Pilates band reel. Not in the A-D rotation; fixed moves; 2 straight sets each, short rests.
+   It never changes the main plans, their history/progression or the "This week" count. */
+const MORNING={moves:[["nb_high_row",10],["nb_rear_row",8],["band_row",10],["nb_diag_raise",8],["nb_pull_back",10]],warm:[["shoulder_rolls",30]],cool:[["chest_behind_back",30]],sets:2,rest:15,restLast:8};
+DAYS.M={t:"Morning Posture",sh:"Morning",s:"Seated band · upper back, shoulders, posture",col:"var(--M)",z:"up",morning:1,
+ slots:MORNING.moves.map(([k])=>({g:EX[k].g,n:MORNING.sets,rest:MORNING.rest,fix:1,mk:k}))};
 /* the day layouts before v6 (balance + core finisher inside the workout); used to carry over saved plans and unfinished workouts */
 const OLD_SLOTS={
  A:[{g:"bal",n:2,rest:20},{g:"bal",n:2,rest:20},{g:"push",f:["press"],n:3,rest:60},{g:"push",n:3,rest:60},{g:"sh",n:3,rest:45},{g:"tri",n:3,rest:45},{g:"core",n:2,rest:30,cm:4,fin:1}],
@@ -731,7 +738,7 @@ function bodySVG(k,cls){return bodyFor(musclesOf(k),cls)}
 /* muscles for a whole session: primary of strength moves; balance and secondaries become secondary */
 function sessionMuscles(keys){const p=new Set(),s=new Set();keys.forEach(k=>{const [a,b]=musclesOf(k);a.forEach(m=>(EX[k].g==="bal"?s:p).add(m));b.forEach(m=>s.add(m))});p.forEach(m=>s.delete(m));return [[...p],[...s]]}
 /* static map for the Choose cards */
-const TYPE_M={A:[["chest","shoulders","triceps"],["abs","obliques"]],B:[["glutes","hipside","hamstrings"],["adductors","calves","lowerback"]],C:[["lats","upperback","biceps"],["shoulders","traps","forearms"]],
+const TYPE_M={M:[["upperback","shoulders","traps"],["lats","triceps"]],A:[["chest","shoulders","triceps"],["abs","obliques"]],B:[["glutes","hipside","hamstrings"],["adductors","calves","lowerback"]],C:[["lats","upperback","biceps"],["shoulders","traps","forearms"]],
  D:[["glutes","hamstrings","abs"],["lowerback","obliques","calves"]],E:[["abs","obliques"],["lowerback","shoulders"]],W:[["quads","calves","glutes"],["hamstrings"]]};
 
 const ORDER=["A","B","C","D"];
@@ -821,7 +828,7 @@ const WARM_FOR={A:["arm_circles","shoulder_rolls","arm_swings","wall_slides","pa
  E:["shoulder_rolls","hip_circles","side_bend","pelvic_tilt","supine_march","heel_slides"]};
 const WARM_BS_ANY=["neck_rolls","shoulder_rolls","wall_slides","arm_circles"];
 const WARM_ANY=["cat_cow_stand","torso_twist"];
-const WARM_N={A:4,B:4,C:4,D:4,E:4},WARM_R={A:2,B:2,C:2,D:2,E:1},WARM_SEC=30;
+const WARM_N={A:4,B:4,C:4,D:4,E:4,M:1},WARM_R={A:2,B:2,C:2,D:2,E:1,M:1},WARM_SEC=30;
 /* Stretch: 4 knee-safe stretches (standing, chair or lying; no kneeling), 30 s each or 30 s per side */
 const STRETCH_FOR={A:["cross_shoulder","tri_stretch","doorway","chest_behind_back","side_bend","upper_back","wrist_stretch"],
  C:["lat_stretch","biceps_stretch","upper_back","cross_shoulder","side_bend","open_book","chest_behind_back"],
@@ -854,17 +861,19 @@ function genStretches(g,z,avoid,nst){
  return pick.map(k=>[k,EX[k].s?40:35])}
 function generate(day,extraAvoid){
  const D=DAYS[day],avoid=recentSet(day);(extraAvoid||[]).forEach(k=>avoid.add(k));
- const b=genBlocks(day,extraAvoid);return {b,w:genWarm(day,avoid,b),c:genStretch(day,avoid),x:genExtra(day,avoid,b),at:new Date().toISOString()}}
+ const b=genBlocks(day,extraAvoid),c=genStretch(day,avoid);return {b,w:genWarm(day,avoid,b.concat(c.map(x=>x[0]))),c,x:genExtra(day,avoid,b),at:new Date().toISOString()}}
 function validPlan(day,p){return !!(p&&p.b&&p.b.length===DAYS[day].slots.length&&p.b.every(k=>EX[k])&&Array.isArray(p.w)&&p.w.every(x=>EX[x[0]])&&Array.isArray(p.c)&&p.c.every(x=>EX[x[0]]))}
-function getPlan(day){const P=LS.get("plans",{});let p=P[day],ch=false;
+function morningPlan(){return {b:MORNING.moves.map(x=>x[0]),w:MORNING.warm.map(x=>x.slice()),c:MORNING.cool.map(x=>x.slice()),x:[],at:"fixed"}}
+const isM=d=>d==="M";
+function getPlan(day){if(isM(day))return morningPlan();const P=LS.get("plans",{});let p=P[day],ch=false;
  /* plans saved before v6 had balance + core finisher inside the workout: keep her strength picks, drop those slots */
  const os=OLD_SLOTS[day];if(p&&p.b&&os&&p.b.length===os.length&&p.b.length!==DAYS[day].slots.length){p.oldb=p.b;p.b=p.b.filter((k,i)=>os[i].g!=="bal"&&!os[i].fin);ch=true}
  if(!validPlan(day,p)){p=P[day]=generate(day);ch=true}
  else{const av=recentSet(day);
-  if(!warmOK(day,p.w)){p.w=genWarm(day,av,p.b);ch=true}
   if(!stretchOK(day,p.c)){p.c=genStretch(day,av);ch=true}
+  if(!warmOK(day,p.w)||p.w.some(x=>p.c.some(y=>y[0]===x[0])||p.b.includes(x[0]))){p.w=genWarm(day,av,p.b.concat(p.c.map(x=>x[0])));ch=true}
   if(!Array.isArray(p.x)||p.x.length!==XSLOTS.length||!p.x.every(k=>EX[k]&&EX[k].g==="bal")){p.x=genExtra(day,av,p.b);ch=true}
-  if(backSafe()){const fix=(arr,slots)=>arr.forEach((k,j)=>{if(bsOK(k))return;const all=p.b.concat(p.x),used=new Set(all),fams=new Set(all.filter(x=>x!==k).map(x=>EX[x].g+EX[x].f));arr[j]=choose(pool(slots[j]),used,fams,av,slots[j]);ch=true});
+  if(backSafe()){const fix=(arr,slots)=>arr.forEach((k,j)=>{if(bsOK(k))return;const all=p.b.concat(p.x),used=new Set(all.concat(p.w.map(x=>x[0]))),fams=new Set(all.filter(x=>x!==k).map(x=>EX[x].g+EX[x].f));arr[j]=choose(pool(slots[j]),used,fams,av,slots[j]);ch=true});
    fix(p.b,DAYS[day].slots);fix(p.x,XSLOTS)}}
  if(ch)LS.set("plans",P);return p}
 function savePlan(day,p){const P=LS.get("plans",{});P[day]=p;LS.set("plans",P)}
@@ -882,7 +891,8 @@ function altsFor(day,j){const p=getPlan(day),cur=pick(day,j),sl=slotOf(day,j),us
  return c.map(k=>[k,score(k)]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0])}
 function replaceSlot(day,j,k){const p=getPlan(day);if(j>=100)p.x[j-100]=k;else p.b[j]=k;savePlan(day,p)}
 /* minutes: Warm Up (× rounds) + Block 1 (sets + her rest) + Stretch; the balance extra is shown on its own */
-function estMin(day){const p=getPlan(day),st=a=>a.reduce((s,x)=>s+x[1]+6,0),wu=p.w.reduce((t,[k,sec])=>t+(EX[k].hold?sec+6:warmSets(day)*(wReps(k)[0]*(EX[k].s?2:1)*2.5+6)),0);return Math.round((wu+st(p.c)+mainSecs(day,p.b,restLen())+20)/60)}
+function estM(){const r=MORNING.moves.reduce((t,[k,n])=>t+MORNING.sets*(n*(EX[k].s?2:1)*2+5)+(MORNING.sets-1)*MORNING.rest+MORNING.restLast,0),w=MORNING.warm.reduce((t,[k])=>t+wReps(k)[0]*2.5+6,0),c=MORNING.cool.reduce((t,[,sec])=>t+sec+6,0);return (r+w+c+20)/60}
+function estMin(day){if(isM(day))return Math.round(estM());const p=getPlan(day),st=a=>a.reduce((s,x)=>s+x[1]+6,0),wu=p.w.reduce((t,[k,sec])=>t+(EX[k].hold?sec+6:warmSets(day)*(wReps(k)[0]*(EX[k].s?2:1)*2.5+6)),0);return Math.round((wu+st(p.c)+mainSecs(day,p.b,restLen())+20)/60)}
 function estX(day){const p=getPlan(day);return Math.max(1,Math.round((p.x||[]).reduce((t,k,i)=>t+XSLOTS[i].n*(setSecs(k)+XSLOTS[i].rest)+8,0)/60))}
 function isNew(k){return !LS.get("hist",{})[k]&&!(LS.get("everDone",[])).includes(k)}
 
@@ -930,8 +940,9 @@ function sesLog(s){if(s.log)return s.log;const h=LS.get("hist",{}),day=dkey(s.d)
   return {k,n:EX[k].n,pl:rd.length||null,rd,lb:ok?roundsLb(k,rd):0,old:1}})}
 function sesLbs(s){return s.lbs!=null?s.lbs:sesLog(s).reduce((t,x)=>t+(x.lb||0),0)}
 function allSes(){return LS.get("sessions",[]).filter(s=>s&&s.d&&!isNaN(new Date(s.d)))}
-function weekCount(){const mon=monday(new Date());return allSes().filter(s=>new Date(s.d)>=mon).length}
-function monthCount(){const n=new Date();return allSes().filter(s=>{const d=new Date(s.d);return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()}).length}
+function weekCount(){const mon=monday(new Date());return allSes().filter(s=>!isM(s.day)&&new Date(s.d)>=mon).length}
+function morningWeek(){const mon=monday(new Date());return allSes().filter(s=>isM(s.day)&&new Date(s.d)>=mon).length}
+function monthCount(){const n=new Date();return allSes().filter(s=>{if(isM(s.day))return false;const d=new Date(s.d);return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()}).length}
 /* streak = weeks in a row with at least one workout (this week counts once it has one) */
 function weekStreak(){const wk=new Set(allSes().map(s=>+monday(s.d)));let m=monday(new Date());if(!wk.has(+m))m.setDate(m.getDate()-7);let n=0;while(wk.has(+m)){n++;m.setDate(m.getDate()-7)}return n}
 function nextUp(){const ses=allSes().filter(s=>ORDER.includes(s.day));if(!ses.length)return "A";const l=ses[ses.length-1].day;return ORDER[(ORDER.indexOf(l)+1)%4]}
@@ -944,6 +955,7 @@ function home(){
  const hr=now.getHours(),greet=hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
  let h=`<div class="wrap home"><div class="hello row" style="align-items:flex-end"><div class="sp"><div class="muted small" style="font-weight:600;letter-spacing:.04em;text-transform:uppercase">${now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div><h1>Hi Valerie 👋</h1><div class="muted" style="font-size:16px">${greet}!</div></div>${st?`<span class="pill streak">🔥 ${st}-week streak</span>`:""}</div>`;
  if(saved&&saved.steps&&Date.now()-saved.ts<6*3600e3&&DAYS[saved.day])h+=`<button class="resume" onclick="resume()"><span class="dot" style="background:${DAYS[saved.day].col}"></span><span class="sp"><b>Continue ${DAYS[saved.day].t}</b><span class="muted small"> · ${fmtEl((saved.ts-saved.t0)/1000)} in</span></span><span class="chev">›</span></button>`;
+ h+=`${(()=>{const md=allSes().some(s=>isM(s.day)&&dkey(s.d)===dkey(new Date())),mw=morningWeek();return `<button class="morning" onclick="overview('M')"><span class="sun">☀️</span><span><div class="t">Morning Posture · ${estMin("M")} min</div><div class="s">Optional · seated band${mw?` · ${mw} this week`:""}</div></span>${md?'<span class="pill ok">✓ Done today</span>':'<span class="chev">›</span>'}</button>`})()}`;
  h+=`<div class="card cal" id="cal">${calHTML()}</div>
  <div class="stats">
   <div class="st"><b>${wc}<small>/4</small></b><span>This week</span></div>
@@ -976,7 +988,7 @@ function calHTML(){const {y,m}=CAL,first=new Date(y,m,1),nd=new Date(y,m+1,0).ge
    if(p<100)pc=`<span class="pc">${p}%</span>`;
    if(L.length>1)dots=`<span class="more">${L.filter(s=>s!==best).slice(0,2).map(s=>`<i style="background:${typeOf(s.day).col}"></i>`).join("")}</span>`}
   h+=`<button class="cd ${k===tk?"today":""} ${L.length?"has":""}" data-d="${k}" onclick="dayDetail('${k}')" aria-label="${k}${L.length?": "+L.map(s=>typeOf(s.day).t+" "+sesPct(s)+"%").join(", "):""}">${ring}<span class="dn">${d}</span>${pc}${dots}</button>`}
- h+=`</div><div class="legend">${["A","B","C","D","E","W"].map(d=>`<span><i style="background:${typeOf(d).col}"></i>${typeOf(d).sh}</span>`).join("")}<span class="lg2"><svg viewBox="0 0 40 40" class="lgring"><circle cx="20" cy="20" r="15" class="tr"/><circle cx="20" cy="20" r="15" class="arc" style="stroke:var(--muted)" stroke-dasharray="56 94.2" transform="rotate(-90 20 20)"/></svg>partial</span></div>`;
+ h+=`</div><div class="legend">${["A","B","C","D","E","W","M"].map(d=>`<span><i style="background:${typeOf(d).col}"></i>${typeOf(d).sh}</span>`).join("")}<span class="lg2"><svg viewBox="0 0 40 40" class="lgring"><circle cx="20" cy="20" r="15" class="tr"/><circle cx="20" cy="20" r="15" class="arc" style="stroke:var(--muted)" stroke-dasharray="56 94.2" transform="rotate(-90 20 20)"/></svg>partial</span></div>`;
  return h}
 function toggleBack(){LS.set("backSafe",!backSafe());toast(backSafe()?"Back-safe on: today's moves are swapped to back-friendly ones.":"Back-safe off: all moves can come back.");home()}
 function calMove(d){CAL.m+=d;if(CAL.m<0){CAL.m=11;CAL.y--}if(CAL.m>11){CAL.m=0;CAL.y++}$("#cal").innerHTML=calHTML()}
@@ -1030,7 +1042,7 @@ function fmtTarget(k,n){const e=EX[k],a=advice(k);
  if(e.t)return `${presc(k,n)}${e.w==="lb"&&a.w!==""&&a.w!=null?" × "+lbTxt(k,a.w):""}`;
  return `${n} × ${a.reps}${e.s?" each side":""}${e.w==="lb"?(a.w!==""&&a.w!=null?" × "+lbTxt(k,a.w):" × your weight"):e.w==="band"?" × "+a.band+" band":""}`}
 /* ONE list for the overview and the live session (buildSteps): Warm Up -> Block 1 -> Stretch, then the optional Extra: Balance */
-function overview(day){
+function overview(day){if(isM(day))return morningOverview();
  const D=DAYS[day],p=getPlan(day),wr=WARM_R[day]||1;stopTimer();
  const ms=sessionMuscles(p.b),sets=D.slots.reduce((t,sl,j)=>t+roundsFor(p.b[j],sl),0),em=estMin(day);
  const lite=(k,i,m)=>`<button class="item lite" onclick="preview('${k}','${day}',-1)"><span class="num">${i+1}</span><span class="sp" style="text-align:left"><span class="n">${exName(k)}</span><span class="m">${m}</span></span><span class="chev">›</span></button>`;
@@ -1052,6 +1064,23 @@ function overview(day){
  <div class="bottom"><div class="in"><button class="btn pri startbig" onclick="start('${day}')"><span>▶ Start</span><small>${D.t} · ≈ ${em} min</small></button></div></div>`;
  $("#app").innerHTML=h;window.scrollTo(0,0);
 }
+function morningOverview(){const D=DAYS.M,p=morningPlan(),em=estMin("M");stopTimer();
+ const it=(k,i,m)=>`<button class="item lite" onclick="preview('${k}','M',-1)"><span class="num">${i+1}</span><span class="sp" style="text-align:left"><span class="n">${exName(k)}${EX[k].rl?" 🎬":""}</span><span class="m">${m}</span></span><span class="chev">›</span></button>`;
+ const band=k=>LS.get("mband",{})[k]||LS.get("band",{})[k]||"Medium";
+ $("#app").innerHTML=`<div class="wrap"><div class="top"><button class="icon-btn" onclick="home()" aria-label="Back">‹</button><div class="sp"></div><span class="pill" style="background:rgba(255,200,107,.16);color:var(--M)">Optional</span></div>
+ <div class="ovh"><span class="dot" style="background:${D.col}"></span><h2 style="margin:0">☀️ ${D.t}</h2></div><div class="muted" style="margin-top:2px">${D.s}</div>
+ <div class="hero" style="--tc:${D.col}">${bodyFor(TYPE_M.M,"body big",D.col)}<div class="mt">Upper back · Shoulders · Traps<span> + Back (lats), Triceps</span></div></div>
+ <div class="facts"><div><b>≈ ${em}</b><span>minutes</span></div><div><b>${p.b.length}</b><span>band moves</span></div><div><b>${p.b.length*MORNING.sets}</b><span>sets</span></div></div>
+ <div class="sec-t">Equipment</div><div class="chips"><span class="chip eq">Long band</span><span class="chip eq">Mat</span><span class="chip eq">Folded towel (optional)</span></div>
+ <div class="tip" style="margin-top:12px">🦵 <span>Sit tall on the mat, legs long, band around your feet. <b>Bend your knees a little or sit on a folded towel</b> if that's easier. No kneeling.</span></div>
+ <div class="sec-t" data-sec="Warm Up">Warm Up <span class="sub">· 1 move</span></div><div class="stack">${p.w.map(([k],i)=>{const [rr,lab]=wReps(k);return it(k,i,`${rr} reps${lab?" "+lab:""}`)}).join("")}</div>
+ <div class="sec-t" data-sec="Block 1">Band moves <span class="sub">· ${MORNING.sets} sets each · ${MORNING.rest} s rest</span></div><div class="muted small" style="margin:-2px 2px 8px">All sets of one move, then the next.</div>
+ <div class="stack">${MORNING.moves.map(([k,n],i)=>it(k,i,`${MORNING.sets} × ${n}${EX[k].s?" each arm":""} · ${band(k)} band`)).join("")}</div>
+ <div class="sec-t" data-sec="Stretch">Stretch <span class="sub">· 1 move</span></div><div class="stack">${p.c.map(([k,sec],i)=>it(k,i,`${sec} s`)).join("")}</div>
+ <p class="muted small" style="margin-top:14px">Optional. Doing it or skipping it never changes your main workouts.</p>
+ <div style="margin-top:6px">${KNEE}</div></div>
+ <div class="bottom"><div class="in"><button class="btn pri startbig" onclick="start('M')"><span>▶ Start</span><small>${D.t} · ≈ ${em} min</small></button></div></div>`;
+ window.scrollTo(0,0)}
 function preview(k,day,j){const e=EX[k];const ctx=day&&j>=0?`ov:${day}:${j}`:"pv";
  $("#sheetPane").innerHTML=`<div class="grab"></div><div class="video" id="pvid"></div><div class="vbar" id="pbar2"></div>
  <div class="exname">${exName(k)}</div><div class="muted">${kneelOn(k)?e.kn.e:e.e||""}</div>${day&&DAYS[day]?`<button class="btn pri starthere" onclick="start('${day}','${k}')">▶ Start workout here</button>`:""}${srcTag(e)}${e.rln?`<div class="cmn">🎬 ${e.rln}</div>`:""}${e.cmn&&!kneelOn(k)?`<div class="cmn">🦵 Knee-safe: ${e.cmn}</div>`:""}${kneelBar(k,ctx)}${e.g!=="bonus"?`<div class="mbox">${bodySVG(k)}<div class="mtxt"><div class="lbl" style="margin:0 0 4px">Works</div><div>${muscleText(k)}</div></div></div>`:""}<p class="cue">${exCue(k)}</p>${day&&e.g!=="warm"&&e.g!=="cool"?`<div class="last guide">${advice(k).text}</div>`:""}${e.g!=="bonus"?prefBar(k,ctx):""}${k==="happy_walk"?`<button class="btn ok" style="margin-top:14px" onclick="logWalk()">✓ I did my walk today</button>`:""}${day&&j>=0?`<button class="btn ghost" style="margin-top:6px" onclick="openReplace('${day}',${j},0)">⇄ Replace this move</button>`:""}<div style="margin-top:14px">${KNEE}</div>
@@ -1086,7 +1115,7 @@ function wReps(k){return WREP[k]||(EX[k].s?[8,"each side"]:[12,""])}
 function warmSets(day){return WARM_R[day]||2}
 function buildSteps(day){const p=getPlan(day),st=[];
  p.w.forEach(([k,sec],i)=>{if(EX[k].hold)st.push({t:"s",k,sec,ph:"Warm Up"});else st.push({t:"e",j:200+i,ph:"Warm Up"})});
- DAYS[day].slots.forEach((_,j)=>st.push({t:"e",j,ph:"Block 1"}));
+ DAYS[day].slots.forEach((_,j)=>st.push({t:"e",j,ph:isM(day)?"Band moves":"Block 1"}));
  p.c.forEach(([k,sec])=>st.push({t:"s",k,sec,ph:"Stretch"}));
  (p.x||[]).forEach((_,i)=>st.push({t:"e",j:100+i,ph:"Extra: Balance",x:1}));return st}
 /* the run keeps its own copy of the picks (S.pb/S.px), so a running workout never changes under her */
@@ -1129,13 +1158,13 @@ function runSummary(){let rp=0,rd=0,lbs=0;const log=[];
 /* one session record (old fields day/d/mins/sets/ex kept so older data and code still read it) */
 function saveSession(R){const day=S.day,secs=Math.round((Date.now()-S.t0)/1000),p=getPlan(day);
  const all=(S.pb||p.b).concat(p.w.map(x=>x[0]),p.c.map(x=>x[0]),S.xok?(S.px||[]):[]).filter(k=>k!=="march"&&k!=="breathing");
- const r=LS.get("recent",{});r[day]=[S.pb||p.b].concat(r[day]||[]).slice(0,2);LS.set("recent",r);
+ if(!isM(day)){const r=LS.get("recent",{});r[day]=[S.pb||p.b].concat(r[day]||[]).slice(0,2);LS.set("recent",r);
  LS.set("recentAll",[all].concat(LS.get("recentAll",[])).slice(0,2));
- const P=LS.get("plans",{});delete P[day];LS.set("plans",P);
+ const P=LS.get("plans",{});delete P[day];LS.set("plans",P)}
  const done=LS.get("done",{});done[day]=new Date().toISOString();LS.set("done",done);
  const ses=LS.get("sessions",[]),rec={day,d:new Date().toISOString(),mins:Math.max(1,Math.round(secs/60)),secs,sets:S.sets,ex:S.pb||p.b,pct:R.pct,partial:R.pct<100,lbs:R.lbs,rd:R.rd,rp:R.rp,log:R.log,v:6,bx:!!S.xok};
  ses.push(rec);LS.set("sessions",ses.slice(-400));LS.set("run",null);
- const c=LS.get("cnt",{});R.log.forEach(x=>{if(x.rd.length)c[x.k]=movesDone(x.k)+1});LS.set("cnt",c);return rec}
+ if(!isM(day)){const c=LS.get("cnt",{});R.log.forEach(x=>{if(x.rd.length)c[x.k]=movesDone(x.k)+1});LS.set("cnt",c)}return rec}
 function units(st,i){return st.t==="s"?1:(S.exs&&S.exs[i]?S.exs[i].rows.length:roundsFor(runPick(st.j),runSlot(st.j)))}
 function progress(){let tot=0,done=0;S.steps.forEach((st,i)=>{if(!live(st))return;const u=units(st,i);tot+=u;if(i<S.i)done+=u;else if(i===S.i&&st.t==="e"&&S.exs&&S.exs[i])done+=S.exs[i].rows.filter(r=>r.done).length});return tot?done/tot:0}
 /* segmented bar: one segment per section */
@@ -1286,7 +1315,7 @@ function advice(k){const e=EX[k],[lo,hi]=repRange(k),L=lastLog(k);
   slow:`same, but <b>slower</b> (3 s down). ${goal}.`}[t.why]||`<b>${load2?load2+" × ":""}${goal}</b>.`;
  return {...t,text:`Last time (${fmtDate(L.d)}): ${load}${did}${feel?" · felt "+feel:""}.<br><b>So today:</b> ${today}`}}
 /* save this exercise as it goes (survives an interruption) */
-function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);const h=LS.get("hist",{});
+function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);if(S&&isM(S.day)){const last=d[d.length-1]||X.rows[0];if(e.w==="band"&&last&&last.band){const mb=LS.get("mband",{});mb[k]=last.band;LS.set("mband",mb)}return}const h=LS.get("hist",{});
  if(d.length){const old=h[k]&&h[k].sid===S.t0?null:h[k];
   if(old&&!X.prev)X.prev=old;
   h[k]={sid:S.t0,d:new Date().toISOString(),rounds:d.map(r=>({r:+r.r||0,w:r.w===""?null:r.w,band:r.band,sec:+r.sec||null,rate:r.rate||""})),reps:d.map(r=>e.t?(+r.sec||e.t):(+r.r||0)),w:e.w==="lb"?d[0].w:null,band:e.w==="band"?d[0].band:null};
@@ -1300,6 +1329,7 @@ function logEx(X){const k=X.k,e=EX[k],d=X.rows.filter(r=>r.done);const h=LS.get(
 function initEx(){const st=S.steps[S.i],k=curKey();S.exs=S.exs||{};let X=S.exs[S.i];
  if(X&&X.k===k)return X;
  if(st.j>=200){const [rr,lab]=wReps(k);X=S.exs[S.i]={k,warm:1,lab,adv:"",nw:false,rows:Array.from({length:warmSets(S.day)},()=>({r:rr,done:false,rate:""}))};save();return X}
+ if(isM(S.day)&&st.j<100){const mv=MORNING.moves.find(x=>x[0]===k),band=LS.get("mband",{})[k]||LS.get("band",{})[k]||"Medium";X=S.exs[S.i]={k,adv:"",nw:false,mo:1,rows:Array.from({length:MORNING.sets},()=>({r:mv?mv[1]:(EX[k].s?8:10),w:"",band,sec:EX[k].t,done:false,rate:""}))};save();return X}
  const n=roundsFor(k,runSlot(st.j)),a=advice(k);
  X=S.exs[S.i]={k,adv:a.text,nw:isNew(k),rows:Array.from({length:n},()=>({r:a.reps,w:a.w,band:a.band,sec:a.sec,done:false,rate:""}))};save();return X}
 function curEx(){return S&&S.exs&&S.exs[S.i]}
@@ -1378,7 +1408,7 @@ function toggleRow(i){unlock();const X=curEx();const r=X.rows[i];
  /* warm-up: no rest, next set (or next move) right away */
  if(r.done&&X.warm){buzz(40);stopTimer();if(X.rows.every(x=>x.done)){S.i++;S.auto=false}S._pos=null;show();return}
  if(r.done){buzz(40);stopTimer();const all=X.rows.every(x=>x.done),nx=X.rows.findIndex(x=>!x.done);
-  const cs=S.steps[S.i];rest(all?nextLabel():`Set ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()},cs&&cs.x?runSlot(cs.j).rest:0)}}
+  const cs=S.steps[S.i];rest(all?nextLabel():`Set ${nx+1} of ${X.rows.length} · ${exName(X.k)}`,all&&!X.mo?X:null,()=>{if(X.rows.every(x=>x.done)){S.i++;const n=S.steps[S.i];S.auto=!!(n&&n.t==="s")}show()},X.mo?(all?MORNING.restLast:MORNING.rest):cs&&cs.x?runSlot(cs.j).rest:0)}}
 
 /* rep-based exercise */
 function showRepEx(st,k){initEx();drawRows()}
@@ -1498,7 +1528,7 @@ function healthHelp(d){const rec=d?recByD(d):null;
  <div style="margin-top:12px"><button class="btn sec" onclick="closeSheet()">Close</button></div>`;openSheet()}
 
 /* ===== app version: when the app comes back to the front (no workout running), load a newer version if there is one ===== */
-const APP_VER="6.9";
+const APP_VER="7.0";
 function checkUpdate(){if(S)return;fetch(location.pathname+"?vc="+Date.now(),{cache:"no-store"}).then(r=>r.text()).then(t=>{const m=t.match(/const APP_VER="([^"]+)"/);
  if(m&&m[1]!==APP_VER&&!S){let tried="";try{tried=sessionStorage.getItem("vw_upd")||""}catch(e){}if(tried===m[1])return;try{sessionStorage.setItem("vw_upd",m[1])}catch(e){}location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}).catch(()=>{})}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(checkUpdate,400)});
